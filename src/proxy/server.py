@@ -61,7 +61,9 @@ async def execute_workflow_route(
     from sqlalchemy import update
 
     try:
-        override_policy = params.pop("override_policy", "STRICT")
+        override_policy = params.pop("override_policy", None)
+        if override_policy is None:
+            override_policy = os.getenv("DELL_COMPATIBILITY_POLICY", "STRICT").upper()
         masked_params = GovernanceMiddleware.get_instance().intercept_execution(workflow_name, params)
         log_audit_event("EXECUTION_START", "SUCCESS", f"Started {workflow_name}", workflow_name=workflow_name, metadata={"inputs": masked_params})
         
@@ -185,7 +187,7 @@ async def load_approved_tools_from_db() -> None:
                 desc += "\n\n### Required Request Body Structures:\n" + "\n".join(schemas_doc)
             
             # Allow policy overrides for low confidence executions
-            all_params["override_policy"] = (str, "STRICT")
+            all_params["override_policy"] = (str, None)
 
             # Use inspect.Signature to create dynamic kwargs
             import inspect
