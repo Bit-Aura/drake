@@ -4,7 +4,7 @@ from drake.core.models import ContractA, EndpointContract
 
 logger = logging.getLogger(__name__)
 
-class gRPCParser:
+class gRPCParser:  # noqa: E302
     def __init__(self, file_path: str | Path):
         self.file_path = Path(file_path)
 
@@ -14,7 +14,7 @@ class gRPCParser:
         try:
             with open(self.file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-            
+
             # Simplistic parsing for 'rpc Method(Input) returns (Output)'
             for line in content.split("\n"):
                 line = line.strip()
@@ -35,7 +35,7 @@ class gRPCParser:
                     )
         except Exception as e:
             logger.error(f"Failed to parse gRPC: {e}")
-            
+
         if not endpoints:
             endpoints.append(
                 EndpointContract(

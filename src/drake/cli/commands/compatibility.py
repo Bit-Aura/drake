@@ -32,7 +32,7 @@ def compatibility_validate(
             else ("yellow" if report["status"] == "WARN" else "red")
         )
         content = (
-            f"[bold white]Status               :[/bold white] [{status_color}]{report['status']}[/{status_color}]\n"
+            f"[bold white]Status               :[/bold white] [{status_color}]{report['status']}[/{status_color}]\n"  # noqa: E501
             f"[bold white]Compatibility Score  :[/bold white] {report['compatibility_score']}%\n"
             f"[bold white]Risk Score           :[/bold white] {report['risk_score']}/100\n"
             f"[bold white]Blast Radius         :[/bold white] {report['blast_radius']}\n"

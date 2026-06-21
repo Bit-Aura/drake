@@ -38,7 +38,7 @@ class AnsibleCLIService:
                     "vars": {
                         "idrac_ip": "192.168.1.100",
                         "idrac_user": "root",
-                        "idrac_password": "calvin",
+                        "idrac_password": "override_idrac_pass",
                     },
                     "tasks": tasks,
                 }

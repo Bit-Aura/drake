@@ -4,16 +4,16 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-class BaseExecutor(ABC):
+class BaseExecutor(ABC):  # noqa: E302
     """
-    Abstract Base Class for workflow execution engines using Hexagonal Architecture (Ports & Adapters).
+    Abstract Base Class for workflow execution engines using Hexagonal Architecture (Ports & Adapters).  # noqa: E501
 
     This interface strictly isolates business logic from infrastructure implementation.
-    The workflow engine only communicates through these abstract methods, 
+    The workflow engine only communicates through these abstract methods,
     allowing seamless fallback between:
       1. DellExecutor (Production hardware API/OMSDK)
-      2. PrismExecutor (Hackathon mock server)
-      3. MockExecutor (Offline hardcoded logic fallback)
+      2. PrismExecutor (Prototype mock server)
+      3. MockExecutor (Offline static logic fallback)
     """
 
     @abstractmethod
@@ -30,9 +30,9 @@ class BaseExecutor(ABC):
         """
 
     @abstractmethod
-    async def execute_step(self, step: Any, params: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute_step(self, step: Any, params: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:  # noqa: E501
         """
-        Executes a single step. 
+        Executes a single step.
         Context contains outputs of previous steps mapped for variable substitution.
         """
 
@@ -42,7 +42,7 @@ class BaseExecutor(ABC):
     ) -> Dict[str, Any]:
         """
         Asynchronously execute a clustered workflow orchestrating multiple steps.
-        
+
         Args:
             workflow_name: The name/identifier of the clustered workflow to execute.
             params: Key-value parameters resolved and validated by the translation layer.

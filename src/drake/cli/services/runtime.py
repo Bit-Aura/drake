@@ -49,7 +49,7 @@ class RuntimeCLIService:
                 # Fallback to local DB pipeline reload log if server gateway is down
                 return {
                     "status": "synchronized_local_db_only",
-                    "reason": f"API server is offline on port {port}. Reload triggered locally in database, client session reload bypassed.",
+                    "reason": f"API server is offline on port {port}. Reload triggered locally in database, client session reload bypassed.",  # noqa: E501
                 }
 
         return AsyncServiceBridge.run(_async_reload())  # type: ignore[no-any-return]

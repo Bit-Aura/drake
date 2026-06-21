@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("DellAdmin@gmail.com");
-  const [password, setPassword] = useState("dell@123");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 

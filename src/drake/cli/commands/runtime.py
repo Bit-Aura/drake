@@ -93,7 +93,7 @@ def runtime_execute(
         if assess:
             content = (
                 f"[bold white]Report Status        :[/bold white] {assess.get('status')}\n"
-                f"[bold white]Compatibility Score  :[/bold white] {assess.get('compatibility_score')}%\n"
+                f"[bold white]Compatibility Score  :[/bold white] {assess.get('compatibility_score')}%\n"  # noqa: E501
                 f"[bold white]Risk Score           :[/bold white] {assess.get('risk_score')}/100\n"
                 f"[bold white]Blast Radius         :[/bold white] {assess.get('blast_radius')}"
             )

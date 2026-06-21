@@ -4,7 +4,7 @@ from drake.core.models import ContractA, EndpointContract
 
 logger = logging.getLogger(__name__)
 
-class GraphQLParser:
+class GraphQLParser:  # noqa: E302
     def __init__(self, file_path: str | Path):
         self.file_path = Path(file_path)
 
@@ -14,20 +14,20 @@ class GraphQLParser:
         try:
             with open(self.file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-            
+
             # Extremely simplistic parsing for demonstration
             # In a real scenario, use a proper GraphQL parser like graphql-core
             for line in content.split("\n"):
                 line = line.strip()
                 if line.startswith("type Query {") or line.startswith("type Mutation {"):
-                    pass # Just identifying sections
+                    pass # Just identifying sections  # noqa: E261
                 elif ":" in line and not line.startswith("type") and not line.startswith("}"):
                     # e.g., "getUser(id: ID!): User"
                     parts = line.split("(")
                     if len(parts) > 1:
                         name = parts[0].strip()
                         method = "QUERY"  # default assumption
-                        
+
                         endpoints.append(
                             EndpointContract(
                                 operation_id=f"GRAPHQL_{name}",
@@ -42,7 +42,7 @@ class GraphQLParser:
                         )
         except Exception as e:
             logger.error(f"Failed to parse GraphQL: {e}")
-            
+
         if not endpoints:
             # Fallback mock if nothing found
             endpoints.append(

@@ -6,13 +6,13 @@ logger = logging.getLogger(__name__)
 
 class AnsiblePlaybookEnricher:
     """
-    Enriches exported Ansible Playbooks with prerequisite updates, system reboots, and status checks.
+    Enriches exported Ansible Playbooks with prerequisite updates, system reboots, and status checks.  # noqa: E501
     """
 
     @staticmethod
     def enrich_playbook_tasks(steps: List[Any]) -> List[Dict[str, Any]]:
         """
-        Scan workflow steps and enrich the playbook configuration tasks if target firmware updates are requested.
+        Scan workflow steps and enrich the playbook configuration tasks if target firmware updates are requested.  # noqa: E501
         """
 
         def get_val(obj, key, default=None):
@@ -79,7 +79,7 @@ class AnsiblePlaybookEnricher:
         bios_update_task = {
             "name": "Prerequisite Step 1 - Update System BIOS to 2.12.0",
             "ansible.builtin.uri": {
-                "url": "https://{{ idrac_ip }}/redfish/v1/UpdateService/Actions/UpdateService.SimpleUpdate",
+                "url": "https://{{ idrac_ip }}/redfish/v1/UpdateService/Actions/UpdateService.SimpleUpdate",  # noqa: E501
                 "method": "POST",
                 "user": "{{ idrac_user }}",
                 "password": "{{ idrac_password }}",
@@ -100,7 +100,7 @@ class AnsiblePlaybookEnricher:
         reboot_task = {
             "name": "Prerequisite Step 2 - Reboot System for BIOS Installation",
             "ansible.builtin.uri": {
-                "url": "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset",
+                "url": "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset",  # noqa: E501
                 "method": "POST",
                 "user": "{{ idrac_user }}",
                 "password": "{{ idrac_password }}",

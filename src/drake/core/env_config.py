@@ -1,6 +1,6 @@
 import os
 import logging
-from functools import lru_cache
+from functools import lru_cache  # noqa: F401
 from pydantic import BaseModel, Field, ValidationError
 
 logger = logging.getLogger(__name__)

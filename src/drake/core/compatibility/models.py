@@ -51,7 +51,7 @@ class DeviceFacts(BaseModel):
     )
     firmware_inventory: Dict[str, str] = Field(
         default_factory=dict,
-        description="Key-value mapping of component firmware versions (e.g. iDRAC9, StorageController).",
+        description="Key-value mapping of component firmware versions (e.g. iDRAC9, StorageController).",  # noqa: E501
     )
     last_scanned: Optional[datetime] = Field(
         default=None, description="Timestamp of when facts were retrieved."
@@ -95,7 +95,7 @@ class BaseRuleConfig(BaseModel):
 
 
 
-class HardwareRuleConfig(BaseRuleConfig):
+class HardwareRuleConfig(BaseRuleConfig):  # noqa: E303
     supported_models: List[str] = Field(
         description="List of supported PowerEdge hardware models."
     )

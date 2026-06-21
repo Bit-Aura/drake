@@ -44,7 +44,7 @@ def main_callback(
     """Drake — Dell Enterprise MCP Workflow Proxy CLI control plane."""
     if ctx.invoked_subcommand is None and not json:
         console.print(get_banner())
-        
+
     context = CLIContext(verbose=verbose, json_output=json, debug=debug)
     container = CLIContainer()
     ctx.obj = CLIWrapper(context, container)
@@ -74,7 +74,7 @@ app.add_typer(system_app, name="system")
 app.add_typer(diagnostics_app, name="diagnostics")
 app.add_typer(server_app, name="server")
 app.add_typer(config_app, name="config")
-app.command(name="pipeline", help="Run the complete pipeline: Ingest -> Cluster -> Serve")(pipeline_cmd)
+app.command(name="pipeline", help="Run the complete pipeline: Ingest -> Cluster -> Serve")(pipeline_cmd)  # noqa: E501
 
 load_plugins(app)
 
@@ -170,7 +170,7 @@ def main() -> None:
                 title="Unexpected Application Failure",
                 cause=str(e),
                 impact="The CLI execution halted abnormally.",
-                action="Run the command with --debug to display full traceback, or contact administrator.",
+                action="Run the command with --debug to display full traceback, or contact administrator.",  # noqa: E501
             )
         sys.exit(1)
 

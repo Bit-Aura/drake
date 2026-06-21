@@ -38,7 +38,7 @@ def compress_redfish_response(data: Any, seen: Set[int] = None) -> Any:
                 if isinstance(key, str) and key.startswith("@odata"):
                     continue
 
-                # 3. Drop standard HATEOAS navigation links unless they contain direct operational data.
+                # 3. Drop standard HATEOAS navigation links unless they contain direct operational data.  # noqa: E501
                 # Redfish APIs extensively use "Links" and "Actions" to show what operations
                 # or related objects are available. Often this blows up the payload.
                 if key in ("Links", "Actions"):
@@ -92,7 +92,7 @@ import httpx
 from drake.core.compression import compress_redfish_response
 
 class MockHTTPXExecutor:
-    
+
     async def execute_request(self, request_url: str) -> Any:
         try:
             # Example execution
@@ -100,7 +100,7 @@ class MockHTTPXExecutor:
             #     response = await client.get(request_url)
             #     response.raise_for_status()
             #     raw_data = response.json()
-            
+
             # Simulated response for demonstration
             raw_data = {
                 "@odata.id": "/redfish/v1/Systems/1",
@@ -123,13 +123,13 @@ class MockHTTPXExecutor:
                 "Memory": {"@odata.id": "/redfish/v1/Systems/1/Memory"},
                 "EmptyList": []
             }
-            
+
             # Apply our token-saving compression immediately after extracting JSON
             compressed_data = compress_redfish_response(raw_data)
-            
+
             # The returned payload will now be significantly smaller!
             return compressed_data
-            
+
         except httpx.HTTPError as e:
             # Handle standard errors...
             raise

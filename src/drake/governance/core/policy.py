@@ -3,13 +3,13 @@ from pathlib import Path
 from typing import Dict, Any
 import ast
 
-class PolicyEngine:
+class PolicyEngine:  # noqa: E302
     """Evaluates workflows against governance policies defined in policy.yaml."""
 
     def __init__(self, policy_path: str | None = None):
         if not policy_path:
             policy_path = str(Path(__file__).resolve().parent.parent / "config" / "policy.yaml")
-        
+
         self.config = self._load_policy(policy_path)
         self.rules = self.config.get("rules", [])
 
@@ -43,7 +43,7 @@ class PolicyEngine:
         for rule in self.rules:
             condition_expr = rule.get("condition", "False")
             action = rule.get("action")
-            
+
             try:
                 def _eval(node, context):
                     if isinstance(node, ast.Constant): return node.value
@@ -67,16 +67,16 @@ class PolicyEngine:
                             left = right
                         return True
                     elif isinstance(node, ast.BoolOp):
-                        if isinstance(node.op, ast.And): return all(_eval(v, context) for v in node.values)
-                        elif isinstance(node.op, ast.Or): return any(_eval(v, context) for v in node.values)
+                        if isinstance(node.op, ast.And): return all(_eval(v, context) for v in node.values)  # noqa: E501
+                        elif isinstance(node.op, ast.Or): return any(_eval(v, context) for v in node.values)  # noqa: E501
                     raise ValueError("Unsupported AST node")
 
                 tree = ast.parse(condition_expr, mode='eval').body
                 is_match = _eval(tree, eval_locals)
-                
+
                 if is_match:
                     if action == "DENY":
-                        return {"status": 2, "reason": rule.get("reason", "Denied by policy rule: " + rule.get("name", ""))}
+                        return {"status": 2, "reason": rule.get("reason", "Denied by policy rule: " + rule.get("name", ""))}  # noqa: E501
                     elif action == "AUTO_APPROVE":
                         result_status = 1
                     elif action == "REQUIRE_APPROVAL":

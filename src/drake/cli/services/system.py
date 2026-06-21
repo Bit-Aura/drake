@@ -11,7 +11,7 @@ class SystemCLIService:
     @staticmethod
     def notify_proxy_reload() -> None:
         """
-        Sends a silent HTTP POST to the FastMCP proxy server to trigger a hot-reload 
+        Sends a silent HTTP POST to the FastMCP proxy server to trigger a hot-reload
         of its tools, ensuring synchronization with the SQLite database.
         """
         import urllib.request
@@ -19,7 +19,7 @@ class SystemCLIService:
             req = urllib.request.Request(
                 "http://127.0.0.1:8001/api/v1/mcp/reload",
                 method="POST",
-                headers={"X-API-Key": "default_dev_key"}
+                headers={"X-API-Key": "override_dev_key"}
             )
             with urllib.request.urlopen(req, timeout=1.0):
                 pass

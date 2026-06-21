@@ -11,32 +11,32 @@ _supports_unicode_cache = None
 DRAKE_BANNER = """[cyan]
  ██████████   ███████████     █████████   █████   ████ ██████████
 ░░███░░░░███ ░░███░░░░░███   ███░░░░░███ ░░███   ███░ ░░███░░░░░█
- ░███   ░░███ ░███    ░███  ░███    ░███  ░███  ███    ░███  █ ░ 
- ░███    ░███ ░██████████   ░███████████  ░███████     ░██████   
- ░███    ░███ ░███░░░░░███  ░███░░░░░███  ░███░░███    ░███░░█   
+ ░███   ░░███ ░███    ░███  ░███    ░███  ░███  ███    ░███  █ ░
+ ░███    ░███ ░██████████   ░███████████  ░███████     ░██████
+ ░███    ░███ ░███░░░░░███  ░███░░░░░███  ░███░░███    ░███░░█
  ░███    ███  ░███    ░███  ░███    ░███  ░███ ░░███   ░███ ░   █
  ██████████   █████   █████ █████   █████ █████ ░░████ ██████████
-░░░░░░░░░░   ░░░░░   ░░░░░ ░░░░░   ░░░░░ ░░░░░   ░░░░ ░░░░░░░░░░ 
+░░░░░░░░░░   ░░░░░   ░░░░░ ░░░░░   ░░░░░ ░░░░░   ░░░░ ░░░░░░░░░░
 [/cyan]"""
 
 ASCII_BANNER = """[cyan]
-  ____  ____    _    _  _______ 
+  ____  ____    _    _  _______
  |  _ \\|  _ \\  / \\  | |/ / ____|
- | | | | |_) |/ _ \\ | ' /|  _|  
- | |_| |  _ </ ___ \\| . \\| |___ 
+ | | | | |_) |/ _ \\ | ' /|  _|
+ | |_| |  _ </ ___ \\| . \\| |___
  |____/|_| \\_\\_/   \\_\\_|\\_\\_____|
 [/cyan]"""
 
-def get_banner() -> str:
+def get_banner() -> str:  # noqa: E302
     """Retrieve banner based on terminal capabilities."""
-    global _supports_unicode_cache
+    global _supports_unicode_cache  # noqa: F824
     if _supports_unicode_cache is None:
         get_symbols()
     return DRAKE_BANNER if _supports_unicode_cache else ASCII_BANNER
 
 
 
-def get_symbols() -> dict[str, str]:
+def get_symbols() -> dict[str, str]:  # noqa: E303
     """Retrieve symbols based on terminal capabilities."""
     global _supports_unicode_cache
     if _supports_unicode_cache is None:
@@ -97,7 +97,7 @@ console = Console(theme=CLI_THEME)
 
 
 def mask_secrets(val: Any) -> Any:
-    """Recursively mask sensitive values matching password, token, key, secret, ssn, authorization."""
+    """Recursively mask sensitive values matching password, token, key, secret, ssn, authorization."""  # noqa: E501
     if isinstance(val, dict):
         masked_dict = {}
         for k, v in val.items():

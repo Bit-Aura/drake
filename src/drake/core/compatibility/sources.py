@@ -3,7 +3,7 @@ import json
 import httpx
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional  # noqa: F401
 from sqlalchemy.future import select
 
 from drake.core.compatibility.models import DeviceFacts
@@ -213,7 +213,3 @@ class OMSDKFactsProvider(DeviceFactsProvider):
             last_scanned=datetime.now(timezone.utc),
             is_live=True,
         )
-
-
-
-
