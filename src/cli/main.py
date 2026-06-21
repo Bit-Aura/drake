@@ -56,6 +56,7 @@ from src.cli.commands.ansible import app as ansible_app
 from src.cli.commands.audit import app as audit_app
 from src.cli.commands.system import app as system_app
 from src.cli.commands.diagnostics import app as diagnostics_app
+from src.cli.commands.server import app as server_app
 from src.cli.plugins import load_plugins
 
 app.add_typer(cluster_app, name="cluster")
@@ -66,6 +67,7 @@ app.add_typer(ansible_app, name="ansible")
 app.add_typer(audit_app, name="audit")
 app.add_typer(system_app, name="system")
 app.add_typer(diagnostics_app, name="diagnostics")
+app.add_typer(server_app, name="server")
 
 load_plugins(app)
 

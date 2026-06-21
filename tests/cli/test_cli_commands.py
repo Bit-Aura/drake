@@ -313,3 +313,33 @@ def test_main_error_handling(monkeypatch) -> None:
     with pytest.raises(SystemExit) as exc_info:
         main()
     assert exc_info.value.code == 1
+
+
+def test_server_command_help() -> None:
+    """Ensure that 'dell-mcp server' help shows up correctly."""
+    result = runner.invoke(app, ["server", "--help"])
+    assert result.exit_code == 0
+    assert "start" in result.stdout
+    assert "Start the FastAPI/FastMCP proxy server using Uvicorn" in result.stdout
+
+
+def test_server_start_mock(monkeypatch) -> None:
+    """Ensure 'dell-mcp server start' executes uvicorn.run with correct params."""
+    run_called = {}
+
+    def mock_run(app_path, host, port, reload):
+        run_called["app"] = app_path
+        run_called["host"] = host
+        run_called["port"] = port
+        run_called["reload"] = reload
+
+    import uvicorn
+    monkeypatch.setattr(uvicorn, "run", mock_run)
+
+    result = runner.invoke(app, ["server", "start", "--host", "127.0.0.1", "--port", "8000"])
+    assert result.exit_code == 0
+    assert run_called["app"] == "src.proxy.server:app"
+    assert run_called["host"] == "127.0.0.1"
+    assert run_called["port"] == 8000
+    assert run_called["reload"] is False
+
