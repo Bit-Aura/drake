@@ -1,6 +1,7 @@
 import logging
 import re
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+import json
 import httpx
 from urllib.parse import urljoin, quote
 from tenacity import (
@@ -88,8 +89,21 @@ class HTTPXExecutorBase(BaseExecutor):
         # Extract body parameters (anything not used in path)
         body_params = {k: v for k, v in resolved_params.items() if k not in path_matches}
 
+        # Filter query/body params to only include parameters explicitly required/supported by this step
+        if hasattr(step, "required_params") and step.required_params:
+            try:
+                import json
+                supported_names = set()
+                req_params_list = json.loads(step.required_params)
+                for p in req_params_list:
+                    if isinstance(p, dict) and "name" in p:
+                        supported_names.add(p["name"])
+                body_params = {k: v for k, v in body_params.items() if k in supported_names}
+            except Exception:
+                pass
+
         req_kwargs = {"timeout": 10.0, "headers": self.session_headers.copy()}
-        if step.method.lower() in ["post", "put", "patch"] and body_params:
+        if step.method.lower() in ["post", "put", "patch"]:
             req_kwargs["json"] = body_params
         elif step.method.lower() in ["get", "delete", "head"] and body_params:
             req_kwargs["params"] = body_params
@@ -139,7 +153,7 @@ class HTTPXExecutorBase(BaseExecutor):
 
         async with async_session() as session:
             result = await session.execute(
-                select(Workflow).where(Workflow.system_name == workflow_name).options(selectinload(Workflow.steps))
+                select(Workflow).where(Workflow.system_name == workflow_name).options(selectinload(Workflow.steps)).limit(1)
             )
             wf = result.scalar_one_or_none()
             if not wf:
@@ -155,9 +169,15 @@ class HTTPXExecutorBase(BaseExecutor):
         
         step_results = []
         for idx, step in enumerate(steps):
-            step_name = f"step{idx+1}"
+            step_name = step.operation_id
+            
+            # Variable Mapping Engine: Merge dynamically mapped inputs
+            step_bindings = json.loads(step.variable_bindings) if step.variable_bindings else {}
+            merged_params = params.copy()
+            merged_params.update(step_bindings)
+
             try:
-                res = await self.execute_step(step, params, context)
+                res = await self.execute_step(step, merged_params, context)
                 step_results.append(res)
                 # Store output in context for future steps
                 context[step_name] = res["data"]
@@ -188,8 +208,9 @@ class PrismExecutor(HTTPXExecutorBase):
         super().__init__(base_url)
 
     async def authenticate(self) -> bool:
-        # Prism doesn't require actual authentication, but we simulate header injection
-        self.session_headers["Authorization"] = "Bearer prism-mock-token"
+        # Inject standard basic auth (admin:calvin) and X-Auth-Token to satisfy Redfish security requirements
+        self.session_headers["Authorization"] = "Basic YWRtaW46Y2Fsdmlu"
+        self.session_headers["X-Auth-Token"] = "prism-mock-token"
         return True
 
 
