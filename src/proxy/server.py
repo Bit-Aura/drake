@@ -91,6 +91,9 @@ async def execute_workflow_route(
             
         return result
     except Exception as e:
+        import traceback
+        import json
+        from mcp.types import CallToolResult, TextContent
         log_audit_event("EXECUTION_FAILED", "FAILED", str(e), workflow_name=workflow_name)
         
         # Update execution metrics for failure
@@ -105,7 +108,20 @@ async def execute_workflow_route(
             )
             await session.commit()
             
-        raise
+        failure_state = {
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+            "workflow_name": workflow_name
+        }
+        return CallToolResult(
+            isError=True,
+            content=[
+                TextContent(
+                    type="text",
+                    text=json.dumps(failure_state, indent=2)
+                )
+            ]
+        )
 
 
 def extract_placeholders_from_steps(steps) -> Set[str]:
@@ -167,11 +183,15 @@ async def load_approved_tools_from_db() -> None:
                             f"\nStep {step.step_order} ({step.method} {step.url}) Body Schema:\n"
                             f"{json.dumps(schema, indent=2)}"
                         )
-                        # Extract top-level properties from schema and add to parameters
+                        from src.parser.openapi_parser import schema_to_python_type
+                        
+                        # Use our new recursive mapper instead of Any
                         if schema.get("type") == "object" and "properties" in schema:
-                            for prop, details in schema["properties"].items():
+                            for prop, prop_schema in schema["properties"].items():
                                 if prop not in all_params:
-                                    all_params[prop] = (Any, None) # Allow passing any JSON structure for body params
+                                    is_required = prop in schema.get("required", [])
+                                    prop_type = schema_to_python_type(prop_schema, model_name=f"{name}_{prop}")
+                                    all_params[prop] = (prop_type, ... if is_required else None)
                 except Exception as e:
                     logger.debug(f"Failed to parse request_schema: {e}")
 
@@ -313,9 +333,12 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
                 if step.request_schema:
                     schema = json.loads(step.request_schema)
                     if schema.get("type") == "object" and "properties" in schema:
-                        for prop in schema["properties"].keys():
+                        from src.parser.openapi_parser import schema_to_python_type
+                        for prop, prop_schema in schema["properties"].items():
                             if prop not in params_dict:
-                                params_dict[prop] = (Any, None)
+                                is_required = prop in schema.get("required", [])
+                                prop_type = schema_to_python_type(prop_schema, model_name=f"{tool_name}_{prop}")
+                                params_dict[prop] = (prop_type, ... if is_required else None)
             except Exception as e:
                 logger.debug(f"Failed to parse request_schema: {e}")
                 

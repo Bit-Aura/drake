@@ -242,15 +242,15 @@ class HTTPXExecutorBase(BaseExecutor):
                 # Store output in context for future steps
                 context[step_name] = res["data"]
             except Exception as e:
-                logger.exception(f"Workflow '{workflow_name}' failed at step '{step_name}': {e}")
-                return {
+                import json
+                error_msg = json.dumps({
                     "workflow_id": wf.id,
                     "status": "partial_failure",
                     "steps_executed": len(step_results),
                     "failed_step": step_name,
-                    "error": str(e),
-                    "step_results": step_results,
-                }
+                    "error": str(e)
+                })
+                raise DellProxyExecutionError(f"Workflow failed at step {step_name}: {error_msg}")
 
         return {
             "workflow_id": wf.id,
@@ -269,8 +269,13 @@ class PrismExecutor(HTTPXExecutorBase):
         super().__init__(base_url)
 
     async def authenticate(self) -> bool:
-        # Inject standard basic auth (admin:calvin) and X-Auth-Token to satisfy Redfish security requirements
-        self.session_headers["Authorization"] = "Basic YWRtaW46Y2Fsdmlu"
+        # Inject dynamic auth token to satisfy Redfish security requirements
+        token = os.getenv("MOCK_AUTH_TOKEN")
+        if not token:
+            if os.getenv("DELL_ENV", "development").lower() == "production":
+                raise EnvironmentError("MOCK_AUTH_TOKEN is required in production environment.")
+            token = "Basic YWRtaW46Y2Fsdmlu"
+        self.session_headers["Authorization"] = token
         self.session_headers["X-Auth-Token"] = "prism-mock-token"
         return True
 
@@ -283,7 +288,12 @@ class MockExecutor(HTTPXExecutorBase):
         super().__init__(base_url)
 
     async def authenticate(self) -> bool:
-        self.session_headers["Authorization"] = "Basic mock-offline-token"
+        token = os.getenv("MOCK_AUTH_TOKEN")
+        if not token:
+            if os.getenv("DELL_ENV", "development").lower() == "production":
+                raise EnvironmentError("MOCK_AUTH_TOKEN is required in production environment.")
+            token = "Basic mock-offline-token"
+        self.session_headers["Authorization"] = token
         return True
 
 # For backwards compatibility during transition
