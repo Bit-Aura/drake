@@ -2,16 +2,16 @@ import asyncio
 import logging
 from pathlib import Path
 
-from src.parser.openapi_parser import OpenAPIParser
-from src.ai_clustering.graph_clustering import run_pipeline
-from src.core.database import init_db_sync
+from drake.parser.openapi_parser import OpenAPIParser
+from drake.ai_clustering.graph_clustering import run_pipeline
+from drake.core.database import init_db_sync
 from scripts.refine_workflow_names import refine_workflow_names
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ProductionPipeline")
 
 def main():
-    from src.core.database import set_pipeline_status
+    from drake.core.database import set_pipeline_status
     
     logger.info("Initializing Governance Database...")
     init_db_sync()

@@ -1,5 +1,5 @@
-from src.proxy.server import extract_placeholders_from_steps
-from src.core.database import EndpointStep
+from drake.proxy.server import extract_placeholders_from_steps
+from drake.core.database import EndpointStep
 
 
 def test_extract_placeholders():
