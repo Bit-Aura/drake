@@ -1,0 +1,92 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Dell iDRAC9 Redfish API",
+    "version": "7.00.00.00"
+  },
+  "paths": {
+    "/redfish/v1/Systems/System.Embedded.1": {
+      "get": {
+        "operationId": "GET_ComputerSystem",
+        "summary": "Get system hardware facts and health state",
+        "tags": ["Systems"],
+        "responses": {
+          "200": {
+            "description": "System details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Id": {"type": "string"},
+                    "Name": {"type": "string"},
+                    "Health": {"type": "string"},
+                    "PowerState": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/redfish/v1/Managers/iDRAC.Embedded.1/Oem/Dell/DellAttributes": {
+      "get": {
+        "operationId": "GET_DellAttributes",
+        "summary": "Get OEM Dell attributes like BIOS, NIC, RAID configurations",
+        "tags": ["Managers"],
+        "responses": {
+          "200": {
+            "description": "Dell Attributes"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "PATCH_DellAttributes",
+        "summary": "Update OEM Dell attributes",
+        "tags": ["Managers"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Attributes": {"type": "object"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {"description": "Updated"}
+        }
+      }
+    },
+    "/redfish/v1/UpdateService/Actions/UpdateService.SimpleUpdate": {
+      "post": {
+        "operationId": "POST_SimpleUpdate",
+        "summary": "Perform a simple firmware update",
+        "tags": ["UpdateService"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ImageURI": {"type": "string"},
+                  "TransferProtocol": {"type": "string"}
+                },
+                "required": ["ImageURI"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {"description": "Update job accepted"}
+        }
+      }
+    }
+  }
+}

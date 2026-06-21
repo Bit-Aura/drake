@@ -1,0 +1,80 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Dell OpenManage Enterprise REST API",
+    "version": "3.9.0"
+  },
+  "paths": {
+    "/api/GroupService/Groups": {
+      "get": {
+        "operationId": "GetGroups",
+        "summary": "Get all device groups",
+        "tags": ["GroupService"],
+        "responses": {
+          "200": {
+            "description": "List of groups"
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateGroup",
+        "summary": "Create a new device group",
+        "tags": ["GroupService"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Name": {"type": "string"},
+                  "Description": {"type": "string"}
+                },
+                "required": ["Name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Created"}
+        }
+      }
+    },
+    "/api/DeviceService/Devices": {
+      "get": {
+        "operationId": "GetDevices",
+        "summary": "Get all inventoried devices",
+        "tags": ["DeviceService"],
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "required": false,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {"description": "List of devices"}
+        }
+      }
+    },
+    "/api/AlertService/Alerts": {
+      "get": {
+        "operationId": "GetAlerts",
+        "summary": "Get hardware compliance alerts",
+        "tags": ["AlertService"],
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "required": false,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {"description": "List of alerts"}
+        }
+      }
+    }
+  }
+}

@@ -9,14 +9,14 @@ app = typer.Typer(help="AI Ingestion and Clustering Engine")
 @app.command("run")
 def run_cluster(
     ctx: typer.Context,
-    spec: str = typer.Option("openapi.json", help="Path to OpenAPI spec YAML/JSON"),
+    specs: list[str] = typer.Option(["openapi.json"], help="Path(s) to spec files or directories"),
 ) -> None:
-    """Ingest OpenAPI paths and discover workflow clusters using Leiden clustering."""
+    """Ingest API paths and discover workflow clusters using Leiden clustering."""
     wrapper = ctx.obj
     verbose = wrapper.context.verbose
 
-    with status_spinner("Analyzing spec and partitioning resource communities"):
-        stats = wrapper.container.cluster_service.run_clustering(Path(spec), verbose)
+    with status_spinner("Analyzing specs and partitioning resource communities"):
+        stats = wrapper.container.cluster_service.run_clustering([Path(s) for s in specs], verbose)
 
     if wrapper.context.json_output:
         render_json(stats)

@@ -101,11 +101,11 @@ def test_cluster_commands() -> None:
     assert res_graph_text.exit_code == 0
 
     # Test cluster run with openapi.json
-    res_run = runner.invoke(app, ["cluster", "run", "--spec", "openapi.json"])
+    res_run = runner.invoke(app, ["cluster", "run", "--specs", "openapi.json"])
     assert res_run.exit_code == 0
 
     # Test cluster run with missing file (error handling path)
-    res_run_err = runner.invoke(app, ["cluster", "run", "--spec", "nonexistent_spec_file.json"])
+    res_run_err = runner.invoke(app, ["cluster", "run", "--specs", "nonexistent_spec_file.json"])
     assert res_run_err.exit_code != 0
     assert isinstance(res_run_err.exception, DellCLIError)
     assert res_run_err.exception.title == "OpenAPI Spec File Missing"
@@ -308,7 +308,7 @@ def test_missing_workflow_errors() -> None:
 def test_main_error_handling(monkeypatch) -> None:
     """Ensure that calling main() directly prints the error block to stdout/stderr and exits."""
     import sys
-    monkeypatch.setattr(sys, "argv", ["drake", "cluster", "run", "--spec", "nonexistent.json"])
+    monkeypatch.setattr(sys, "argv", ["drake", "cluster", "run", "--specs", "nonexistent.json"])
     
     with pytest.raises(SystemExit) as exc_info:
         main()
