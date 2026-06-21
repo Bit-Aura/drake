@@ -3,8 +3,8 @@ import os
 import datetime
 from unittest.mock import patch, MagicMock, AsyncMock
 
-from src.proxy.server import mcp, load_approved_tools_from_db
-from src.core.database import init_db_sync, get_db_connection
+from drake.proxy.server import mcp, load_approved_tools_from_db
+from drake.core.database import init_db_sync, get_db_connection
 from fastmcp.exceptions import NotFoundError
 
 @pytest.fixture(autouse=True)
@@ -122,7 +122,7 @@ async def test_2_governance_block_pending_state(loaded_mcp):
 
 @pytest.mark.asyncio
 async def test_3_policy_violation_security_block(loaded_mcp):
-    from src.core.compatibility.models import CompatibilityStatus
+    from drake.core.compatibility.models import CompatibilityStatus
     
     with patch("src.core.compatibility.engine.CompatibilityEngine.validate_workflow") as mock_engine:
         # Engine validates and returns blocked status
@@ -160,7 +160,7 @@ async def test_4_parameter_validation_block(loaded_mcp):
 @pytest.mark.asyncio
 async def test_5_downstream_failure_handling(loaded_mcp):
     import httpx
-    from src.proxy.executors.httpx_executor import _execution_cache
+    from drake.proxy.executors.httpx_executor import _execution_cache
     _execution_cache.clear()
     with patch("httpx.AsyncClient.request") as mock_request:
         # Simulate 500 error from downstream mock API

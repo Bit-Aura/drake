@@ -2,19 +2,19 @@ import pytest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock
 
-from src.core.database import (
+from drake.core.database import (
     init_db_sync,
     get_db_connection,
     save_workflows,
     async_session,
     DeviceInventory,
 )
-from src.core.exceptions import DellProxyExecutionError
-from src.core.compatibility.orchestrator import (
+from drake.core.exceptions import DellProxyExecutionError
+from drake.core.compatibility.orchestrator import (
     WorkflowExecutionManager,
     CompatibilityPolicyViolation,
 )
-from src.core.compatibility.models import (
+from drake.core.compatibility.models import (
     CompatibilityStatus,
     DeviceFacts,
     CompatibilityReport,
@@ -448,7 +448,7 @@ async def test_orchestrator_executor_backends(monkeypatch):
     await manager.execute_workflow_with_validation(
         "executors_wf", {"target_ip": "1.1.1.6"}, policy="STRICT"
     )
-    from src.proxy.executors.dell_omsdk_executor import DellOMSDKExecutor
+    from drake.proxy.executors.dell_omsdk_executor import DellOMSDKExecutor
 
     assert isinstance(exec_spy.call_args[0][0], DellOMSDKExecutor)
 
@@ -459,7 +459,7 @@ async def test_orchestrator_executor_backends(monkeypatch):
     await manager.execute_workflow_with_validation(
         "executors_wf", {"target_ip": "1.1.1.6"}, policy="STRICT"
     )
-    from src.proxy.executors.httpx_executor import MockExecutor
+    from drake.proxy.executors.httpx_executor import MockExecutor
 
     assert isinstance(exec_spy.call_args[0][0], MockExecutor)
 

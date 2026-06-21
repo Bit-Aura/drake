@@ -3,8 +3,8 @@ import os
 import datetime
 from unittest.mock import patch, MagicMock, AsyncMock
 
-from src.proxy.server import mcp, load_approved_tools_from_db
-from src.core.database import init_db_sync, get_db_connection
+from drake.proxy.server import mcp, load_approved_tools_from_db
+from drake.core.database import init_db_sync, get_db_connection
 from fastmcp.exceptions import ToolError
 
 @pytest.fixture(autouse=True)
@@ -64,7 +64,7 @@ async def test_1_prompt_injection_defense():
 async def test_2_malicious_payload_path_traversal(loaded_mcp):
     with patch("src.core.compatibility.engine.CompatibilityEngine.validate_workflow") as mock_engine:
         mock_report = MagicMock()
-        from src.core.compatibility.models import CompatibilityStatus
+        from drake.core.compatibility.models import CompatibilityStatus
         mock_report.status = CompatibilityStatus.BLOCK
         mock_report.findings = ["Malicious payload detected: Path Traversal"]
         mock_report.confidence_score = 100
@@ -82,7 +82,7 @@ async def test_2_malicious_payload_path_traversal(loaded_mcp):
 async def test_3_policy_violation_destructive_act(loaded_mcp):
     with patch("src.core.compatibility.engine.CompatibilityEngine.validate_workflow") as mock_engine:
         mock_report = MagicMock()
-        from src.core.compatibility.models import CompatibilityStatus
+        from drake.core.compatibility.models import CompatibilityStatus
         mock_report.status = CompatibilityStatus.BLOCK
         mock_report.confidence_score = 100
         mock_engine.return_value = mock_report

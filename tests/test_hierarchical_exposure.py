@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import patch, AsyncMock
 
-from src.proxy.server import mcp, expanded_tools_registry
-from src.core.database import init_db_sync, get_db_connection
+from drake.proxy.server import mcp, expanded_tools_registry
+from drake.core.database import init_db_sync, get_db_connection
 
 @pytest.fixture(autouse=True)
 def setup_db():
@@ -64,7 +64,7 @@ async def test_hierarchical_expansion_execution_and_cleanup():
 
     # 2. Test Expansion
     # Call the tool function directly for testing
-    from src.proxy.server import expand_workflow, collapse_workflow
+    from drake.proxy.server import expand_workflow, collapse_workflow
     
     import os
     with patch.dict(os.environ, {"DELL_EXECUTOR_TYPE": "mock"}):

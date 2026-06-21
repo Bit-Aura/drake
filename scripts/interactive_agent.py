@@ -243,7 +243,7 @@ async def interactive_loop():
 
     except Exception as e:
         print(f"\n[CRITICAL ERROR] Connection to FastMCP proxy failed: {e}")
-        print("Please ensure your proxy server is running (python -m uvicorn src.proxy.server:app --port 8000)")
+        print("Please ensure your proxy server is running (python -m uvicorn drake.proxy.server:app --port 8000)")
 
 if __name__ == "__main__":
     asyncio.run(interactive_loop())
