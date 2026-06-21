@@ -1,5 +1,5 @@
 import pytest
-from src.proxy.server import mcp
+from drake.proxy.server import mcp
 
 
 @pytest.mark.anyio

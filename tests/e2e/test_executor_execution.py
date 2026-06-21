@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock, AsyncMock
-from src.proxy.executors.httpx_executor import MockHTTPXExecutor
-from src.core.database import Workflow, EndpointStep
+from drake.proxy.executors.httpx_executor import MockHTTPXExecutor
+from drake.core.database import Workflow, EndpointStep
 
 
 @pytest.mark.anyio

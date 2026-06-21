@@ -1,5 +1,5 @@
-from src.parser.openapi_parser import OpenAPIParser
-from src.ai_clustering.graph_clustering import build_relationship_graph
+from drake.parser.openapi_parser import OpenAPIParser
+from drake.ai_clustering.graph_clustering import build_relationship_graph
 import os
 import tempfile
 import json

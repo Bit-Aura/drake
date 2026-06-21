@@ -1,8 +1,8 @@
 import pytest
 import httpx
 from unittest.mock import AsyncMock, MagicMock
-from src.core.compatibility.models import DeviceFacts
-from src.core.compatibility.sources import (
+from drake.core.compatibility.models import DeviceFacts
+from drake.core.compatibility.sources import (
     StaticFactsProvider,
     CachedFactsProvider,
     RedfishFactsProvider,

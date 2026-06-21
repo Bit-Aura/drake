@@ -3,9 +3,9 @@ import hashlib
 import numpy as np
 import networkx as nx
 from pathlib import Path
-from src.parser.openapi_parser import OpenAPIParser
-from src.ai_clustering.graph_clustering import detect_communities
-from src.core.database import save_endpoints, save_workflows, save_edges
+from drake.parser.openapi_parser import OpenAPIParser
+from drake.ai_clustering.graph_clustering import detect_communities
+from drake.core.database import save_endpoints, save_workflows, save_edges
 
 
 def benchmark():

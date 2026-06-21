@@ -1,5 +1,5 @@
 [project]
-name = "dell-mcp"
+name = "drake-mcp"
 version = "0.1.0"
 description = "Dell Enterprise MCP Workflow Proxy"
 requires-python = ">=3.10"
@@ -32,7 +32,7 @@ dependencies = [
 ]
 
 [project.scripts]
-drake = "src.cli.main:main"
+drake = "drake.cli.main:main"
 
 [dependency-groups]
 dev = [
@@ -66,6 +66,6 @@ requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["src*"]
+where = ["src"]
+include = ["drake*"]
 

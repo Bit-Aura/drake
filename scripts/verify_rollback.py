@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 from unittest.mock import patch, AsyncMock, MagicMock
 
-from src.core.database import (
+from drake.core.database import (
     async_session,
     init_db,
     init_db_sync,
@@ -12,7 +12,7 @@ from src.core.database import (
     EndpointStep,
     ExecutionHistory,
 )
-from src.proxy.server import execute_workflow_route, revert_previous_action
+from drake.proxy.server import execute_workflow_route, revert_previous_action
 
 
 async def verify_rollback():

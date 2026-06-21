@@ -12,7 +12,7 @@ def dummy_db():
     conn = sqlite3.connect(path)
     
     from sqlalchemy import create_engine
-    from src.core.database import Base
+    from drake.core.database import Base
     
     engine = create_engine(f"sqlite:///{path}")
     Base.metadata.create_all(engine)

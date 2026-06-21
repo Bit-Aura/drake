@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock
-from src.core.compatibility.models import (
+from drake.core.compatibility.models import (
     CapabilityInfo,
     CompatibilityDomain,
     RiskLevel,
@@ -9,7 +9,7 @@ from src.core.compatibility.models import (
     CompatibilityStatus,
     DeviceFacts,
 )
-from src.core.compatibility.repository import (
+from drake.core.compatibility.repository import (
     CompatibilityRepository,
     RiskProfileRepository,
     RiskProfileProvider,

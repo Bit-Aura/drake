@@ -13,11 +13,11 @@ from typing import Generator
 import pytest
 from fastapi.testclient import TestClient
 
-from src.ai_clustering.graph_clustering import (
+from drake.ai_clustering.graph_clustering import (
     build_relationship_graph,
     detect_communities,
 )
-from src.core.database import (
+from drake.core.database import (
     get_all_endpoints,
     get_db_connection,
     get_pipeline_statuses,
@@ -27,7 +27,7 @@ from src.core.database import (
     save_workflows,
     set_pipeline_status,
 )
-from src.proxy.api import app
+from drake.proxy.api import app
 
 
 @pytest.fixture(autouse=True)
@@ -250,7 +250,7 @@ def test_prometheus_metrics_endpoint() -> None:
 
 def test_export_workflow_ansible() -> None:
     """Validate Ansible Playbook export endpoint for a workflow."""
-    from src.core.database import save_workflows, get_db_connection
+    from drake.core.database import save_workflows, get_db_connection
     dummy_wfs = [
         {
             "id": "wf_ansible_test",

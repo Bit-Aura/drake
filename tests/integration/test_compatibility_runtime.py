@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from fastapi.testclient import TestClient
 from unittest.mock import patch, AsyncMock, MagicMock
 
-from src.core.database import (
+from drake.core.database import (
     get_db_connection,
     init_db_sync,
     save_endpoints,
@@ -12,9 +12,9 @@ from src.core.database import (
     async_session,
     EndpointStep
 )
-from src.proxy.api import app
-from src.core.compatibility.orchestrator import WorkflowExecutionManager, CompatibilityPolicyViolation
-from src.core.compatibility.models import CompatibilityStatus
+from drake.proxy.api import app
+from drake.core.compatibility.orchestrator import WorkflowExecutionManager, CompatibilityPolicyViolation
+from drake.core.compatibility.models import CompatibilityStatus
 
 
 @pytest.fixture(autouse=True)
@@ -201,7 +201,7 @@ async def test_runtime_policy_enforcement():
         manager = WorkflowExecutionManager()
         
         # Mocking the live facts lookup to return R750 with BIOS 2.12.0
-        from src.core.compatibility.models import DeviceFacts
+        from drake.core.compatibility.models import DeviceFacts
         mock_facts = DeviceFacts(
             target_ip="192.168.0.120",
             device_model="PowerEdge R750",

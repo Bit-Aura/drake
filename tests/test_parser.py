@@ -7,8 +7,8 @@ Tests for the OpenAPIParser class.
 from pathlib import Path
 import pytest
 
-from src.core.models import ContractA, EndpointContract
-from src.parser.openapi_parser import OpenAPIParser
+from drake.core.models import ContractA, EndpointContract
+from drake.parser.openapi_parser import OpenAPIParser
 
 
 class TestOpenAPIParser:
