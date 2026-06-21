@@ -8,6 +8,33 @@ from rich.markdown import Markdown
 
 _supports_unicode_cache = None
 
+DRAKE_BANNER = """[cyan]
+ ██████████   ███████████     █████████   █████   ████ ██████████
+░░███░░░░███ ░░███░░░░░███   ███░░░░░███ ░░███   ███░ ░░███░░░░░█
+ ░███   ░░███ ░███    ░███  ░███    ░███  ░███  ███    ░███  █ ░ 
+ ░███    ░███ ░██████████   ░███████████  ░███████     ░██████   
+ ░███    ░███ ░███░░░░░███  ░███░░░░░███  ░███░░███    ░███░░█   
+ ░███    ███  ░███    ░███  ░███    ░███  ░███ ░░███   ░███ ░   █
+ ██████████   █████   █████ █████   █████ █████ ░░████ ██████████
+░░░░░░░░░░   ░░░░░   ░░░░░ ░░░░░   ░░░░░ ░░░░░   ░░░░ ░░░░░░░░░░ 
+[/cyan]"""
+
+ASCII_BANNER = """[cyan]
+  ____  ____    _    _  _______ 
+ |  _ \\|  _ \\  / \\  | |/ / ____|
+ | | | | |_) |/ _ \\ | ' /|  _|  
+ | |_| |  _ </ ___ \\| . \\| |___ 
+ |____/|_| \\_\\_/   \\_\\_|\\_\\_____|
+[/cyan]"""
+
+def get_banner() -> str:
+    """Retrieve banner based on terminal capabilities."""
+    global _supports_unicode_cache
+    if _supports_unicode_cache is None:
+        get_symbols()
+    return DRAKE_BANNER if _supports_unicode_cache else ASCII_BANNER
+
+
 
 def get_symbols() -> dict[str, str]:
     """Retrieve symbols based on terminal capabilities."""

@@ -1,6 +1,6 @@
-# Dell Enterprise MCP Proxy - Infrastructure Command Center CLI (`dell-mcp`)
+# Dell Enterprise MCP Proxy - Infrastructure Command Center CLI (`drake`)
 
-The **Infrastructure Command Center CLI (`dell-mcp`)** is the primary operational control plane and administration utility for the Dell Enterprise MCP Proxy platform. 
+The **Infrastructure Command Center CLI (`drake`)** is the primary operational control plane and administration utility for the Dell Enterprise MCP Proxy platform. 
 
 It is designed for:
 *   **Infrastructure Engineers** managing bare-metal systems and server topologies.
@@ -19,7 +19,7 @@ The CLI is decoupled from the core business engines and repositories using a str
 ```mermaid
 flowchart TD
     subgraph Presentation Layer
-        A[Operator Console / shell] -->|dell-mcp CLI| B[Typer Main Router src/cli/main.py]
+        A[Operator Console / shell] -->|drake CLI| B[Typer Main Router src/cli/main.py]
         B -->|Command Group Router src/cli/commands/*| C[CLIContainer src/cli/container.py]
         C -->|Lazy Resolution| D[CLI Service Adapter src/cli/services/*]
     end
@@ -66,26 +66,26 @@ Initialize the virtual environment and install all dependencies:
 # Sync all platform virtual environment dependencies
 uv sync
 
-# Install the dell-mcp package in editable mode
+# Install the drake package in editable mode
 uv pip install -e .
 ```
 
 #### 4. Activate the Virtual Environment
-Activate the `uv`-managed virtual environment so that `dell-mcp` resolves to the correct venv binary:
+Activate the `uv`-managed virtual environment so that `drake` resolves to the correct venv binary:
 ```powershell
 # Windows (PowerShell) — run once per terminal session
 .venv\Scripts\Activate.ps1
 ```
 
-After activation, run bare `dell-mcp` commands directly:
+After activation, run bare `drake` commands directly:
 ```bash
-dell-mcp --help
+drake --help
 ```
 
 > **Alternative (no activation needed):** Prefix every command with `uv run`:
 > ```bash
-> uv run dell-mcp --help
-> uv run dell-mcp overview
+> uv run drake --help
+> uv run drake overview
 > ```
 
 > **Environment Variable:** Ensure the following variable is defined in your `.env` file:
@@ -102,16 +102,16 @@ Activate the virtual environment first, then run commands:
 .venv\Scripts\Activate.ps1
 
 # 2. Print global help instructions and subcommand catalog
-dell-mcp --help
+drake --help
 
 # 3. Render the executive control plane dashboard overview
-dell-mcp overview
+drake overview
 
 # 4. Verify subsystem readiness and health assessment matrix
-dell-mcp health
+drake health
 ```
 
-> **Or without activation:** prefix every command with `uv run dell-mcp ...`
+> **Or without activation:** prefix every command with `uv run drake ...`
 
 ---
 
@@ -123,98 +123,98 @@ The Command Center organizes operational tasks into specialized command groups:
 Manages AI clustering, OpenAPI integrations, and spec parsing.
 *   **`summary`**
     *   *Purpose*: Render clustering metrics and distribution data.
-    *   *Syntax*: `dell-mcp cluster summary`
+    *   *Syntax*: `drake cluster summary`
     *   *Example Output*: Prints total endpoints, Leiden clusters, and average confidence levels.
 *   **`graph`**
     *   *Purpose*: Display active relationship graphs of endpoints.
-    *   *Syntax*: `dell-mcp cluster graph`
+    *   *Syntax*: `drake cluster graph`
 *   **`run --spec <path>`**
     *   *Purpose*: Parse an OpenAPI specification file and regenerate workflow clusters.
-    *   *Syntax*: `dell-mcp cluster run --spec openapi.json`
+    *   *Syntax*: `drake cluster run --spec openapi.json`
 
 ### 2. `governance`
 Enforces human-in-the-loop review cycles for LLM-generated workflows.
 *   **`pending`**
     *   *Purpose*: List all workflows awaiting human approval.
-    *   *Syntax*: `dell-mcp governance pending`
+    *   *Syntax*: `drake governance pending`
 *   **`approved`**
     *   *Purpose*: List all certified/approved operational workflows.
-    *   *Syntax*: `dell-mcp governance approved`
+    *   *Syntax*: `drake governance approved`
 *   **`rejected`**
     *   *Purpose*: List workflows blocked or rejected by operators.
-    *   *Syntax*: `dell-mcp governance rejected`
+    *   *Syntax*: `drake governance rejected`
 *   **`review <workflow_id>`**
     *   *Purpose*: Inspect a workflow's details and constituent API steps.
-    *   *Syntax*: `dell-mcp governance review test_wf_1`
+    *   *Syntax*: `drake governance review test_wf_1`
 *   **`approve <workflow_id>`**
     *   *Purpose*: Approve a pending workflow, promoting it to an executable FastMCP tool.
-    *   *Syntax*: `dell-mcp governance approve test_wf_1`
+    *   *Syntax*: `drake governance approve test_wf_1`
 *   **`reject <workflow_id> --reason <text>`**
     *   *Purpose*: Reject a workflow and document the audit reason.
-    *   *Syntax*: `dell-mcp governance reject test_wf_1 --reason "Security validation failed"`
+    *   *Syntax*: `drake governance reject test_wf_1 --reason "Security validation failed"`
 
 ### 3. `compatibility`
 Pre-flight verification intelligence.
 *   **`validate <workflow_id> --target-ip <ip>`**
     *   *Purpose*: Validate workflow steps against target hardware.
-    *   *Syntax*: `dell-mcp compatibility validate test_wf_1 --target-ip 192.168.0.120`
+    *   *Syntax*: `drake compatibility validate test_wf_1 --target-ip 192.168.0.120`
 *   **`explain <workflow_id>`**
     *   *Purpose*: Render the DAG rules tree that evaluates the workflow.
-    *   *Syntax*: `dell-mcp compatibility explain test_wf_1`
+    *   *Syntax*: `drake compatibility explain test_wf_1`
 *   **`dashboard <workflow_id> --target-ip <ip>`**
     *   *Purpose*: Renders the decision cockpit (see flagship section below).
-    *   *Syntax*: `dell-mcp compatibility dashboard test_wf_1 --target-ip 192.168.0.120`
+    *   *Syntax*: `drake compatibility dashboard test_wf_1 --target-ip 192.168.0.120`
 *   **`rules`**
     *   *Purpose*: Print the active policies and compatibility rules catalog.
-    *   *Syntax*: `dell-mcp compatibility rules`
+    *   *Syntax*: `drake compatibility rules`
 *   **`device <ip>`**
     *   *Purpose*: Query stateful cached specifications for a datacenter node.
-    *   *Syntax*: `dell-mcp compatibility device 192.168.0.120`
+    *   *Syntax*: `drake compatibility device 192.168.0.120`
 
 ### 4. `runtime`
 Controls the FastMCP integration hooks.
 *   **`tools`**
     *   *Purpose*: List currently exposed FastMCP tools ready for client consumption.
-    *   *Syntax*: `dell-mcp runtime tools`
+    *   *Syntax*: `drake runtime tools`
 *   **`reload`**
     *   *Purpose*: Trigger hot-reloads to refresh tool mappings from database states.
-    *   *Syntax*: `dell-mcp runtime reload`
+    *   *Syntax*: `drake runtime reload`
 *   **`execute <tool_name> --params <json>`**
     *   *Purpose*: Manually invoke a registered workflow.
-    *   *Syntax*: `dell-mcp runtime execute test_workflow --params '{"sys_id": 1}'`
+    *   *Syntax*: `drake runtime execute test_workflow --params '{"sys_id": 1}'`
 
 ### 5. `ansible`
 Exports workflow logic to infrastructure-as-code files.
 *   **`preview <workflow_id>`**
     *   *Purpose*: Render syntax-highlighted playbook configurations directly on the console.
-    *   *Syntax*: `dell-mcp ansible preview test_wf_1`
+    *   *Syntax*: `drake ansible preview test_wf_1`
 *   **`export <workflow_id> --output <path>`**
     *   *Purpose*: Export enriched playbooks directly to files.
-    *   *Syntax*: `dell-mcp ansible export test_wf_1 --output playbooks/deploy.yml`
+    *   *Syntax*: `drake ansible export test_wf_1 --output playbooks/deploy.yml`
 
 ### 6. `audit`
 Exposes the compliance history ledger.
 *   **`events`**
     *   *Purpose*: List administrative events, modifications, and approvals.
-    *   *Syntax*: `dell-mcp audit events`
+    *   *Syntax*: `drake audit events`
 *   **`executions`**
     *   *Purpose*: Print workflow runs, durations, status codes, and targets.
-    *   *Syntax*: `dell-mcp audit executions`
+    *   *Syntax*: `drake audit executions`
 *   **`summary`**
     *   *Purpose*: Present compliance summaries and error trends.
-    *   *Syntax*: `dell-mcp audit summary`
+    *   *Syntax*: `drake audit summary`
 
 ### 7. `system`
 Prints operational topology data.
 *   **`topology`**
     *   *Purpose*: Display the system dependencies tree.
-    *   *Syntax*: `dell-mcp system topology`
+    *   *Syntax*: `drake system topology`
 
 ### 8. `diagnostics`
 Evaluates internal health checks.
 *   **`db`** / **`api`** / **`compatibility`** / **`runtime`**
     *   *Purpose*: Troubleshoot connections to database files, REST endpoints, and facts caches.
-    *   *Syntax*: `dell-mcp diagnostics db`
+    *   *Syntax*: `drake diagnostics db`
 
 ---
 
@@ -223,7 +223,7 @@ Evaluates internal health checks.
 The **Compatibility Cockpit** provides a single Go/No-Go verdict before executing any workflow on target hardware:
 
 ```bash
-dell-mcp compatibility dashboard <workflow_id> --target-ip <ip>
+drake compatibility dashboard <workflow_id> --target-ip <ip>
 ```
 
 ### Cockpit Panels
@@ -245,7 +245,7 @@ dell-mcp compatibility dashboard <workflow_id> --target-ip <ip>
 To support scripting, automation pipeline runs, and DevOps integration, every CLI command supports the `--json` flag:
 
 ```bash
-dell-mcp --json compatibility dashboard test_wf_1 --target-ip 192.168.0.120
+drake --json compatibility dashboard test_wf_1 --target-ip 192.168.0.120
 ```
 
 When `--json` is enabled:
@@ -260,8 +260,8 @@ When `--json` is enabled:
 Monitor executive statuses or health assessment matrices in real-time using watch flags:
 
 ```bash
-dell-mcp overview --watch --interval 2
-dell-mcp health --watch
+drake overview --watch --interval 2
+drake health --watch
 ```
 
 *   **`--watch`**: Toggles live loop.
@@ -290,7 +290,7 @@ app = typer.Typer(help="Manage switch network configurations")
 def show_switch_status():
     print("Switch connections operational.")
 ```
-The CLI automatically loads this, making the command `dell-mcp network_config show` immediately available.
+The CLI automatically loads this, making the command `drake network_config show` immediately available.
 
 ### Failure Isolation
 If a plugin raises an exception during import or initialization:
@@ -322,23 +322,23 @@ Operations that alter states (e.g. `governance approve`, `governance reject`) wr
     ```
 
 ### Packaging Script Location Error (`ModuleNotFoundError`)
-*   *Symptom*: Running `dell-mcp` raises `ModuleNotFoundError: No module named 'src'`.
-*   *Cause*: The bare `dell-mcp` command resolves to a system-level Python install that does not have access to the project source tree. This happens when the virtual environment is not activated.
+*   *Symptom*: Running `drake` raises `ModuleNotFoundError: No module named 'src'`.
+*   *Cause*: The bare `drake` command resolves to a system-level Python install that does not have access to the project source tree. This happens when the virtual environment is not activated.
 *   *Resolution (preferred)*: Activate the `uv` virtual environment before running any commands:
     ```powershell
     .venv\Scripts\Activate.ps1
-    dell-mcp --help
+    drake --help
     ```
 *   *Resolution (alternative)*: Use `uv run` to automatically route through the correct venv:
     ```bash
-    uv run dell-mcp --help
-    uv run dell-mcp health
+    uv run drake --help
+    uv run drake health
     ```
 
 ### SQLite Database Locks
 *   *Symptom*: Actions time out or fail with database locks.
 *   *Cause*: Concurrent operations on SQLite files during long-running tasks.
-*   *Resolution*: Run `dell-mcp diagnostics db` to check connection status. Ensure the microservice FastAPI server is running with WAL journal modes.
+*   *Resolution*: Run `drake diagnostics db` to check connection status. Ensure the microservice FastAPI server is running with WAL journal modes.
 
 ---
 
@@ -348,35 +348,35 @@ Operations that alter states (e.g. `governance approve`, `governance reject`) wr
 Verify global status and watch for changes during maintenance windows:
 ```bash
 $env:PYTHONIOENCODING="utf-8"
-dell-mcp health
-dell-mcp overview --watch --interval 10
+drake health
+drake overview --watch --interval 10
 ```
 
 ### Workflow 2: Safe Pre-Flight Validation & Approval
 Review a workflow generated by clustering, validate it against target hardware, and approve it:
 ```bash
 # 1. List pending LLM workflows
-dell-mcp governance pending
+drake governance pending
 
 # 2. Inspect step details
-dell-mcp governance review test_wf_1
+drake governance review test_wf_1
 
 # 3. Perform pre-flight compatibility evaluation cockpit
-dell-mcp compatibility dashboard test_wf_1 --target-ip 192.168.0.120
+drake compatibility dashboard test_wf_1 --target-ip 192.168.0.120
 
 # 4. Approve workflow
-dell-mcp governance approve test_wf_1
+drake governance approve test_wf_1
 ```
 
 ### Workflow 3: IaC Automation Export
 Validate a workflow and export it to an enriched Ansible playbook for target datacenter node setups:
 ```bash
 # 1. Verify compatibility
-dell-mcp compatibility validate test_wf_1 --target-ip 192.168.0.120
+drake compatibility validate test_wf_1 --target-ip 192.168.0.120
 
 # 2. Preview playbooks syntax
-dell-mcp ansible preview test_wf_1
+drake ansible preview test_wf_1
 
 # 3. Export playbook to target directory
-dell-mcp ansible export test_wf_1 --output playbooks/idrac_setup.yml
+drake ansible export test_wf_1 --output playbooks/idrac_setup.yml
 ```

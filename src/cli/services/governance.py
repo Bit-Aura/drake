@@ -51,7 +51,7 @@ class GovernanceCLIService:
                         title="Workflow Not Found",
                         cause=f"ID '{workflow_id}' does not match any database record.",
                         impact="Detailed step audit cannot be displayed.",
-                        action="Check target workflow ID using 'dell-mcp governance pending'.",
+                        action="Check target workflow ID using 'drake governance pending'.",
                     )
                 steps_data = []
                 for s in wf.steps:

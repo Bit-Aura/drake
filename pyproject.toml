@@ -25,7 +25,7 @@ dependencies = [
 ]
 
 [project.scripts]
-dell-mcp = "src.cli.main:main"
+drake = "src.cli.main:main"
 
 [dependency-groups]
 dev = [
