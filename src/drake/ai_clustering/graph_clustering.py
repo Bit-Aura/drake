@@ -276,8 +276,9 @@ def detect_communities(G: nx.Graph) -> List[Set[str]]:
 
         partition = leidenalg.find_partition(
             g_ig,
-            leidenalg.ModularityVertexPartition,
+            leidenalg.RBConfigurationVertexPartition,
             weights="weight",
+            resolution_parameter=2.5,
             n_iterations=-1,
             seed=42,
         )
