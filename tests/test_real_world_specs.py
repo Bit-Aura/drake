@@ -1,6 +1,6 @@
 from pathlib import Path
-from src.cli.services.cluster import ClusterCLIService
-from src.core.models import ContractA
+from drake.cli.services.cluster import ClusterCLIService
+from drake.core.models import ContractA
 from unittest.mock import patch
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures" / "real_world_specs"

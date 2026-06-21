@@ -1,8 +1,8 @@
 import time
 import os
 import logging
-from src.parser.openapi_parser import OpenAPIParser
-from src.ai_clustering.graph_clustering import build_relationship_graph, detect_communities
+from drake.parser.openapi_parser import OpenAPIParser
+from drake.ai_clustering.graph_clustering import build_relationship_graph, detect_communities
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("Benchmark")

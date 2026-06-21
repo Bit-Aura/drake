@@ -1,6 +1,6 @@
 import os
 from fastapi.testclient import TestClient
-from src.proxy.api import app
+from drake.proxy.api import app
 from unittest.mock import patch, AsyncMock, MagicMock
 
 client = TestClient(app)

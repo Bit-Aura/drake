@@ -223,9 +223,9 @@ Write-Host '=====================================================' -ForegroundCo
 Write-Host '            DELL DRAKE BACKEND PROXY SERVER' -ForegroundColor Cyan;
 Write-Host '=====================================================' -ForegroundColor Cyan;
 if (Test-Path ".venv\Scripts\python.exe") {
-    & .venv\Scripts\python.exe -m uvicorn src.proxy.server:app --port 8001 --host 127.0.0.1
+    & .venv\Scripts\python.exe -m uvicorn drake.proxy.server:app --port 8001 --host 127.0.0.1
 } else {
-    python -m uvicorn src.proxy.server:app --port 8001 --host 127.0.0.1
+    python -m uvicorn drake.proxy.server:app --port 8001 --host 127.0.0.1
 }
 Read-Host 'Press Enter to exit'
 "@

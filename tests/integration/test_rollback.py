@@ -3,15 +3,15 @@ import datetime
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from src.ai_clustering.schemas.workflow import Workflow as WorkflowSchema
-from src.core.database import (
+from drake.ai_clustering.schemas.workflow import Workflow as WorkflowSchema
+from drake.core.database import (
     async_session,
     init_db,
     Workflow,
     ExecutionHistory,
 )
-from src.proxy.executors.workflow_execution_service import WorkflowExecutionService
-from src.proxy.server import revert_previous_action
+from drake.proxy.executors.workflow_execution_service import WorkflowExecutionService
+from drake.proxy.server import revert_previous_action
 
 
 @pytest.mark.anyio

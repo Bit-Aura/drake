@@ -1,6 +1,6 @@
 import pytest
 import sqlite3
-from src.core.database import DB_FILE, init_db_sync, save_workflows
+from drake.core.database import DB_FILE, init_db_sync, save_workflows
 
 
 @pytest.fixture

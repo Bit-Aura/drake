@@ -3,9 +3,9 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from unittest.mock import patch, MagicMock, AsyncMock
 
-from src.proxy.api import app
-from src.core.database import init_db_sync, get_db_connection
-from src.core.models import WorkflowMapping, WorkflowStep
+from drake.proxy.api import app
+from drake.core.database import init_db_sync, get_db_connection
+from drake.core.models import WorkflowMapping, WorkflowStep
 
 
 @pytest.fixture(autouse=True)

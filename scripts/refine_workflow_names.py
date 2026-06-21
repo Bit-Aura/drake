@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from src.core.database import engine
+from drake.core.database import engine
 from sqlalchemy import text
 
 logging.basicConfig(level=logging.INFO)
@@ -11,7 +11,7 @@ async def refine_workflow_names():
     Background worker that queries unapproved workflows, generates LLM names via Ollama,
     and updates the database without blocking the main clustering pipeline.
     """
-    from src.ai_clustering.ollama_service import OllamaService
+    from drake.ai_clustering.ollama_service import OllamaService
     
     try:
         service = OllamaService()

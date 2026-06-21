@@ -1,4 +1,4 @@
-from src.ai_clustering.graph_clustering import build_relationship_graph, detect_communities
+from drake.ai_clustering.graph_clustering import build_relationship_graph, detect_communities
 
 def make_endpoint(method: str, url: str, operation_id: str, tags: list[str]) -> dict:
     return {

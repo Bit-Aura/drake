@@ -3,8 +3,8 @@ import asyncio
 from fastapi.testclient import TestClient
 from sqlalchemy import select, delete
 
-from src.core.database import async_session, Workflow, EndpointStep
-from src.proxy.server import app, mcp
+from drake.core.database import async_session, Workflow, EndpointStep
+from drake.proxy.server import app, mcp
 
 
 def test_workflow_lifecycle_and_reload():
