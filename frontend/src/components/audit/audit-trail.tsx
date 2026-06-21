@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import * as Select from "@radix-ui/react-select";
+import { Check, ChevronDown, Filter } from "lucide-react";
 
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
@@ -86,22 +88,49 @@ export function AuditTrail() {
           placeholder="Search by workflow, actor, or description"
           value={search}
         />
-        <label className="flex items-center gap-2 text-sm text-slate-600">
-          <span className="whitespace-nowrap">Event type</span>
-          <select
-            className="h-9 rounded-md border border-slate-300 bg-white px-2 text-sm"
-            onChange={(event) =>
-              setEventFilter(event.target.value as (typeof eventTypes)[number])
-            }
-            value={eventFilter}
-          >
-            {eventTypes.map((type) => (
-              <option key={type} value={type}>
-                {type === "all" ? "All events" : type.replaceAll("_", " ")}
-              </option>
-            ))}
-          </select>
-        </label>
+        <Select.Root
+          value={eventFilter}
+          onValueChange={(value) => setEventFilter(value as (typeof eventTypes)[number])}
+        >
+          <Select.Trigger className="flex h-10 w-[220px] items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-slate-400" />
+              <Select.Value />
+            </div>
+            <Select.Icon>
+              <ChevronDown className="h-4 w-4 text-slate-400" />
+            </Select.Icon>
+          </Select.Trigger>
+
+          <Select.Portal>
+            <Select.Content
+              position="popper"
+              sideOffset={4}
+              className="z-50 w-[220px] overflow-hidden rounded-xl border border-slate-100 bg-white text-slate-700 shadow-lg"
+            >
+              <Select.Viewport className="p-1">
+                {eventTypes.map((type) => (
+                  <Select.Item
+                    key={type}
+                    value={type}
+                    className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-9 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-900 transition-colors"
+                  >
+                    <Select.ItemText>
+                      <span className="capitalize">
+                        {type === "all" ? "All events" : type.replaceAll("_", " ")}
+                      </span>
+                    </Select.ItemText>
+                    <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+                      <Select.ItemIndicator>
+                        <Check className="h-4 w-4" />
+                      </Select.ItemIndicator>
+                    </span>
+                  </Select.Item>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
       </div>
 
       {!filteredEvents.length ? (
