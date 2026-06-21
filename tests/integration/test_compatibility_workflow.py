@@ -600,7 +600,7 @@ async def test_orchestrator_auto_live_refresh_failure(monkeypatch):
         match="confidence score .* is below policy threshold",
     ):
         await manager.execute_workflow_with_validation(
-            "refresh_fail_wf", {"target_ip": "1.1.1.8"}, policy="WARN_ONLY"
+            "refresh_fail_wf", {"target_ip": "1.1.1.8"}, policy="STRICT"
         )
 
 
