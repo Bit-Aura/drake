@@ -9,8 +9,16 @@ import {
   AtomieSparkleIcon,
 } from "./custom-icons";
 
-export function AtomieNode({ data, selected }: any) {
-  const { label, method, communityColor, isCommunityNode, communitySize } = data;
+interface AtomieNodeData {
+  label?: string;
+  method?: string;
+  isCommunityNode?: boolean;
+  communitySize?: number;
+  [key: string]: unknown;
+}
+
+export function AtomieNode({ data, selected }: { data: AtomieNodeData; selected: boolean }) {
+  const { label, method, isCommunityNode, communitySize } = data;
 
   // Determine icon based on HTTP method or type
   let Icon = AtomieBubbleIcon;

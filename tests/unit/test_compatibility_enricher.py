@@ -1,4 +1,4 @@
-from src.core.compatibility.ansible_enricher import AnsiblePlaybookEnricher
+from drake.core.compatibility.ansible_enricher import AnsiblePlaybookEnricher
 
 
 # Mock step helpers

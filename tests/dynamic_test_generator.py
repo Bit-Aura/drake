@@ -1,7 +1,6 @@
 import os
 import sqlite3
 import logging
-from typing import List, Dict
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -14,12 +13,12 @@ import pytest
 import os
 from unittest.mock import patch, MagicMock, call
 
-from src.proxy.server import mcp
-from src.proxy.executors.httpx_executor import _execution_cache, _cache_lock
+from drake.proxy.server import mcp
+from drake.proxy.executors.httpx_executor import _execution_cache, _cache_lock
 
 @pytest.mark.asyncio
 async def test_generated_workflow_{workflow_id}_execution():
-    from src.proxy.server import load_approved_tools_from_db
+    from drake.proxy.server import load_approved_tools_from_db
     await load_approved_tools_from_db()
     with patch("httpx.AsyncClient.request") as mock_request:
         # Mock Response

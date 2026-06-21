@@ -1,13 +1,11 @@
 import pytest
 import pytest_asyncio
-import json
 import os
 import hashlib
-import re
 from unittest.mock import patch, AsyncMock
 
-from src.proxy.server import app, mcp, expanded_tools_registry, expand_workflow, collapse_workflow
-from src.core.database import init_db_sync, get_db_connection
+from drake.proxy.server import mcp, expanded_tools_registry, expand_workflow
+from drake.core.database import init_db_sync, get_db_connection
 
 @pytest_asyncio.fixture(autouse=True)
 async def setup_and_teardown_db():

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, GitBranch, GitMerge, Pencil, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Check,  GitMerge, Pencil, X, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 

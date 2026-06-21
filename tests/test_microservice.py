@@ -1,9 +1,10 @@
+import os
 import asyncio
 from fastapi.testclient import TestClient
 from sqlalchemy import select, delete
 
-from src.core.database import async_session, Workflow, EndpointStep
-from src.proxy.server import app, mcp
+from drake.core.database import async_session, Workflow, EndpointStep
+from drake.proxy.server import app, mcp
 
 
 def test_workflow_lifecycle_and_reload():
@@ -72,7 +73,7 @@ def test_workflow_lifecycle_and_reload():
         # 2. Approve test_wf_1 via REST endpoint
         response = client.post(
             "/api/v1/workflows/test_wf_1/approve",
-            headers={"X-API-Key": "default_dev_key"},
+            headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
         )
         assert response.status_code == 200
         assert response.json() == {
@@ -83,7 +84,7 @@ def test_workflow_lifecycle_and_reload():
         response = client.post(
             "/api/v1/workflows/test_wf_2/reject",
             json={"reason": "test rejection"},
-            headers={"X-API-Key": "default_dev_key"},
+            headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
         )
         assert response.status_code == 200
         assert response.json() == {
@@ -111,7 +112,7 @@ def test_workflow_lifecycle_and_reload():
         # 4. Trigger /api/v1/mcp/reload to register approved tools dynamically
         response = client.post(
             "/api/v1/mcp/reload",
-            headers={"X-API-Key": "default_dev_key"},
+            headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
         )
         assert response.status_code == 200
         reload_data = response.json()

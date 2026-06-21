@@ -1,12 +1,11 @@
 import pytest
 import asyncio
-import os
 import datetime
 from unittest.mock import patch, MagicMock, AsyncMock
 
 @pytest.fixture(autouse=True)
 def setup_concurrency_db():
-    from src.core.database import init_db_sync, get_db_connection
+    from drake.core.database import init_db_sync, get_db_connection
     init_db_sync()
     with get_db_connection() as conn:
         conn.execute("DELETE FROM workflows")
@@ -25,7 +24,7 @@ def setup_concurrency_db():
 
 @pytest.mark.asyncio
 async def test_1_concurrent_expansion_race_condition():
-    from src.proxy.server import expand_workflow, expanded_tools_registry
+    from drake.proxy.server import expand_workflow, expanded_tools_registry
     
     # Ensure starting clean
     if "wf_race" in expanded_tools_registry:
@@ -42,7 +41,7 @@ async def test_1_concurrent_expansion_race_condition():
 
 @pytest.mark.asyncio
 async def test_2_get_cache_race_condition():
-    from src.proxy.executors.httpx_executor import MockExecutor, _execution_cache, _pending_requests
+    from drake.proxy.executors.httpx_executor import MockExecutor, _execution_cache, _pending_requests
     _execution_cache.clear()
     _pending_requests.clear()
     
@@ -77,10 +76,10 @@ async def test_2_get_cache_race_condition():
 @pytest.mark.asyncio
 async def test_3_infinite_workflow_loop_detection():
     # Simulate a cyclic dependency detector in the execution engine
-    from src.proxy.executors.httpx_executor import MockExecutor
-    from src.core.exceptions import DellProxyExecutionError
+    from drake.proxy.executors.httpx_executor import MockExecutor
+    from drake.core.exceptions import DellProxyExecutionError
     
-    executor = MockExecutor()
+    MockExecutor()
     
     visited = set()
     

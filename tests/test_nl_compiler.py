@@ -1,11 +1,11 @@
+import os
 import pytest
 from httpx import AsyncClient, ASGITransport
-import json
 from unittest.mock import patch, MagicMock, AsyncMock
 
-from src.proxy.api import app
-from src.core.database import init_db_sync, get_db_connection
-from src.core.models import WorkflowMapping, WorkflowStep
+from drake.proxy.api import app
+from drake.core.database import init_db_sync, get_db_connection
+from drake.core.models import WorkflowMapping, WorkflowStep
 
 
 @pytest.fixture(autouse=True)
@@ -48,7 +48,7 @@ async def test_generate_from_nl_success():
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             response = await ac.post(
                 "/api/v1/workflows/generate-from-nl",
-                headers={"X-API-Key": "default_dev_key"},
+                headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
                 json={"prompt": "Check server health and then update firmware if health is good"}
             )
             
@@ -81,7 +81,7 @@ async def test_generate_from_nl_failure():
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             response = await ac.post(
                 "/api/v1/workflows/generate-from-nl",
-                headers={"X-API-Key": "default_dev_key"},
+                headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
                 json={"prompt": "Fail prompt"}
             )
             

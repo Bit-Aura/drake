@@ -67,5 +67,10 @@ yarn-error.log*
 .pip_temp/
 
 # SQLite temporary files
+*.db
 *.db-shm
 *.db-wal
+
+# Data files
+data/output/snapshots/
+data/governance.db

@@ -26,14 +26,16 @@ def test_endpoint_properties_extracted_correctly(parser_pipeline):
 
 def test_invalid_openapi_rejected(parser_pipeline):
     """4. Invalid OpenAPI specs are rejected"""
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as exc_info:
         parser_pipeline.load_spec("invalid_spec.json")
+    assert 'invalid' in str(exc_info.value).lower() or 'empty' in str(exc_info.value).lower()
 
 
 def test_empty_openapi_rejected(parser_pipeline):
     """5. Empty OpenAPI specs are rejected"""
-    with pytest.raises(Exception):
+    with pytest.raises(Exception) as exc_info:
         parser_pipeline.load_spec("empty_spec.json")
+    assert 'invalid' in str(exc_info.value).lower() or 'empty' in str(exc_info.value).lower()
 
 
 def test_endpoint_count_matches_spec(parser_pipeline, mock_openapi_spec_count):

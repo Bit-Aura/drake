@@ -6,17 +6,18 @@ Validates database operations, graph-based community detection, and FastAPI rout
 """
 
 from __future__ import annotations
+import os
 
 from typing import Generator
 
 import pytest
 from fastapi.testclient import TestClient
 
-from src.ai_clustering.graph_clustering import (
+from drake.ai_clustering.graph_clustering import (
     build_relationship_graph,
     detect_communities,
 )
-from src.core.database import (
+from drake.core.database import (
     get_all_endpoints,
     get_db_connection,
     get_pipeline_statuses,
@@ -26,7 +27,7 @@ from src.core.database import (
     save_workflows,
     set_pipeline_status,
 )
-from src.proxy.api import app
+from drake.proxy.api import app
 
 
 @pytest.fixture(autouse=True)
@@ -99,6 +100,13 @@ def test_endpoint_and_workflow_persistence() -> None:
 
 
 def test_relationship_graph_and_communities() -> None:
+    try:
+        import leidenalg
+        import sentence_transformers
+    except ImportError:
+        import pytest
+        pytest.skip("Missing clustering dependencies")
+
     """Validate NetworkX graph construction and community detection."""
     endpoints = [
         {
@@ -186,7 +194,7 @@ def test_fastapi_endpoints() -> None:
             "workflowName": "edited_systems_workflow",
             "generatedDescription": "Edited description",
         },
-        headers={"X-API-Key": "default_dev_key"},
+        headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
     )
     assert response.status_code == 200
     updated_wf = response.json()
@@ -197,7 +205,7 @@ def test_fastapi_endpoints() -> None:
     # 4. Test Approve Workflow POST
     response = client.post(
         "/api/v1/workflows/wf_1/approve",
-        headers={"X-API-Key": "default_dev_key"},
+        headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
     )
     assert response.status_code == 200
     assert response.json()["status"] == "approved"
@@ -242,7 +250,7 @@ def test_prometheus_metrics_endpoint() -> None:
 
 def test_export_workflow_ansible() -> None:
     """Validate Ansible Playbook export endpoint for a workflow."""
-    from src.core.database import save_workflows, get_db_connection
+    from drake.core.database import save_workflows, get_db_connection
     dummy_wfs = [
         {
             "id": "wf_ansible_test",

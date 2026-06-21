@@ -76,7 +76,7 @@ async def run_end_to_end():
     print("\n[2] Triggering MCP Proxy tools reload via API...")
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            "http://localhost:8000/api/v1/mcp/reload",
+            "http://127.0.0.1:8001/api/v1/mcp/reload",
             headers={"X-API-Key": "default_dev_key"},
             timeout=10.0
         )
@@ -88,7 +88,7 @@ async def run_end_to_end():
 
     # 3. Establish SSE Client connection to FastMCP proxy server
     print("\n[3] Connecting to the running FastMCP Proxy server via SSE...")
-    async with sse_client("http://localhost:8000/mcp/sse") as (read_stream, write_stream):
+    async with sse_client("http://127.0.0.1:8001/mcp/sse") as (read_stream, write_stream):
         async with ClientSession(read_stream, write_stream) as session:
             await session.initialize()
             print("  -> Session initialized successfully.")

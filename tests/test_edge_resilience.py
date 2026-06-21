@@ -51,7 +51,7 @@ async def test_2_llm_timeout_and_invalid_json():
 
 @pytest.mark.asyncio
 async def test_3_downstream_rate_limiting_mid_step():
-    from src.proxy.executors.httpx_executor import MockExecutor
+    from drake.proxy.executors.httpx_executor import MockExecutor
     from unittest.mock import AsyncMock
     import httpx
     

@@ -1,5 +1,5 @@
 import sqlite3
-from src.ai_clustering.dependency_matcher import build_execution_dag
+from drake.ai_clustering.dependency_matcher import build_execution_dag
 
 def run():
     conn = sqlite3.connect('data/governance.db')

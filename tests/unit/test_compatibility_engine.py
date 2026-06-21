@@ -1,14 +1,14 @@
 import pytest
 import networkx as nx
 from datetime import datetime, timezone
-from src.core.compatibility.models import (
+from drake.core.compatibility.models import (
     DeviceFacts,
     CompatibilityDomain,
     RiskLevel,
     CompatibilityStatus,
     CapabilityInfo,
 )
-from src.core.compatibility.engine import (
+from drake.core.compatibility.engine import (
     compare_versions,
     DependencyGraphEngine,
     CompatibilityEngine,
@@ -200,8 +200,8 @@ def test_dependency_graph_engine():
 
 @pytest.mark.asyncio
 async def test_risk_profile_provider():
-    from src.core.compatibility.repository import RiskProfileProvider
-    from src.core.compatibility.models import CapabilityInfo
+    from drake.core.compatibility.repository import RiskProfileProvider
+    from drake.core.compatibility.models import CapabilityInfo
 
     class MockRiskRepo:
         async def get_profile(self, profile_id):
@@ -225,7 +225,7 @@ async def test_risk_profile_provider():
 
 @pytest.mark.asyncio
 async def test_capability_discovery_service():
-    from src.core.compatibility.engine import CapabilityDiscoveryService
+    from drake.core.compatibility.engine import CapabilityDiscoveryService
 
     class MockRepo:
         def __init__(self):
@@ -258,7 +258,7 @@ async def test_capability_discovery_service():
 
 @pytest.mark.asyncio
 async def test_blast_radius_engine():
-    from src.core.compatibility.engine import BlastRadiusEngine
+    from drake.core.compatibility.engine import BlastRadiusEngine
 
     class MockRepo:
         async def get_dependencies(self):
@@ -477,7 +477,7 @@ async def test_compatibility_engine_scoring_and_verdicts():
             return []
 
         async def get_capability_by_operation(self, op_id) -> CapabilityInfo:
-            from src.core.compatibility.models import CapabilityInfo
+            from drake.core.compatibility.models import CapabilityInfo
 
             domain = (
                 CompatibilityDomain.BIOS
@@ -541,7 +541,7 @@ def test_dependency_graph_engine_dag_traversals():
 
 @pytest.mark.asyncio
 async def test_blast_radius_engine_escalation():
-    from src.core.compatibility.engine import BlastRadiusEngine
+    from drake.core.compatibility.engine import BlastRadiusEngine
 
     class MockRepo:
         async def get_dependencies(self):
@@ -564,8 +564,8 @@ async def test_blast_radius_engine_escalation():
 
 @pytest.mark.asyncio
 async def test_explainability_graph_generation():
-    from src.core.compatibility.engine import DependencyGraphEngine
-    from src.core.compatibility.models import GovernanceExplainabilityReport
+    from drake.core.compatibility.engine import DependencyGraphEngine
+    from drake.core.compatibility.models import GovernanceExplainabilityReport
 
     # Mock Dependency Graph
     G = nx.DiGraph()
@@ -595,7 +595,7 @@ async def test_explainability_graph_generation():
 
 @pytest.mark.asyncio
 async def test_capability_discovery_service_branches():
-    from src.core.compatibility.engine import CapabilityDiscoveryService
+    from drake.core.compatibility.engine import CapabilityDiscoveryService
 
     # Mock repository returning existing override or None
     class MockRepo:
@@ -609,7 +609,7 @@ async def test_capability_discovery_service_branches():
             pass
 
     # Test override path
-    from src.core.compatibility.models import CapabilityInfo
+    from drake.core.compatibility.models import CapabilityInfo
 
     override_cap = CapabilityInfo(
         operation_id="op_override",
@@ -761,8 +761,8 @@ async def test_capability_discovery_service_branches():
 
 @pytest.mark.asyncio
 async def test_capability_discovery_service_save_candidate():
-    from src.core.compatibility.engine import CapabilityDiscoveryService
-    from src.core.compatibility.models import CapabilityInfo
+    from drake.core.compatibility.engine import CapabilityDiscoveryService
+    from drake.core.compatibility.models import CapabilityInfo
     from unittest.mock import AsyncMock, MagicMock
 
     # Setup database mocks
@@ -809,7 +809,7 @@ async def test_capability_discovery_service_save_candidate():
 
 @pytest.mark.asyncio
 async def test_blast_radius_cross_links():
-    from src.core.compatibility.engine import BlastRadiusEngine
+    from drake.core.compatibility.engine import BlastRadiusEngine
 
     # MockRepo with get_dependencies returning > 5 edges
     class MockRepo:
@@ -833,7 +833,7 @@ async def test_blast_radius_cross_links():
 
 @pytest.mark.asyncio
 async def test_dependency_graph_build_dag():
-    from src.core.compatibility.engine import DependencyGraphEngine
+    from drake.core.compatibility.engine import DependencyGraphEngine
 
     class MockRepo:
         async def get_active_rules(self):
@@ -855,7 +855,7 @@ async def test_dependency_graph_build_dag():
 
 
 def test_dependency_graph_mermaid_degree_zero():
-    from src.core.compatibility.engine import DependencyGraphEngine
+    from drake.core.compatibility.engine import DependencyGraphEngine
     import networkx as nx
 
     engine = DependencyGraphEngine(None)
@@ -867,7 +867,7 @@ def test_dependency_graph_mermaid_degree_zero():
 
 
 def test_dependency_graph_build_operations_dag():
-    from src.core.compatibility.engine import DependencyGraphEngine
+    from drake.core.compatibility.engine import DependencyGraphEngine
 
     engine = DependencyGraphEngine(None)
     active_rules = [
@@ -887,7 +887,7 @@ def test_dependency_graph_build_operations_dag():
 
 
 def test_dependency_graph_verify_execution_order():
-    from src.core.compatibility.engine import DependencyGraphEngine
+    from drake.core.compatibility.engine import DependencyGraphEngine
     import networkx as nx
 
     engine = DependencyGraphEngine(None)
@@ -916,8 +916,8 @@ def test_dependency_graph_verify_execution_order():
 
 @pytest.mark.asyncio
 async def test_compatibility_engine_dependency_ordering_and_safety():
-    from src.core.compatibility.engine import CompatibilityEngine
-    from src.core.compatibility.models import DeviceFacts, CompatibilityStatus
+    from drake.core.compatibility.engine import CompatibilityEngine
+    from drake.core.compatibility.models import DeviceFacts, CompatibilityStatus
     from datetime import datetime, timezone
 
     class MockRepo:
@@ -947,7 +947,7 @@ async def test_compatibility_engine_dependency_ordering_and_safety():
             ]
 
         async def get_capability_by_operation(self, op_id):
-            from src.core.compatibility.models import CapabilityInfo
+            from drake.core.compatibility.models import CapabilityInfo
 
             return CapabilityInfo(
                 operation_id=op_id,
@@ -992,8 +992,8 @@ async def test_compatibility_engine_dependency_ordering_and_safety():
 
 @pytest.mark.asyncio
 async def test_compatibility_engine_confidence_cache_staleness():
-    from src.core.compatibility.engine import CompatibilityEngine
-    from src.core.compatibility.models import DeviceFacts
+    from drake.core.compatibility.engine import CompatibilityEngine
+    from drake.core.compatibility.models import DeviceFacts
     from datetime import datetime, timedelta, timezone
 
     class MockRepo:

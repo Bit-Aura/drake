@@ -1,12 +1,11 @@
 import pytest
-import asyncio
 import httpx
 import time
 import os
 from unittest.mock import patch, MagicMock
 
-from src.proxy.executors.httpx_executor import HTTPXExecutorBase, _execution_cache, _cache_lock
-from src.core.exceptions import DellProxyExecutionError
+from drake.proxy.executors.httpx_executor import HTTPXExecutorBase, _execution_cache, _cache_lock
+from drake.core.exceptions import DellProxyExecutionError
 
 class MockStep:
     def __init__(self, id, method, url, required_params=None):

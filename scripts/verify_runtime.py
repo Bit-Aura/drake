@@ -4,9 +4,9 @@ import uuid
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-from src.core.database import async_session, init_db, Workflow, EndpointStep
-from src.proxy.server import extract_placeholders_from_steps
-from src.proxy.executors.httpx_executor import MockHTTPXExecutor
+from drake.core.database import async_session, init_db, Workflow, EndpointStep
+from drake.proxy.server import extract_placeholders_from_steps
+from drake.proxy.executors.httpx_executor import MockHTTPXExecutor
 
 
 async def main():

@@ -3,9 +3,9 @@ import json
 import sys
 from pathlib import Path
 from typer.testing import CliRunner
-from src.cli.main import app, main
-from src.cli.services import GovernanceCLIService
-from src.cli.exceptions import DellCLIError
+from drake.cli.main import app, main
+from drake.cli.services import GovernanceCLIService
+from drake.cli.exceptions import DellCLIError
 
 runner = CliRunner()
 
@@ -42,7 +42,7 @@ raise ValueError("Broken plugin initialization failure")
 def test_cli_help() -> None:
     """Ensure the main CLI displays help when called with no arguments."""
     import importlib
-    import src.cli.main
+    import drake.cli.main
     importlib.reload(src.cli.main)
     local_app = src.cli.main.app
 
@@ -322,6 +322,7 @@ def test_server_command_help() -> None:
     assert "Start the FastAPI/FastMCP proxy server using Uvicorn" in result.stdout
 
 
+
 def test_server_start_mock(monkeypatch) -> None:
     """Ensure 'drake server start' executes uvicorn.run with correct params."""
     run_called = {}
@@ -335,10 +336,12 @@ def test_server_start_mock(monkeypatch) -> None:
     import uvicorn
     monkeypatch.setattr(uvicorn, "run", mock_run)
 
-    result = runner.invoke(app, ["server", "start", "--host", "127.0.0.1", "--port", "8000"])
+    result = runner.invoke(app, ["server", "start", "--host", "127.0.0.1", "--port", "8001"])
     assert result.exit_code == 0
-    assert run_called["app"] == "src.proxy.server:app"
+    assert run_called["app"] == "drake.proxy.server:app"
+    assert "Starting Dell Enterprise MCP Proxy Server..." in result.stdout
+    assert "Host: 127.0.0.1" in result.stdout
+    assert "Port: 8001" in result.stdout
     assert run_called["host"] == "127.0.0.1"
-    assert run_called["port"] == 8000
+    assert run_called["port"] == 8001
     assert run_called["reload"] is False
-

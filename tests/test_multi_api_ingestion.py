@@ -3,13 +3,12 @@ import pytest
 import asyncio
 import httpx
 from unittest.mock import patch
-from pathlib import Path
-from src.parser.openapi_parser import OpenAPIParser
-from src.parser.graphql_parser import GraphQLParser
-from src.parser.grpc_parser import gRPCParser
-from src.parser.asyncapi_parser import AsyncAPIParser
-from src.cli.services.cluster import ClusterCLIService
-from src.core.models import ContractA
+from drake.parser.openapi_parser import OpenAPIParser
+from drake.parser.graphql_parser import GraphQLParser
+from drake.parser.grpc_parser import gRPCParser
+from drake.parser.asyncapi_parser import AsyncAPIParser
+from drake.cli.services.cluster import ClusterCLIService
+from drake.core.models import ContractA
 
 @pytest.fixture
 def dummy_openapi_path(tmp_path):

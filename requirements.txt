@@ -16,6 +16,15 @@ ollama>=0.6.2        # Python client to interact with local Ollama LLMs
 openapi-core>=0.23.1 # Used to validate API requests and responses against the OpenAPI spec
 pydantic>=2.13.4     # Provides data validation and settings management using Python type hints
 
+# --- Runtime Dependencies ---
+python-dotenv>=1.1.0 # .env file loading at startup
+PyJWT>=2.10.0        # JWT token generation and verification
+click>=8.2.1         # CLI framework (used by drake CLI)
+rich>=14.0.0         # Rich terminal output for CLI tools
+numpy>=2.0.0         # Numerical operations for clustering
+typer>=0.16.0        # CLI interface layer
+openai>=1.84.0       # OpenAI API client for LLM integration
+
 # ==============================================================================
 # Development & Testing Requirements (Uncomment for local development)
 # ==============================================================================
