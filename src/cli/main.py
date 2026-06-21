@@ -13,11 +13,11 @@ import typer
 from src.cli.context import CLIContext
 from src.cli.container import CLIContainer
 from src.cli.exceptions import DellCLIError
-from src.cli.theme import render_error, render_json
+from src.cli.theme import render_error, render_json, get_banner, console
 
 app = typer.Typer(
-    name="dell-mcp",
-    help="Dell Enterprise MCP Proxy Platform Infrastructure Command Center CLI",
+    name="drake",
+    help="Drake — Dell Enterprise MCP Workflow Proxy CLI",
     no_args_is_help=True,
 )
 
@@ -28,7 +28,7 @@ class CLIWrapper:
         self.container = container
 
 
-@app.callback()
+@app.callback(invoke_without_command=True)
 def main_callback(
     ctx: typer.Context,
     json: bool = typer.Option(
@@ -41,7 +41,10 @@ def main_callback(
         False, "--debug", help="Enable full debug mode with tracebacks"
     ),
 ) -> None:
-    """Dell Enterprise MCP Proxy Command Center CLI control plane."""
+    """Drake — Dell Enterprise MCP Workflow Proxy CLI control plane."""
+    if ctx.invoked_subcommand is None and not json:
+        console.print(get_banner())
+        
     context = CLIContext(verbose=verbose, json_output=json, debug=debug)
     container = CLIContainer()
     ctx.obj = CLIWrapper(context, container)
@@ -57,6 +60,8 @@ from src.cli.commands.audit import app as audit_app
 from src.cli.commands.system import app as system_app
 from src.cli.commands.diagnostics import app as diagnostics_app
 from src.cli.commands.server import app as server_app
+from src.cli.commands.config import app as config_app
+from src.cli.commands.pipeline import pipeline_cmd
 from src.cli.plugins import load_plugins
 
 app.add_typer(cluster_app, name="cluster")
@@ -68,6 +73,8 @@ app.add_typer(audit_app, name="audit")
 app.add_typer(system_app, name="system")
 app.add_typer(diagnostics_app, name="diagnostics")
 app.add_typer(server_app, name="server")
+app.add_typer(config_app, name="config")
+app.command(name="pipeline", help="Run the complete pipeline: Ingest -> Cluster -> Serve")(pipeline_cmd)
 
 load_plugins(app)
 

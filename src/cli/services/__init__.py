@@ -7,6 +7,7 @@ from .ansible import AnsibleCLIService
 from .audit import AuditCLIService
 from .diagnostics import DiagnosticsCLIService
 from .system import SystemCLIService
+from .config import ConfigCLIService
 
 __all__ = [
     "AsyncServiceBridge",
@@ -18,4 +19,5 @@ __all__ = [
     "AuditCLIService",
     "DiagnosticsCLIService",
     "SystemCLIService",
+    "ConfigCLIService",
 ]

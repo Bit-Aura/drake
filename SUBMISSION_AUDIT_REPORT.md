@@ -1,6 +1,6 @@
 # Dell Enterprise MCP Proxy - Final Submission & Verification Audit Report
 
-This report presents a thorough, evidence-backed evaluation of the **Infrastructure Command Center CLI (`dell-mcp`)** repository. It assesses packaging portability, Unicode cross-platform compliance, presentation-layer architecture isolation, security shielding, test coverage, and documentation completeness from a judge/reviewer perspective.
+This report presents a thorough, evidence-backed evaluation of the **Infrastructure Command Center CLI (`drake`)** repository. It assesses packaging portability, Unicode cross-platform compliance, presentation-layer architecture isolation, security shielding, test coverage, and documentation completeness from a judge/reviewer perspective.
 
 ---
 
@@ -64,30 +64,30 @@ We verified the registration, accessibility, visual layout, and automation readi
 
 | Command Group / Command | Registered | Reachable | Functional | JSON Compatible |
 | :--- | :---: | :---: | :---: | :---: |
-| **`dell-mcp overview`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp health`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp cluster run`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp cluster summary`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp cluster graph`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp governance pending`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp governance approved`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp governance rejected`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp governance review`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp governance approve`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp governance reject`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp compatibility validate`**| Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp compatibility explain`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp compatibility dashboard`**| Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp compatibility rules`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp compatibility device`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp runtime tools`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp runtime reload`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp runtime execute`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp ansible preview`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp ansible export`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp audit events`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp audit executions`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
-| **`dell-mcp audit summary`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake overview`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake health`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake cluster run`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake cluster summary`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake cluster graph`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake governance pending`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake governance approved`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake governance rejected`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake governance review`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake governance approve`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake governance reject`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake compatibility validate`**| Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake compatibility explain`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake compatibility dashboard`**| Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake compatibility rules`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake compatibility device`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake runtime tools`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake runtime reload`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake runtime execute`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake ansible preview`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake ansible export`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake audit events`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake audit executions`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
+| **`drake audit summary`** | Yes | Yes | Yes (PASS) | Yes (Clean stdout) |
 
 ---
 
@@ -104,7 +104,7 @@ We verified the core systems of the **Compatibility Intelligence Layer**:
 ### Flagship Decision Cockpit Verification
 Running:
 ```bash
-dell-mcp compatibility dashboard test_wf_1 --target-ip 192.168.0.120
+drake compatibility dashboard test_wf_1 --target-ip 192.168.0.120
 ```
 aggregates target device details (model, BIOS, LC state), pre-flight validation scores (Compatibility %, Risk, Blast Radius, Confidence), violations warnings, prerequisite trees, and prints a clear green `✓ SAFE TO EXECUTE` decision banner, providing actionable go/no-go verdicts.
 
@@ -120,7 +120,7 @@ aggregates target device details (model, BIOS, LC state), pre-flight validation 
 ## Phase 6 – Packaging Audit
 
 All execution path alternatives compile and resolve dependencies correctly:
-*   **Editable Installation**: `uv pip install -e .` followed by `dell-mcp --help` succeeds from any arbitrary directory path.
+*   **Editable Installation**: `uv pip install -e .` followed by `drake --help` succeeds from any arbitrary directory path.
 *   **Direct Module Execution**: `python -m src.cli.main --help` successfully loads sub-command lists.
 *   **Local Script Execution**: `python src/cli/main.py --help` successfully resolves project root folders and displays help instructions.
 
@@ -129,7 +129,7 @@ All execution path alternatives compile and resolve dependencies correctly:
 ## Phase 7 – Unicode & Windows Compatibility Audit
 
 *   **UTF-8 Consoles**: `python -X utf8 src/cli/main.py health` renders checks using high-fidelity symbols (`✓`, `✗`, `⚠`, and `└──`).
-*   **Legacy CMD/PowerShell (CP1252)**: Running `chcp 1252 ; dell-mcp health` automatically switches to safe ASCII substitutes (`[OK]`, `[FAIL]`, `[WARN]`, `[INFO]`, and `+-- requires: `) without raising `UnicodeEncodeError` crashes.
+*   **Legacy CMD/PowerShell (CP1252)**: Running `chcp 1252 ; drake health` automatically switches to safe ASCII substitutes (`[OK]`, `[FAIL]`, `[WARN]`, `[INFO]`, and `+-- requires: `) without raising `UnicodeEncodeError` crashes.
 
 ---
 

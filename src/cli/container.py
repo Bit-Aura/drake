@@ -8,6 +8,7 @@ from src.cli.services import (
     SystemCLIService,
     DiagnosticsCLIService,
     AuditCLIService,
+    ConfigCLIService,
 )
 
 
@@ -45,3 +46,7 @@ class CLIContainer:
     @cached_property
     def audit_service(self) -> AuditCLIService:
         return AuditCLIService()
+
+    @cached_property
+    def config_service(self) -> ConfigCLIService:
+        return ConfigCLIService()

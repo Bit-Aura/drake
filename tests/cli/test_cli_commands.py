@@ -48,7 +48,7 @@ def test_cli_help() -> None:
 
     result = runner.invoke(local_app)
     assert result.exit_code == 2
-    assert "Dell Enterprise MCP Proxy Platform" in result.stdout
+    assert "Drake" in result.stdout
 
     # Test explicit help flag
     res_help = runner.invoke(local_app, ["--help"])
@@ -308,7 +308,7 @@ def test_missing_workflow_errors() -> None:
 def test_main_error_handling(monkeypatch) -> None:
     """Ensure that calling main() directly prints the error block to stdout/stderr and exits."""
     import sys
-    monkeypatch.setattr(sys, "argv", ["dell-mcp", "cluster", "run", "--spec", "nonexistent.json"])
+    monkeypatch.setattr(sys, "argv", ["drake", "cluster", "run", "--spec", "nonexistent.json"])
     
     with pytest.raises(SystemExit) as exc_info:
         main()
@@ -316,7 +316,7 @@ def test_main_error_handling(monkeypatch) -> None:
 
 
 def test_server_command_help() -> None:
-    """Ensure that 'dell-mcp server' help shows up correctly."""
+    """Ensure that 'drake server' help shows up correctly."""
     result = runner.invoke(app, ["server", "--help"])
     assert result.exit_code == 0
     assert "start" in result.stdout
@@ -324,7 +324,7 @@ def test_server_command_help() -> None:
 
 
 def test_server_start_mock(monkeypatch) -> None:
-    """Ensure 'dell-mcp server start' executes uvicorn.run with correct params."""
+    """Ensure 'drake server start' executes uvicorn.run with correct params."""
     run_called = {}
 
     def mock_run(app_path, host, port, reload):

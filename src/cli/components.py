@@ -5,7 +5,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.tree import Tree
 from rich.columns import Columns
-from src.cli.theme import console, get_symbols
+from src.cli.theme import console, get_symbols, get_banner
 
 
 @contextmanager
@@ -16,7 +16,12 @@ def status_spinner(msg: str) -> Any:
 
 
 def render_platform_overview_dashboard(metrics: Dict[str, Any]) -> None:
-    """Renders the executive overview dashboard."""
+    """Render a comprehensive, full-screen style executive dashboard."""
+    console.print(get_banner())
+    
+    grid = Table.grid(expand=True)
+    grid.add_column(ratio=1)
+    grid.add_column(ratio=1)
     # Platform status card
     status_table = Table(title="Platform Status", border_style="cyan", show_header=True)
     status_table.add_column("Subsystem", style="white")
