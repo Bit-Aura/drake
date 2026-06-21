@@ -661,7 +661,9 @@ def get_workflows(
                     "method": step["method"],
                     "url": step["url"],
                     "path": step["url"],
-                    "variableBindings": json.loads(step["variable_bindings"]) if step.get("variable_bindings") else {}
+                    "variableBindings": json.loads(step["variable_bindings"]) if step.get("variable_bindings") else {},
+                    "required_params": step.get("required_params"),
+                    "request_schema": step.get("request_schema")
                 }
             )
 
@@ -684,7 +686,9 @@ def get_workflows(
                         "method": ep["method"],
                         "url": ep["url"],
                         "path": ep["url"],
-                        "variableBindings": {}
+                        "variableBindings": {},
+                        "required_params": ep.get("required_params"),
+                        "request_schema": ep.get("request_schema")
                     }
                     for ep in endpoints
                     if ep["operation_id"] == wf_id

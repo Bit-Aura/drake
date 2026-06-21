@@ -320,20 +320,50 @@ def generate_semantic_label(
 
     if use_llm and check_ollama_status():
         try:
-            # Phase 7 Fix
+            # Phase 7 Fix: Context restriction and Map-Reduce
             from src.ai_clustering.ollama_service import OllamaService
 
             service = OllamaService()
 
-            endpoint_summaries = "\n".join(
-                [f"- {ep['method']} {ep['url']} ({ep['operation_id']})" for ep in endpoints]
-            )
+            endpoint_summaries_list = [f"- {ep['method']} {ep['url']} ({ep['operation_id']})" for ep in endpoints]
+            
+            chunk_char_limit = 15000 
+            chunks = []
+            current_chunk = []
+            current_len = 0
+            
+            for line in endpoint_summaries_list:
+                if current_len + len(line) > chunk_char_limit and current_chunk:
+                    chunks.append("\n".join(current_chunk))
+                    current_chunk = [line]
+                    current_len = len(line)
+                else:
+                    current_chunk.append(line)
+                    current_len += len(line) + 1
+                    
+            if current_chunk:
+                chunks.append("\n".join(current_chunk))
+                
+            if len(chunks) > 1:
+                # Map-reduce approach
+                partial_summaries = []
+                for i, chunk in enumerate(chunks):
+                    map_prompt = f"Summarize the operational capability of this subset of iDRAC API endpoints ({i+1}/{len(chunks)}):\n{chunk}\nReturn a concise 1-2 sentence description."
+                    try:
+                        summary = service.generate_text(map_prompt)
+                        partial_summaries.append(f"Subset {i+1}: {summary}")
+                    except Exception as err:
+                        logger.warning(f"Map-reduce chunk {i+1} failed: {err}")
+                
+                endpoint_summaries = "\n".join(partial_summaries)
+            else:
+                endpoint_summaries = chunks[0] if chunks else ""
 
             prompt = f"""
             You are a Dell Enterprise IT Architect naming a workflow.
             The internal deterministic system name for this workflow is: {system_name}
             
-            The underlying iDRAC API endpoints are:
+            The underlying iDRAC API endpoints (or partial summaries) are:
             {endpoint_summaries}
             
             DO NOT alter membership.
@@ -346,7 +376,7 @@ def generate_semantic_label(
             """
 
             if is_explain_mode():
-                explain_print("LLM VALIDATION - PROMPT SENT", prompt.strip())
+                explain_print("LLM VALIDATION - PROMPT SENT", prompt.strip()[:1000] + "...")
 
             data = service.generate_workflow_mapping(prompt)
 
