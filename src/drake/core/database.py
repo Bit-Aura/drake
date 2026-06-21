@@ -14,7 +14,7 @@ Includes a modern async SQLAlchemy layer for runtime proxy management.
 from __future__ import annotations
 
 import json
-from drake.governance.middleware import GovernanceMiddleware
+
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -68,7 +68,7 @@ def get_db_connection():  # noqa: E302
 
     try:
         conn = sync_engine.raw_connection()
-        conn.row_factory = sqlite3.Row
+        conn.row_factory = sqlite3.Row  # type: ignore
         # Perform a quick integrity check to catch corruption/WAL mismatch early
         cursor = conn.cursor()
         cursor.execute("PRAGMA quick_check(1);")
@@ -80,7 +80,7 @@ def get_db_connection():  # noqa: E302
             clear_wal_shm()
             try:
                 conn = sync_engine.raw_connection()
-                conn.row_factory = sqlite3.Row
+                conn.row_factory = sqlite3.Row  # type: ignore
                 return conn
             except Exception:
                 # If still malformed, the main db file itself is corrupt.
@@ -91,7 +91,7 @@ def get_db_connection():  # noqa: E302
                     except Exception as e:
                         logger.warning(f"Failed to remove db file: {e}")
                 conn = sync_engine.raw_connection()
-                conn.row_factory = sqlite3.Row
+                conn.row_factory = sqlite3.Row  # type: ignore
                 return conn
         raise e
 
@@ -542,7 +542,8 @@ def save_workflows(workflows_list: List[Dict[str, Any]]) -> None:
 
         # Intercept and enrich workflows with policy status
         try:
-            workflows_list = GovernanceMiddleware.get_instance().process_new_workflows(workflows_list, all_endpoints)  # noqa: E501
+            from src.drake.governance.middleware import GovernanceMiddleware
+            workflows_list = GovernanceMiddleware.get_instance().process_new_workflows(workflows_list, all_endpoints)
         except Exception as e:
             print(f"Governance interception failed: {e}")
 
@@ -976,7 +977,7 @@ class ExecutionHistory(Base):
     workflow_id = Column(
         String, ForeignKey("workflows.id", ondelete="CASCADE"), nullable=False
     )
-    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     snapshot_path = Column(String, nullable=True)
     status = Column(String, nullable=False)
 
@@ -1052,7 +1053,7 @@ async def sync_governance_to_mcp_proxy() -> None:
                 wf.generated_description = gwf["generated_description"]
                 wf.risk_level = gwf["risk_level"]
                 wf.approved = gwf["approved"]
-                wf.supports_rollback = bool(gwf.get("supports_rollback", 0))
+                wf.supports_rollback = bool(gwf.get("supports_rollback", 0))  # type: ignore
                 wf.rollback_strategy = gwf.get("rollback_strategy", "NONE")
 
             # Synchronize steps
