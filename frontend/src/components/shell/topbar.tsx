@@ -24,10 +24,15 @@ export function Topbar() {
       </div>
       
       <div className="flex items-center gap-4">
-        {/* Mock Avatars */}
-        <div className="flex -space-x-2 mr-2">
-          <div className="w-6 h-6 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center overflow-hidden"><User className="w-3 h-3 text-gray-500" /></div>
-          <div className="w-6 h-6 rounded-full bg-blue-200 border-2 border-white flex items-center justify-center overflow-hidden"><User className="w-3 h-3 text-blue-500" /></div>
+        {/* Admin Profile */}
+        <div className="flex items-center gap-2 mr-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 shadow-sm cursor-default">
+          <div className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-200">
+            <User className="h-3 w-3 text-slate-600" />
+            <span className="absolute bottom-0 right-0 h-1.5 w-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
+          </div>
+          <div className="flex flex-col text-left">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-700 leading-none">Admin</span>
+          </div>
         </div>
 
         <Button

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, GitBranch, Pencil, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Check, GitBranch, GitMerge, Pencil, X, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -241,14 +241,14 @@ function WorkflowCard({
           <p className="mt-2 text-sm text-slate-600">
             {workflow.generatedDescription}
           </p>
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setIsExpanded(!isExpanded)} 
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
             className="mt-2 -ml-3 text-slate-600 hover:bg-slate-100"
           >
-            {isExpanded ? <ChevronUp className="h-4 w-4 mr-1"/> : <ChevronDown className="h-4 w-4 mr-1"/>}
+            {isExpanded ? <ChevronUp className="h-4 w-4 mr-1" /> : <ChevronDown className="h-4 w-4 mr-1" />}
             {isExpanded ? "Hide endpoints" : `View ${workflow.underlyingEndpoints.length} underlying endpoints`}
           </Button>
 
@@ -305,12 +305,12 @@ function WorkflowCard({
             <Pencil className="h-4 w-4 mr-1" />
             Edit
           </Button>
-          <Button asChild size="sm" variant="ghost">
-            <Link href="/graph" onClick={() => onViewInGraph(workflow)}>
-              <GitBranch className="h-4 w-4 mr-1" />
-              View graph
-            </Link>
-          </Button>
+          <Link href="/graph" onClick={() => onViewInGraph(workflow)}>
+            <Button size="sm" className="bg-[#8250df] hover:bg-[#6e40c9] text-white rounded-full px-4 ml-1 border-none shadow-sm focus:ring-0 focus:outline-none cursor-pointer">
+              <GitMerge className="h-4 w-4 mr-1.5" strokeWidth={2.5} />
+              View
+            </Button>
+          </Link>
         </div>
       </div>
     </Card>

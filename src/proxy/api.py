@@ -97,6 +97,39 @@ class RejectWorkflowPayload(BaseModel):
 class NLGeneratePayload(BaseModel):
     prompt: constr(min_length=5, max_length=1000)
 
+class LoginPayload(BaseModel):
+    email: str
+    password: str
+
+@app.post("/api/v1/auth/login")
+async def login(payload: LoginPayload) -> Dict[str, Any]:
+    import jwt
+    from datetime import timedelta
+    
+    if payload.email == "DellAdmin@gmail.com" and payload.password == "dell@123":
+        secret = os.getenv("JWT_SECRET", "dell-enterprise-mcp-secret-key-2026")
+        token = jwt.encode(
+            {
+                "sub": payload.email,
+                "role": "admin",
+                "exp": datetime.now(timezone.utc) + timedelta(hours=24)
+            },
+            secret,
+            algorithm="HS256"
+        )
+        await log_audit_event_async("user_login", "success", "Admin user logged in to management console", actor="DellAdmin")
+        return {
+            "token": token,
+            "user": {
+                "email": payload.email,
+                "name": "System Admin",
+                "role": "admin"
+            }
+        }
+    
+    await log_audit_event_async("user_login", "error", "Failed login attempt with invalid credentials", actor=payload.email)
+    raise HTTPException(status_code=401, detail="Invalid email or password")
+
 
 
 async def log_audit_event_async(
