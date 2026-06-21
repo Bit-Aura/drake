@@ -1,18 +1,13 @@
 {
   "workflows": {
-    "wf_happy_path": {
-      "name": "wf_happy_path",
-      "description": "Desc",
+    "workflow_A": {
+      "name": "workflow_A",
+      "description": "Desc A",
       "steps": []
     },
-    "wf_policy_block": {
-      "name": "wf_policy_block",
-      "description": "Desc",
-      "steps": []
-    },
-    "wf_param_validation": {
-      "name": "wf_param_validation",
-      "description": "Desc",
+    "workflow_B": {
+      "name": "workflow_B",
+      "description": "Desc B",
       "steps": []
     },
     "test_workflow_one": {

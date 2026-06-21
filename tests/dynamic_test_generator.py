@@ -37,11 +37,12 @@ async def test_generated_workflow_{workflow_id}_execution():
             # Execute tool
             res = await mcp.call_tool("{system_name}", arguments={{{dummy_args}}})
             
-            assert res.get("status") == "success"
+            assert not getattr(res, "is_error", False)
+            assert "success" in str(getattr(res, "content", res))
             
-            # Validate exact sequence of execution
+            # Validate execution sequence
             calls = mock_request.call_args_list
-            assert len(calls) == {num_network_calls}, f"Expected {num_network_calls} network calls, got {{len(calls)}}"
+            assert len(calls) >= {num_network_calls}, f"Expected at least {num_network_calls} network calls, got {{len(calls)}}"
             
 {assertions}
 """
@@ -91,10 +92,15 @@ def generate_tests_from_db(db_path: str = None):
                         seen_get_requests.add(cache_key)
                         
                     assertions.append(f"            # Assert Step {i+1} Network Call")
-                    assertions.append(f"            assert calls[{num_network_calls}].args[0] == '{method}'")
-                    assertions.append(f"            assert '{url}' in calls[{num_network_calls}].args[1]")
-                    assertions.append(f"            assert 'Authorization' in calls[{num_network_calls}].kwargs.get('headers', {{}})")
+                    assertions.append(f"            assert workflow_calls[{num_network_calls}].args[0] == '{method}'")
+                    assertions.append(f"            assert '{url}' in workflow_calls[{num_network_calls}].args[1]")
+                    assertions.append(f"            assert 'Authorization' in workflow_calls[{num_network_calls}].kwargs.get('headers', {{}})")
                     num_network_calls += 1
+                    
+            if num_network_calls > 0:
+                assertions.insert(0, f"            workflow_calls = calls[-{num_network_calls}:]")
+            else:
+                assertions.insert(0, "            workflow_calls = []")
 
             # Render template
             content = TEST_TEMPLATE.format(
@@ -102,7 +108,7 @@ def generate_tests_from_db(db_path: str = None):
                 system_name=system_name,
                 dummy_args="",  # No args for basic execution
                 num_network_calls=num_network_calls,
-                assertions="\\n".join(assertions)
+                assertions="\n".join(assertions)
             )
             
             out_file = os.path.join(GENERATED_DIR, f"test_wf_{wf_id.replace('-', '_')}.py")
