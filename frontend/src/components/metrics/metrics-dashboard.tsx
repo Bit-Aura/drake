@@ -23,14 +23,13 @@ import { useMetrics } from "@/hooks/use-metrics";
 
 // Enterprise Theme Colors
 const THEME = {
-  emerald: "#10b981", // Approved
+  primary: "#bde56c", // Approved & Main charts
   slate: "#64748b",   // Pending
   rose: "#f43f5e",    // Rejected
-  darkPurple: "#4c1d95", // Treemap Base
 };
 
 const APPROVAL_COLORS = {
-  Approved: THEME.emerald,
+  Approved: THEME.primary,
   Rejected: THEME.rose,
   Pending: THEME.slate,
 };
@@ -174,12 +173,12 @@ export function MetricsDashboard() {
             key={label} 
             className="group relative overflow-hidden rounded-xl border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50"
           >
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-lime-400 to-lime-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium tracking-tight text-slate-500">{label}</p>
                 <div className={`flex items-center space-x-1 rounded-full px-2 py-0.5 text-xs font-semibold
-                  ${trend === 'up' ? 'bg-emerald-50 text-emerald-700' : 
+                  ${trend === 'up' ? 'bg-lime-50 text-lime-700' : 
                     trend === 'down' ? 'bg-rose-50 text-rose-700' : 
                     'bg-slate-50 text-slate-700'}`}
                 >
@@ -314,7 +313,7 @@ export function MetricsDashboard() {
                       <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg z-50">
                         <p className="mb-1 font-semibold text-slate-900">{data.name}</p>
                         <p className="text-sm text-slate-600">
-                          <span className="font-medium text-emerald-600">{data.size}</span> endpoints
+                          <span className="font-medium text-lime-600">{data.size}</span> endpoints
                         </p>
                       </div>
                     );
@@ -324,7 +323,7 @@ export function MetricsDashboard() {
               />
               <Bar 
                 dataKey="size" 
-                fill={THEME.emerald} 
+                fill={THEME.primary} 
                 radius={[4, 4, 0, 0]} 
                 barSize={32}
               />

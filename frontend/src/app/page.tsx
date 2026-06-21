@@ -45,7 +45,7 @@ export default function OverviewPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto relative">
+    <div className="space-y-8 relative w-full">
       <section className="flex justify-between items-end relative">
         <div>
           <h2 className="text-3xl font-bold text-[rgb(var(--foreground))]">Overview</h2>
