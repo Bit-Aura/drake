@@ -5,6 +5,9 @@ from src.governance.core.policy import PolicyEngine
 from src.governance.core.risk import RiskAssessor
 from src.governance.core.validator import WorkflowValidator
 from src.governance.runtime.interceptor import RuntimeGovernance
+from src.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
+from src.governance.ai_guardrails.prefilter import FastPreFilter
+from src.core.database import log_audit_event
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +25,9 @@ class GovernanceMiddleware:
     def __init__(self):
         self.policy_engine = PolicyEngine()
         self.validator = WorkflowValidator()
+        self.prefilter = FastPreFilter()
         self.risk_assessor = RiskAssessor(self.policy_engine.get_config())
+        self.campaign_tracker = WorkflowCampaignTracker()
         self.runtime = RuntimeGovernance(self.policy_engine.get_config())
 
     def process_new_workflows(self, workflows: List[Dict[str, Any]], endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -48,11 +53,44 @@ class GovernanceMiddleware:
                 wf["rejection_reason"] = "Validation failed: " + ", ".join(val_result["errors"])
                 continue
 
+            # 1b. Prefilter (AI Guardrails)
+            prompt_to_check = f"{wf.get('display_name', '')} {wf.get('generated_description', '')}"
+            pf_result = self.prefilter.check(prompt_to_check)
+            if pf_result.blocked:
+                wf["approved"] = 2 # Rejected
+                wf["rejection_reason"] = f"AI Guardrail Block: {pf_result.reason} ({pf_result.matched_pattern})"
+                log_audit_event(
+                    event_type="PREFILTER_BLOCK",
+                    status="BLOCKED",
+                    description=wf["rejection_reason"],
+                    workflow_name=wf_id,
+                    actor="system",
+                    metadata={"violations": pf_result.violations}
+                )
+                logger.warning(f"Governance Middleware: Workflow {wf_id} blocked by Prefilter.")
+                continue
+
             # 2. Risk Assessment
             risk_result = self.risk_assessor.assess_risk(underlying)
+            
+            # 2b. Campaign Tracking
+            session_id = wf.get("session_id", "default_session")
+            campaign_result = self.campaign_tracker.track(
+                session_id=session_id, 
+                workflow_id=wf_id, 
+                endpoints=underlying, 
+                risk_score=risk_result.get("risk_score", 0.0)
+            )
+
+            # Upgrade risk if campaign detected
+            if campaign_result["is_campaign"]:
+                risk_result["risk_level"] = "CRITICAL"
+                logger.warning(f"Governance Middleware: Campaign detected! Upgraded workflow {wf_id} risk to CRITICAL.")
+
             wf["risk_level"] = risk_result["risk_level"]
             wf["risk_score"] = risk_result.get("risk_score", 0.0)
             wf["governance_score"] = risk_result.get("governance_score", 100.0)
+            wf["campaign_risk"] = campaign_result["campaign_risk"]
             
             # Policy Version injection
             wf["policy_version"] = self.policy_engine.get_config().get("version", "1.0")

@@ -1,0 +1,78 @@
+# Governance Configuration Externalization
+# This configuration centralizes all hardcoded governance thresholds,
+# risk multipliers, and guardrail logic into a single YAML policy.
+
+version: "1.0"
+
+risk_weights:
+  DELETE: 50.0
+  PATCH: 30.0
+  PUT: 30.0
+  POST: 20.0
+
+keyword_weights:
+  reboot: 40.0
+  power: 40.0
+  firmware: 40.0
+  reset: 40.0
+  format: 40.0
+
+blast_radius:
+  default_total_assets: 100
+  multiplier_coefficient: 3.0
+
+risk_levels:
+  critical_min: 80.0
+  high_min: 50.0
+  medium_min: 20.0
+  cap: 100.0
+
+governance_score:
+  risk_deduction_coefficient: 0.5
+  missing_schema_penalty: 20.0
+  read_only_bonus: 10.0
+
+campaign:
+  cumulative_risk_coefficient: 0.3
+  density_coefficient: 30.0
+  similarity_coefficient: 20.0
+  velocity_coefficient: 2.0
+  threshold: 0.65
+  time_window_sec: 600
+  max_events: 2000
+
+tool_guard:
+  blocked_tool_risk: 0.70
+  unallowed_tool_risk: 0.50
+  suspicious_arg_risk_coeff: 0.35
+  default_safe_tools:
+    - search_web
+    - retrieve_document
+    - calculator
+    - get_weather
+    - read_file
+    - list_files
+    - send_message
+    - get_time
+  blocked_tools:
+    - bash
+    - shell
+    - exec
+    - run_command
+    - system
+    - eval
+    - python
+    - powershell
+    - cmd
+    - terminal
+    - subprocess
+    - os_command
+    - code_exec
+    - execute_code
+    - run_code
+    - file_delete
+    - file_write
+    - db_execute
+    - sql_query
+    - network_scan
+    - port_scan
