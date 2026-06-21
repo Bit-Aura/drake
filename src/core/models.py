@@ -131,8 +131,8 @@ class EndpointContract(BaseModel):
             "Used as the primary key in workflow_mapping.json."
         )
     )
-    method: Literal["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"] = Field(
-        description="HTTP verb in upper-case."
+    method: str = Field(
+        description="HTTP verb, or GraphQL/gRPC method (e.g., GET, POST, QUERY, MUTATION, RPC)."
     )
     url: str = Field(
         description=(
@@ -161,6 +161,12 @@ class EndpointContract(BaseModel):
     )
     response_schema: dict | None = Field(
         default=None, description="Response schema for graph similarity."
+    )
+    protocol: str = Field(
+        default="REST", description="API Protocol (e.g., REST, GraphQL, gRPC, AsyncAPI)."
+    )
+    source_file: str = Field(
+        default="", description="The originating specification file name."
     )
 
 
