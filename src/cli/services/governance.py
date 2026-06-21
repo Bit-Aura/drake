@@ -105,6 +105,9 @@ class GovernanceCLIService:
                     )
                     conn.commit()
                 await session.commit()
+                
+            from src.cli.services.system import SystemCLIService
+            SystemCLIService.notify_proxy_reload()
 
         AsyncServiceBridge.run(_async_approve())
 
@@ -132,5 +135,8 @@ class GovernanceCLIService:
                     )
                     conn.commit()
                 await session.commit()
+
+            from src.cli.services.system import SystemCLIService
+            SystemCLIService.notify_proxy_reload()
 
         AsyncServiceBridge.run(_async_reject())

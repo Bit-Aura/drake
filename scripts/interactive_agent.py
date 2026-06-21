@@ -70,7 +70,11 @@ async def decide_tool_with_llm(client: instructor.AsyncInstructor, prompt: str, 
     tool_names_list = []
     for t in tools:
         tool_names_list.append(t['name'])
-        tools_context.append(f"- Tool Name: {t['name']}\n  Description: {t['description']}\n  Schema: {json.dumps(t['inputSchema'])}")
+        # Deep-copy and filter out override_policy so the LLM doesn't see it or populate it
+        schema = json.loads(json.dumps(t['inputSchema']))
+        if "properties" in schema and "override_policy" in schema["properties"]:
+            schema["properties"].pop("override_policy")
+        tools_context.append(f"- Tool Name: {t['name']}\n  Description: {t['description']}\n  Schema: {json.dumps(schema)}")
     
     system_prompt = (
         "You are an advanced AI Server Administrator Agent for Dell infrastructure.\n"
@@ -172,11 +176,23 @@ async def interactive_loop():
                                         print(f"    - {tn}")
                                     continue
 
+                            # Prompt user for missing arguments
+                            tool_schema = next((t["inputSchema"] for t in available_tools if t["name"] == selection.selected_tool_name), {})
+                            required_props = set(tool_schema.get("required", []))
+                            given_props = set(selection.arguments.keys())
+                            missing = required_props - given_props
+                            
+                            if missing:
+                                print(f"\n  [SYSTEM] Missing required arguments for '{selection.selected_tool_name}'.")
+                                for prop in missing:
+                                    val = input(f"  Please provide value for '{prop}': ")
+                                    selection.arguments[prop] = val
+
                             # Pre-execution schema validation
                             valid, msg = validate_arguments(selection.selected_tool_name, selection.arguments, available_tools)
                             if not valid:
                                 print(f"\n  [VALIDATION FAILED] {msg}")
-                                print(f"  [SYSTEM] Skipping execution — LLM passed invalid arguments.")
+                                print(f"  [SYSTEM] Skipping execution — invalid arguments.")
                                 continue
 
                             # Execute the chosen tool via MCP
@@ -185,6 +201,27 @@ async def interactive_loop():
                                 selection.selected_tool_name, 
                                 arguments=selection.arguments
                             )
+                            
+                            # Check if the execution was blocked by policy due to confidence score
+                            is_blocked = False
+                            for content in result.content:
+                                if content.type == "text" and "Execution blocked: confidence score" in content.text:
+                                    is_blocked = True
+                                    break
+                                    
+                            if is_blocked:
+                                print("\n  [SYSTEM] The proxy server blocked this execution due to a low confidence score.")
+                                override = input("  Do you want to override and execute anyway? (yes/no): ")
+                                if override.strip().lower() in ["y", "yes"]:
+                                    selection.arguments["override_policy"] = "WARN_ONLY"
+                                    print(f"\n[SYSTEM] Re-executing '{selection.selected_tool_name}' with override...")
+                                    result = await session.call_tool(
+                                        selection.selected_tool_name, 
+                                        arguments=selection.arguments
+                                    )
+                                else:
+                                    print("  [SYSTEM] Execution aborted by user.")
+                                    continue
                             
                             print("\n[SYSTEM] Tool Execution Complete. Result payload:")
                             print("---------------------------------------------------------------------")

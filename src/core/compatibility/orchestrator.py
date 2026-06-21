@@ -55,6 +55,9 @@ class WorkflowExecutionManager:
         """
         Validates target compatibility and executes steps under configured security policy.
         """
+        if policy is True or str(policy).lower() in ("true", "1", "yes"):
+            policy = "WARN_ONLY"
+
         if not policy:
             policy = os.getenv("DELL_COMPATIBILITY_POLICY", "STRICT").upper()
 
@@ -148,18 +151,28 @@ class WorkflowExecutionManager:
             await self.repository.save_report(report)
 
             # Enforce policy block on low confidence
-            if report.confidence_score < 50 and policy in ("STRICT", "WARN_ONLY"):
-                log_audit_event(
-                    event_type="compatibility_blocked",
-                    status="failed",
-                    description=f"Execution blocked for workflow '{wf.display_name}' on target {ip} due to low confidence ({report.confidence_score}%). A live Redfish query is required.",
-                    workflow_name=workflow_name,
-                    actor="system",
-                )
-                raise CompatibilityPolicyViolation(
-                    f"Execution blocked: confidence score ({report.confidence_score}%) is below policy threshold (50) under {policy} mode. A live Redfish query is required.",
-                    report=report,
-                )
+            if report.confidence_score < 50:
+                if policy == "STRICT":
+                    log_audit_event(
+                        event_type="compatibility_blocked",
+                        status="failed",
+                        description=f"Execution blocked for workflow '{wf.display_name}' on target {ip} due to low confidence ({report.confidence_score}%). A live Redfish query is required.",
+                        workflow_name=workflow_name,
+                        actor="system",
+                    )
+                    raise CompatibilityPolicyViolation(
+                        f"Execution blocked: confidence score ({report.confidence_score}%) is below policy threshold (50) under {policy} mode. A live Redfish query is required.",
+                        report=report,
+                    )
+                elif policy == "WARN_ONLY":
+                    logger.warning(f"Overridden by user — proceeding despite {report.confidence_score}% confidence.")
+                    log_audit_event(
+                        event_type="compatibility_warning",
+                        status="success",
+                        description=f"Overridden by user — proceeding despite {report.confidence_score}% confidence for workflow '{wf.display_name}' on target {ip}.",
+                        workflow_name=workflow_name,
+                        actor="system",
+                    )
 
             # Enforce standard compatibility status policy gates
             if report.status == CompatibilityStatus.BLOCK and policy == "STRICT":

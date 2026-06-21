@@ -60,12 +60,13 @@ async def execute_workflow_route(
     from sqlalchemy import update
 
     try:
+        override_policy = params.pop("override_policy", "STRICT")
         masked_params = GovernanceMiddleware.get_instance().intercept_execution(workflow_name, params)
         log_audit_event("EXECUTION_START", "SUCCESS", f"Started {workflow_name}", workflow_name=workflow_name, metadata={"inputs": masked_params})
         
         from src.core.compatibility.orchestrator import WorkflowExecutionManager
         manager = WorkflowExecutionManager()
-        result = await manager.execute_workflow_with_validation(workflow_name, params)
+        result = await manager.execute_workflow_with_validation(workflow_name, params, policy=override_policy)
         
         log_audit_event("EXECUTION_COMPLETE", "SUCCESS", f"Completed {workflow_name}", workflow_name=workflow_name)
         
@@ -181,6 +182,9 @@ async def load_approved_tools_from_db() -> None:
             desc = orchestration_doc + "\n\n" + (wf.generated_description or f"Execute clustered workflow for {name}")
             if schemas_doc:
                 desc += "\n\n### Required Request Body Structures:\n" + "\n".join(schemas_doc)
+            
+            # Allow policy overrides for low confidence executions
+            all_params["override_policy"] = (str, "STRICT")
 
             # Use inspect.Signature to create dynamic kwargs
             import inspect
@@ -268,7 +272,6 @@ async def preview_workflow_steps(workflow_id: str) -> Dict[str, Any]:
         }
 
 
-@mcp.tool()
 @mcp.tool()
 async def check_workflow_compatibility(workflow_id: str, target_ip: str) -> Dict[str, Any]:
     """
@@ -618,7 +621,13 @@ async def reload_mcp_tools():
         # Dynamically clear existing dynamic tools in the mcp instance
         tools = await mcp.list_tools()
         for tool in tools:
-            if tool.name not in {"get_proxy_status", "preview_workflow_steps", "check_workflow_compatibility", "preview_compatibility_report"}:
+            if tool.name not in {
+                "get_proxy_status",
+                "preview_workflow_steps",
+                "check_workflow_compatibility",
+                "preview_compatibility_report",
+                "revert_previous_action",
+            }:
                 try:
                     mcp.local_provider.remove_tool(tool.name)
                     logger.info(f"Removed dynamic tool: {tool.name}")

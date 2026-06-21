@@ -8,6 +8,24 @@ from .diagnostics import DiagnosticsCLIService
 class SystemCLIService:
     """Adapter for global executive dashboard stats."""
 
+    @staticmethod
+    def notify_proxy_reload() -> None:
+        """
+        Sends a silent HTTP POST to the FastMCP proxy server to trigger a hot-reload 
+        of its tools, ensuring synchronization with the SQLite database.
+        """
+        import urllib.request
+        try:
+            req = urllib.request.Request(
+                "http://localhost:8000/api/v1/mcp/reload",
+                method="POST",
+                headers={"X-API-Key": "default_dev_key"}
+            )
+            with urllib.request.urlopen(req, timeout=1.0):
+                pass
+        except Exception:
+            pass  # Server is offline or busy, ignore silently
+
     def get_overview_metrics(self) -> Dict[str, Any]:
         try:
             with get_db_connection() as conn:  # type: ignore[no-untyped-call]

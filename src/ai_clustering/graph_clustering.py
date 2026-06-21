@@ -469,6 +469,7 @@ def run_pipeline(contract_a_data: ContractA) -> None:
     # Build a lookup dict so every endpoint gets its community_id assigned exactly once
     ep_by_op_id = {ep["operation_id"]: ep for ep in endpoints}
     workflows_list = []
+    seen_system_names = set()
 
     for comm in communities:
         sorted_ops = sorted(list(comm))
@@ -486,6 +487,14 @@ def run_pipeline(contract_a_data: ContractA) -> None:
         system_name, display_name, wf_desc, confidence = generate_semantic_label(
             workflow_id, comm_endpoints, use_llm=True
         )
+
+        # Deduplicate system names
+        original_system_name = system_name
+        counter = 1
+        while system_name in seen_system_names:
+            system_name = f"{original_system_name}_{counter}"
+            counter += 1
+        seen_system_names.add(system_name)
 
         methods = [ep["method"] for ep in comm_endpoints]
         if "DELETE" in methods:

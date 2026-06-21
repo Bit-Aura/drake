@@ -25,9 +25,11 @@ class ClusterCLIService:
 
             # Run graph and Leiden communities sync
             from src.ai_clustering.explain import set_explain_mode
+            from src.cli.services.system import SystemCLIService
 
             set_explain_mode(explain)
             run_pipeline(contract_a)
+            SystemCLIService.notify_proxy_reload()
             return {"status": "success"}
         except Exception as e:
             raise DellCLIError(

@@ -93,7 +93,25 @@ drake --help
 
 ---
 
-## Quick Start
+## Quick Start (Automated Launch)
+
+You can launch all required services—including environment validation, package sync, the backend FastMCP/FastAPI server, the Next.js frontend console, and checking Ollama models—with a single command:
+
+```powershell
+# Run the PowerShell launcher script
+.\start.ps1
+```
+
+Or simply double-click the `start.bat` file in Windows Explorer, or run:
+```cmd
+start.bat
+```
+
+The launcher will verify your dependencies and launch the backend and frontend services in dedicated terminal windows.
+
+---
+
+## Quick Start (Manual Setup)
 
 Activate the virtual environment first, then run commands:
 
