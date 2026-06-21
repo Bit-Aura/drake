@@ -19,7 +19,7 @@ async def test_mock_httpx_executor_success(mock_async_client, mock_async_session
         operation_id="GetSystem",
         url="/systems/{system_id}",
         method="GET",
-        required_params="[]",
+        required_params='[{"name": "force"}]',
         created_at="2026-06-19T00:00:00",
     )
     step2 = EndpointStep(
@@ -28,7 +28,7 @@ async def test_mock_httpx_executor_success(mock_async_client, mock_async_session
         operation_id="ResetSystem",
         url="/systems/{system_id}/reset",
         method="POST",
-        required_params="[]",
+        required_params='[{"name": "force"}]',
         created_at="2026-06-19T00:00:00",
     )
 
