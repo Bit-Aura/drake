@@ -1,5 +1,10 @@
 import logging
 import re
+import os
+import hashlib
+import time
+import asyncio
+from dataclasses import dataclass
 from typing import Any, Dict, Optional
 import json
 import httpx
@@ -19,6 +24,15 @@ from sqlalchemy.orm import selectinload
 from src.core.database import async_session, Workflow
 
 logger = logging.getLogger(__name__)
+
+@dataclass
+class CacheEntry:
+    response_dict: dict
+    expires_at: float
+
+_execution_cache: Dict[str, CacheEntry] = {}
+_cache_lock = asyncio.Lock()
+_pending_requests: Dict[str, asyncio.Event] = {}
 
 def resolve_expressions(value: Any, context: dict) -> Any:
     """
@@ -92,7 +106,6 @@ class HTTPXExecutorBase(BaseExecutor):
         # Filter query/body params to only include parameters explicitly required/supported by this step
         if hasattr(step, "required_params") and step.required_params:
             try:
-                import json
                 supported_names = set()
                 req_params_list = json.loads(step.required_params)
                 for p in req_params_list:
@@ -107,6 +120,34 @@ class HTTPXExecutorBase(BaseExecutor):
             req_kwargs["json"] = body_params
         elif step.method.lower() in ["get", "delete", "head"] and body_params:
             req_kwargs["params"] = body_params
+
+        # Caching optimization
+        is_get = step.method.lower() == "get"
+        cache_key = None
+        if is_get:
+            # Build cache key
+            key_content = f"{target_url}|{json.dumps(req_kwargs.get('params', {}), sort_keys=True)}|{json.dumps(req_kwargs.get('headers', {}), sort_keys=True)}"
+            cache_key = hashlib.sha256(key_content.encode()).hexdigest()
+            
+            while True:
+                async with _cache_lock:
+                    if cache_key in _execution_cache:
+                        entry = _execution_cache[cache_key]
+                        if time.time() < entry.expires_at:
+                            logger.info(f"Cache hit for GET {target_url}")
+                            res = entry.response_dict.copy()
+                            res["cached"] = True
+                            return res
+                        else:
+                            del _execution_cache[cache_key]
+                    
+                    if cache_key in _pending_requests:
+                        event = _pending_requests[cache_key]
+                    else:
+                        event = asyncio.Event()
+                        _pending_requests[cache_key] = event
+                        break
+                await event.wait()
 
         def is_retryable_status_error(exc: BaseException) -> bool:
             if isinstance(exc, httpx.HTTPStatusError):
@@ -133,14 +174,32 @@ class HTTPXExecutorBase(BaseExecutor):
                         except ValueError:
                             data = {"raw": response.text}
                             
-                        return {
+                        res_dict = {
                             "step_id": step.id,
                             "method": step.method.upper(),
                             "url": target_url,
                             "status_code": response.status_code,
                             "data": data,
                         }
+                        
+                        if is_get:
+                            ttl = int(os.getenv("DELL_CACHE_TTL", "60"))
+                            async with _cache_lock:
+                                _execution_cache[cache_key] = CacheEntry(
+                                    response_dict=res_dict,
+                                    expires_at=time.time() + ttl
+                                )
+                                if cache_key in _pending_requests:
+                                    _pending_requests[cache_key].set()
+                                    del _pending_requests[cache_key]
+                                
+                        return res_dict
             except Exception as e:
+                if is_get:
+                    async with _cache_lock:
+                        if cache_key in _pending_requests:
+                            _pending_requests[cache_key].set()
+                            del _pending_requests[cache_key]
                 logger.error(f"Error during step '{step.url}' execution: {e}")
                 raise DellProxyExecutionError(
                     f"Workflow step execution failed for '{target_url}' after exhausting retries.",

@@ -1,5 +1,20 @@
 {
   "workflows": {
+    "wf_happy_path": {
+      "name": "wf_happy_path",
+      "description": "Desc",
+      "steps": []
+    },
+    "wf_policy_block": {
+      "name": "wf_policy_block",
+      "description": "Desc",
+      "steps": []
+    },
+    "wf_param_validation": {
+      "name": "wf_param_validation",
+      "description": "Desc",
+      "steps": []
+    },
     "test_workflow_one": {
       "name": "test_workflow_one",
       "description": "A test workflow description",
