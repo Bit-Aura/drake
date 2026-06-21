@@ -481,17 +481,44 @@ async def interactive_loop() -> None:
     available_mcp_tools: List[dict] = []
     mcp_session: Optional["ClientSession"] = None
 
-    if _MCP_AVAILABLE:
+    if not _MCP_AVAILABLE:
+        print("[SYSTEM] mcp package not found. Starting in CLI-only mode.")
+        _print_banner(mcp_online, len(available_mcp_tools))
+        # Print CLI tool summary
+        print(f"\n[SYSTEM] Available CLI tools ({len(CLI_TOOLS)}):\n")
+        for i, t in enumerate(CLI_TOOLS, 1):
+            params = list(t.get("args", []))
+            param_str = ", ".join(
+                a["name"].lstrip("-").replace("-", "_") for a in params
+            ) if params else "(no params)"
+            print(f"  {i:3d}. {t['name']:<45s} [{param_str}]")
+        print()
+        await _run_prompt_loop(client, cli_tools_schema, mcp_session, available_mcp_tools, mcp_online)
+        return
+
+    from contextlib import AsyncExitStack
+    async with AsyncExitStack() as stack:
         print(f"[SYSTEM] Attempting connection to FastMCP proxy ({MCP_PROXY_URL})...")
         try:
-            # We use a context manager but keep the session alive for the loop
-            # by deferring cleanup. We'll manage this manually below.
+            # We use AsyncExitStack to ensure proper __aexit__ execution
+            # even if interrupted by KeyboardInterrupt, avoiding anyio cancel scope issues.
             _sse_ctx = sse_client(MCP_PROXY_URL)
-            _streams = await asyncio.wait_for(_sse_ctx.__aenter__(), timeout=5)
+            if hasattr(asyncio, "timeout"):
+                async with asyncio.timeout(5):
+                    _streams = await stack.enter_async_context(_sse_ctx)
+            else:
+                _streams = await stack.enter_async_context(_sse_ctx)
+                
             _read, _write = _streams
             _session_ctx = ClientSession(_read, _write)
-            mcp_session = await asyncio.wait_for(_session_ctx.__aenter__(), timeout=5)
-            await asyncio.wait_for(mcp_session.initialize(), timeout=5)
+            
+            if hasattr(asyncio, "timeout"):
+                async with asyncio.timeout(5):
+                    mcp_session = await stack.enter_async_context(_session_ctx)
+                    await mcp_session.initialize()
+            else:
+                mcp_session = await stack.enter_async_context(_session_ctx)
+                await asyncio.wait_for(mcp_session.initialize(), timeout=5)
 
             tools_response = await mcp_session.list_tools()
             for t in tools_response.tools:
@@ -503,31 +530,34 @@ async def interactive_loop() -> None:
             mcp_online = True
             print(f"  -> Connected. {len(available_mcp_tools)} MCP workflow tools loaded.")
 
-        except asyncio.TimeoutError:
-            print("  -> MCP connection timed out. Starting in CLI-only mode.")
         except Exception as e:
-            print(f"  -> MCP unavailable ({type(e).__name__}: {e}). Starting in CLI-only mode.")
-    else:
-        print("[SYSTEM] mcp package not found. Starting in CLI-only mode.")
+            if isinstance(e, (asyncio.TimeoutError, TimeoutError)):
+                print("  -> MCP connection timed out. Starting in CLI-only mode.")
+            else:
+                print(f"  -> MCP unavailable ({type(e).__name__}: {e}). Starting in CLI-only mode.")
 
-    _print_banner(mcp_online, len(available_mcp_tools))
+        _print_banner(mcp_online, len(available_mcp_tools))
 
-    # Print CLI tool summary
-    print(f"\n[SYSTEM] Available CLI tools ({len(CLI_TOOLS)}):\n")
-    for i, t in enumerate(CLI_TOOLS, 1):
-        params = list(t.get("args", []))
-        param_str = ", ".join(
-            a["name"].lstrip("-").replace("-", "_") for a in params
-        ) if params else "(no params)"
-        print(f"  {i:3d}. {t['name']:<45s} [{param_str}]")
-
-    if mcp_online:
-        print(f"\n[SYSTEM] Available MCP workflow tools ({len(available_mcp_tools)}):\n")
-        for i, t in enumerate(available_mcp_tools, 1):
-            params = list(t["inputSchema"].get("properties", {}).keys())
-            param_str = ", ".join(params) if params else "(no params)"
+        # Print CLI tool summary
+        print(f"\n[SYSTEM] Available CLI tools ({len(CLI_TOOLS)}):\n")
+        for i, t in enumerate(CLI_TOOLS, 1):
+            params = list(t.get("args", []))
+            param_str = ", ".join(
+                a["name"].lstrip("-").replace("-", "_") for a in params
+            ) if params else "(no params)"
             print(f"  {i:3d}. {t['name']:<45s} [{param_str}]")
-    print()
+
+        if mcp_online:
+            print(f"\n[SYSTEM] Available MCP workflow tools ({len(available_mcp_tools)}):\n")
+            for i, t in enumerate(available_mcp_tools, 1):
+                params = list(t["inputSchema"].get("properties", {}).keys())
+                param_str = ", ".join(params) if params else "(no params)"
+                print(f"  {i:3d}. {t['name']:<45s} [{param_str}]")
+        print()
+
+        await _run_prompt_loop(client, cli_tools_schema, mcp_session, available_mcp_tools, mcp_online)
+
+async def _run_prompt_loop(client, cli_tools_schema, mcp_session, available_mcp_tools, mcp_online):
 
     # -----------------------------------------------------------------------
     # Main prompt loop

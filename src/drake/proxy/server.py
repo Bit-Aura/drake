@@ -195,6 +195,11 @@ async def load_approved_tools_from_db() -> None:
                 except Exception as e:
                     logger.debug(f"Failed to parse request_schema: {e}")
 
+                if step.url:
+                    for match in re.findall(r"\{([a-zA-Z0-9_]+)\}", step.url):
+                        if match not in all_params:
+                            all_params[match] = (str, ...)
+
             # AUDIT1.MD Fix: Multi-step orchestration instructions and causal chain documentation for LLM
             orchestration_doc = ""
             if len(wf.steps) > 1:
@@ -357,6 +362,11 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
             except Exception as e:
                 logger.debug(f"Failed to parse request_schema: {e}")
                 
+            if step.url:
+                for match in re.findall(r"\{([a-zA-Z0-9_]+)\}", step.url):
+                    if match not in params_dict:
+                        params_dict[match] = (str, ...)
+                        
             desc = f"Execute step {step.step_order}: {step.method} {step.url} for workflow {workflow_id}."
             
             def make_step_tool(t_name, t_desc, t_params, t_step, t_executor):

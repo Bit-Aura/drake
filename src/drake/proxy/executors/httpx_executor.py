@@ -89,6 +89,7 @@ class HTTPXExecutorBase(BaseExecutor):
         # Build path carefully with url encoding
         path = step.url
         path_matches = re.findall(r"\{([a-zA-Z0-9_]+)\}", path)
+        missing_matches = []
         for match in path_matches:
             if match in resolved_params:
                 # Use proper url encoding and prevent path traversal
@@ -97,6 +98,11 @@ class HTTPXExecutorBase(BaseExecutor):
             elif f"workflow.input.{match}" in context.get("workflow", {}).get("input", {}):
                 encoded_val = quote(str(context["workflow"]["input"][f"workflow.input.{match}"]), safe="")  # noqa: E501
                 path = re.sub(rf"\{{{match}\}}", encoded_val, path)
+            else:
+                missing_matches.append(match)
+
+        if missing_matches:
+            raise DellProxyExecutionError(f"Missing required path parameters for step URL '{step.url}': {missing_matches}")
 
         target_url = urljoin(self.base_url + "/", path.lstrip("/"))
 
