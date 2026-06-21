@@ -48,11 +48,13 @@ export async function apiRequest<T>(
 
   let response: Response;
   try {
+    const apiKey = process.env.NEXT_PUBLIC_API_KEY ?? "";
     response = await fetch(url, {
       ...init,
       headers: {
         Accept: "application/json",
         ...(init?.body ? { "Content-Type": "application/json" } : {}),
+        ...(apiKey ? { "X-API-Key": apiKey } : {}),
         ...init?.headers,
       },
     });
