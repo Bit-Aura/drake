@@ -53,6 +53,22 @@ def calculate_compiled_workflow_tokens(workflows: List[Dict[str, Any]]) -> int:
         if wf.get("approved") == 1:
             desc = wf.get("generatedDescription") or ""
             text_content += f"{wf.get('systemName', '')} {wf.get('displayName', '')} {desc}\n"
+            
+            for ep in wf.get("underlyingEndpoints", []):
+                req_params = ep.get("required_params")
+                if req_params:
+                    # req_params is usually a JSON string from the DB
+                    if isinstance(req_params, str):
+                        text_content += req_params + "\n"
+                    else:
+                        text_content += json.dumps(req_params) + "\n"
+                        
+                req_schema = ep.get("request_schema")
+                if req_schema:
+                    if isinstance(req_schema, str):
+                        text_content += req_schema + "\n"
+                    else:
+                        text_content += json.dumps(req_schema) + "\n"
     
     try:
         import tiktoken
