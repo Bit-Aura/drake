@@ -232,6 +232,7 @@ async def decide_tool_with_llm(
         ],
         response_model=ToolSelection,
         max_retries=3,
+        extra_body={"options": {"num_ctx": 32768}},
     )
     return selection
 
@@ -533,6 +534,9 @@ async def interactive_loop() -> None:
         except Exception as e:
             if isinstance(e, (asyncio.TimeoutError, TimeoutError)):
                 print("  -> MCP connection timed out. Starting in CLI-only mode.")
+            elif isinstance(e, ExceptionGroup):
+                sub_msgs = [f"{type(se).__name__}: {se}" for se in e.exceptions]
+                print(f"  -> MCP connection failed: {', '.join(sub_msgs)}. Starting in CLI-only mode.")
             else:
                 print(f"  -> MCP unavailable ({type(e).__name__}: {e}). Starting in CLI-only mode.")
 

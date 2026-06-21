@@ -24,11 +24,12 @@ def pipeline_cmd(  # noqa: E302
 
     # 2. Optional Auto-Approval
     if auto_approve:
-        with status_spinner("Auto-approving safe READ_ONLY workflows..."):
+        with status_spinner("Auto-approving safe LOW risk workflows..."):
             pending = wrapper.container.governance_service.get_pending()
             approved_count = 0
             for wf in pending:
-                if wf.get("riskLevel") == "READ_ONLY":
+                # The CLI service maps risk_level to riskLevel in get_pending()
+                if wf.get("riskLevel") == "low":
                     wrapper.container.governance_service.approve_workflow(wf["id"])
                     approved_count += 1
 

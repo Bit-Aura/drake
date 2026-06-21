@@ -15,11 +15,15 @@ class SystemCLIService:
         of its tools, ensuring synchronization with the SQLite database.
         """
         import urllib.request
+        import os
+        from dotenv import load_dotenv
+        load_dotenv()
+        api_key = os.getenv("DELL_MCP_API_KEY", "override_dev_key")
         try:
             req = urllib.request.Request(
                 "http://127.0.0.1:8001/api/v1/mcp/reload",
                 method="POST",
-                headers={"X-API-Key": "override_dev_key"}
+                headers={"X-API-Key": api_key}
             )
             with urllib.request.urlopen(req, timeout=1.0):
                 pass
