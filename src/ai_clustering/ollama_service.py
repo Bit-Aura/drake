@@ -73,6 +73,18 @@ class OllamaService:
             raise WorkflowValidationError("Ollama response must be a JSON object")
         return parsed
 
+    def generate_text(self, prompt: str) -> str:
+        """Request raw text from local Ollama for chunking summaries."""
+        self._logger.info(f"Sending text request to Ollama ({self._model})...")
+        response = self._client.chat(
+            model=self._model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        content = self._extract_message_content(response)
+        if not isinstance(content, str) or not content.strip():
+            raise OllamaServiceError("Ollama returned an empty response")
+        return content
+
     def _extract_message_content(self, response: Any) -> str | None:
         """Extract assistant message content from supported Ollama responses."""
         if isinstance(response, dict):

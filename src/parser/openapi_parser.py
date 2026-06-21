@@ -44,8 +44,17 @@ def resolve_refs(obj: Any, spec: Dict[str, Any], seen: set = None, root_dir: Pat
                 else:
                     ext_file_path = Path(file_part)
                 
+                base_dir = root_dir.resolve() if root_dir else Path.cwd().resolve()
+                resolved_ext_path = ext_file_path.resolve()
+                
+                # Security: Prevent directory traversal attacks
+                if not str(resolved_ext_path).startswith(str(base_dir)):
+                    logger.error(f"Security blocked path traversal attempt: {ref} resolves to {resolved_ext_path} outside base dir {base_dir}")
+                    seen.remove(ref)
+                    return {"type": "object", "description": "Blocked unauthorized path traversal reference."}
+                
                 # Normalize path to use as cache key
-                cache_key = str(ext_file_path.resolve())
+                cache_key = str(resolved_ext_path)
                 if cache_key in external_specs_cache:
                     ext_spec = external_specs_cache[cache_key]
                 else:
@@ -90,6 +99,74 @@ def resolve_refs(obj: Any, spec: Dict[str, Any], seen: set = None, root_dir: Pat
         return [resolve_refs(i, spec, set(seen), root_dir) for i in obj]
     return obj
 
+def schema_to_python_type(schema: Dict[str, Any], model_name: str = "DynamicModel") -> Any:
+    """Recursively maps OpenAPI schema to Pydantic models and Python types."""
+    from typing import Dict, List, Any, Union, Optional
+    from enum import Enum
+    from pydantic import create_model, Field
+
+    if not isinstance(schema, dict):
+        return Any
+
+    schema_type = schema.get("type")
+
+    # Handle OpenAPI 3.1 nullable: true
+    is_nullable = schema.get("nullable", False)
+    
+    # OpenAPI 3.1 type arrays (e.g., type: ["string", "null"])
+    if isinstance(schema_type, list):
+        types = [t for t in schema_type if t != "null"]
+        is_nullable = is_nullable or "null" in schema_type
+        schema_type = types[0] if types else "object"
+
+    base_type = Any
+    
+    if schema_type == "string":
+        if "enum" in schema:
+            safe_name = "".join(c if c.isalnum() else "_" for c in model_name)
+            try:
+                base_type = Enum(f"{safe_name}Enum", {str(e).replace(' ', '_').upper(): e for e in schema["enum"]})
+            except Exception:
+                base_type = str
+        else:
+            base_type = str
+    elif schema_type == "integer":
+        base_type = int
+    elif schema_type == "number":
+        base_type = float
+    elif schema_type == "boolean":
+        base_type = bool
+    elif schema_type == "array":
+        items_schema = schema.get("items", {})
+        item_type = schema_to_python_type(items_schema, model_name=f"{model_name}Item")
+        base_type = List[item_type]
+    elif schema_type == "object":
+        properties = schema.get("properties", {})
+        required = schema.get("required", [])
+        
+        fields = {}
+        for prop_name, prop_schema in properties.items():
+            prop_type = schema_to_python_type(prop_schema, model_name=f"{model_name}_{prop_name}")
+            is_req = prop_name in required
+            
+            # Additional OpenAPI 3.1 safety
+            if isinstance(prop_schema, dict) and prop_schema.get("nullable", False):
+                is_req = False
+                
+            fields[prop_name] = (
+                prop_type if is_req else Optional[prop_type],
+                ... if is_req else None
+            )
+            
+        if fields:
+            safe_name = "".join(c if c.isalnum() else "_" for c in model_name)
+            base_type = create_model(safe_name, **fields)
+        else:
+            base_type = Dict[str, Any]
+            
+    if is_nullable:
+        return Optional[base_type]
+    return base_type
 
 class OpenAPIParser:
     """
@@ -157,7 +234,11 @@ class OpenAPIParser:
         Extracts: operation_id, path, method, summary, description, tags, required parameters, and schemas.
         """
         spec = self.load_spec()
-        paths = spec.get("paths", {})
+        paths = spec.get("paths", {}) or {}
+        
+        # Safely ignore webhooks block if present at root, sometimes placed inside paths by mistake in some specs
+        if "webhooks" in paths:
+            paths.pop("webhooks", None)
 
         endpoints: List[EndpointContract] = []
 
