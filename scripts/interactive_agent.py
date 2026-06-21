@@ -64,7 +64,7 @@ except ImportError:
     _MCP_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
-# Project root path adjustment (so scripts/ can import from src/)
+# Project root path adjustment (so scripts/ can import from drake/)
 # ---------------------------------------------------------------------------
 _SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(_SCRIPTS_DIR)
@@ -125,6 +125,37 @@ class ToolSelection(BaseModel):
 # MCP tool argument validation
 # ---------------------------------------------------------------------------
 
+def _normalize_mcp_arguments(
+    arguments: Dict[str, Any], tools: List[dict], tool_name: str
+) -> Dict[str, Any]:
+    """Remap argument keys to match the schema's exact casing (case-insensitive fix).
+
+    LLMs frequently send keys like 'softwareinventoryid' when the schema expects
+    'SoftwareInventoryId'. This builds a lowercase→canonical map and remaps keys.
+    """
+    tool = next((t for t in tools if t["name"] == tool_name), None)
+    if not tool:
+        return arguments
+
+    schema = tool.get("inputSchema", {})
+    valid_props = schema.get("properties", {})
+
+    # Build normalized (lowercase, no underscores/dashes) → canonical key map
+    def _normalize_key(k: str) -> str:
+        return k.lower().replace("_", "").replace("-", "")
+
+    normalized_to_canonical = {_normalize_key(k): k for k in valid_props}
+
+    remapped: Dict[str, Any] = {}
+    for key, value in arguments.items():
+        canonical = normalized_to_canonical.get(_normalize_key(key))
+        if canonical:
+            remapped[canonical] = value
+        else:
+            remapped[key] = value  # keep unknown keys for error reporting
+    return remapped
+
+
 def validate_mcp_arguments(
     tool_name: str, arguments: Dict[str, Any], tools: List[dict]
 ) -> tuple[bool, str]:
@@ -154,6 +185,7 @@ def validate_mcp_arguments(
         )
 
     return True, "OK"
+
 
 
 # ---------------------------------------------------------------------------
@@ -378,6 +410,10 @@ async def execute_mcp_tool_and_display(
     tool_name = selection.selected_tool_name
     arguments = selection.arguments
 
+    # Normalize argument key casing (LLMs often send lowercase keys)
+    arguments = _normalize_mcp_arguments(arguments, available_mcp_tools, tool_name)
+    selection.arguments = arguments
+
     # Validate
     valid, msg = validate_mcp_arguments(tool_name, arguments, available_mcp_tools)
     if not valid:
@@ -422,13 +458,72 @@ async def execute_mcp_tool_and_display(
 
     print("\n[SYSTEM] MCP Tool Execution Complete:")
     print("─" * 70)
+
+    # ── Helper: extract the deepest error dict from possibly nested JSON ──
+    def _extract_error_payload(obj: Any) -> Optional[dict]:
+        """Unwrap nested CallToolResult / JSON until we find {error: ...}."""
+        if isinstance(obj, dict):
+            if "error" in obj:
+                return obj
+            # Check for nested content array (double-wrapped CallToolResult)
+            if "content" in obj and isinstance(obj["content"], list):
+                for item in obj["content"]:
+                    if isinstance(item, dict) and item.get("type") == "text":
+                        try:
+                            inner = json.loads(item["text"])
+                            found = _extract_error_payload(inner)
+                            if found:
+                                return found
+                        except (json.JSONDecodeError, TypeError):
+                            pass
+        return None
+
+    # ── Determine if the result carries an error ──
+    has_error = getattr(result, "isError", False)
+
     for content in result.content:
         if content.type == "text":
+            raw_text = content.text
             try:
-                parsed = json.loads(content.text)
-                print(json.dumps(parsed, indent=2))
-            except Exception:
-                print(content.text)
+                parsed = json.loads(raw_text)
+            except (json.JSONDecodeError, TypeError):
+                parsed = None
+
+            # Try to find the real error payload (handles double-wrapping)
+            error_payload = _extract_error_payload(parsed) if parsed else None
+
+            if error_payload:
+                err_msg = error_payload["error"]
+                wf_name = error_payload.get("workflow_name") or tool_name
+                if "Execution blocked by AI Guardrails" in err_msg:
+                    # Clean guardrail block message
+                    # Extract just the reason part after the colon
+                    reason = err_msg.split(":", 1)[-1].strip() if ":" in err_msg else err_msg
+                    print(f"  [AI GUARDRAIL BLOCK] Input blocked for '{wf_name}': {reason}")
+                elif "after exhausting retries" in err_msg:
+                    print(f"  [ERROR] Workflow step execution failed for '{wf_name}' — target endpoint unreachable after retries.")
+                elif "STRICT Policy blocked" in err_msg:
+                    print(f"  [POLICY BLOCK] {err_msg}")
+                else:
+                    print(f"  [ERROR] {err_msg}")
+                if os.getenv("DRAKE_DEBUG") and "traceback" in error_payload:
+                    print(f"\n  Debug traceback:\n{error_payload['traceback']}")
+            elif has_error:
+                # isError but couldn't parse — show truncated raw text
+                print(f"  [ERROR] {raw_text[:300]}")
+            elif parsed is not None:
+                # Successful structured response
+                if isinstance(parsed, dict) and "error" in parsed:
+                    print(f"  [ERROR] {parsed['error']}")
+                else:
+                    print(json.dumps(parsed, indent=2))
+            else:
+                # Plain text result
+                text_preview = raw_text.strip()
+                if "partial_failure" in text_preview or "after exhausting retries" in text_preview:
+                    print(f"  [ERROR] {text_preview[:300]}")
+                else:
+                    print(text_preview)
         else:
             print(f"  [{content.type}]: {content}")
     print("─" * 70)
@@ -664,4 +759,9 @@ async def _run_prompt_loop(client, cli_tools_schema, mcp_session, available_mcp_
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    asyncio.run(interactive_loop())
+    try:
+        asyncio.run(interactive_loop())
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        print("\n\nShutting down AI Agent terminal...")
+    except Exception:
+        pass

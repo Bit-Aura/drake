@@ -144,7 +144,7 @@ def build_command(tool_def: ToolDef, arguments: Dict[str, Any]) -> List[str]:
     Construct the full subprocess argv from a tool definition and LLM arguments.
 
     Returns a list like:
-      ["/path/to/python", "-m", "src.cli.main", "--json",
+      ["/path/to/python", "-m", "drake.cli.main", "--json",
        "cluster", "run", "--specs", "openapi.json"]
 
     Argument resolution rules
@@ -156,8 +156,8 @@ def build_command(tool_def: ToolDef, arguments: Dict[str, Any]) -> List[str]:
     """
     python = _resolve_python()
 
-    # Base: python -m src.cli.main --json <subcommand...>
-    cmd: List[str] = [python, "-m", "src.cli.main", "--json"] + tool_def["command"]
+    # Base: python -m drake.cli.main --json <subcommand...>
+    cmd: List[str] = [python, "-m", "drake.cli.main", "--json"] + tool_def["command"]
 
     positionals: List[str] = []
     flagged: List[str] = []

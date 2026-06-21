@@ -1,8 +1,8 @@
 from typing import Dict, Any
 import logging
 import json
-from src.governance.ai_guardrails.tool_guard import ToolGuard
-from src.core.database import log_audit_event
+from drake.governance.core.tool_guard import ToolGuard
+from drake.core.database import log_audit_event
 
 logger = logging.getLogger(__name__)
 

@@ -137,7 +137,7 @@ async def test_end_to_end_execution():
         target_tool = registered[0] # Should be Op1
         
         # Mock executor
-        with patch("src.proxy.executors.httpx_executor.MockExecutor.execute_step", new_callable=AsyncMock) as mock_execute:
+        with patch("drake.proxy.executors.httpx_executor.MockExecutor.execute_step", new_callable=AsyncMock) as mock_execute:
             mock_execute.return_value = {"status": "mocked_success"}
             
             # Execute dynamically registered tool

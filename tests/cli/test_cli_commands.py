@@ -36,15 +36,15 @@ raise ValueError("Broken plugin initialization failure")
     if broken_path.exists():
         broken_path.unlink()
     # Remove from sys.modules to prevent caching side effects
-    sys.modules.pop("src.cli.plugins.mock_plugin", None)
-    sys.modules.pop("src.cli.plugins.broken_plugin", None)
+    sys.modules.pop("drake.cli.plugins.mock_plugin", None)
+    sys.modules.pop("drake.cli.plugins.broken_plugin", None)
 
 def test_cli_help() -> None:
     """Ensure the main CLI displays help when called with no arguments."""
     import importlib
     import drake.cli.main
-    importlib.reload(src.cli.main)
-    local_app = src.cli.main.app
+    importlib.reload(drake.cli.main)
+    local_app = drake.cli.main.app
 
     result = runner.invoke(local_app)
     assert result.exit_code == 2

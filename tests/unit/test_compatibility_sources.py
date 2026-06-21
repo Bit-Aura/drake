@@ -59,7 +59,7 @@ async def test_cached_facts_provider_success(monkeypatch):
     mock_session_factory = MagicMock()
     mock_session_factory.return_value.__aenter__.return_value = mock_session
     monkeypatch.setattr(
-        "src.core.compatibility.sources.async_session", mock_session_factory
+        "drake.core.compatibility.sources.async_session", mock_session_factory
     )
 
     mock_device = MagicMock()
@@ -89,7 +89,7 @@ async def test_cached_facts_provider_miss(monkeypatch):
     mock_session_factory = MagicMock()
     mock_session_factory.return_value.__aenter__.return_value = mock_session
     monkeypatch.setattr(
-        "src.core.compatibility.sources.async_session", mock_session_factory
+        "drake.core.compatibility.sources.async_session", mock_session_factory
     )
 
     mock_result = MagicMock()
@@ -107,7 +107,7 @@ async def test_cached_facts_provider_malformed_json_and_date(monkeypatch):
     mock_session_factory = MagicMock()
     mock_session_factory.return_value.__aenter__.return_value = mock_session
     monkeypatch.setattr(
-        "src.core.compatibility.sources.async_session", mock_session_factory
+        "drake.core.compatibility.sources.async_session", mock_session_factory
     )
 
     mock_device = MagicMock()

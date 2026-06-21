@@ -27,7 +27,7 @@ class RuntimeCLIService:
                         "name": wf.system_name,
                         "description": wf.generated_description,
                         "risk_level": wf.risk_level,
-                        "steps_count": len(wf.steps),
+                        "steps_count": len(wf.steps),  # type: ignore[arg-type]
                     }
                     for wf in approved_wfs
                 ]

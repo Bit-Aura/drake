@@ -90,7 +90,7 @@ async def test_execution_history_persistence():
 
 
 @pytest.mark.anyio
-@patch("src.proxy.executors.workflow_execution_service.httpx.AsyncClient")
+@patch("drake.proxy.executors.workflow_execution_service.httpx.AsyncClient")
 async def test_interceptor_snapshot_and_ledger(mock_httpx_client):
     """Verify that WorkflowExecutionService intercepts calls, runs SCP snapshot, and writes the ledger."""
     await init_db()
@@ -294,7 +294,7 @@ async def test_revert_previous_action_none():
 
 
 @pytest.mark.anyio
-@patch("src.proxy.executors.workflow_execution_service.httpx.AsyncClient")
+@patch("drake.proxy.executors.workflow_execution_service.httpx.AsyncClient")
 async def test_auto_rollback_on_execution_failure(mock_httpx_client):
     """Verify that WorkflowExecutionService triggers auto-rollback when execution fails."""
     await init_db()

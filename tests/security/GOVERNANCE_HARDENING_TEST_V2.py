@@ -6,14 +6,14 @@ import base64
 import urllib.parse
 import binascii
 
-BASE_DIR = "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, BASE_DIR)
 
-from src.governance.ai_guardrails.prefilter import FastPreFilter
-from src.governance.ai_guardrails.tool_guard import ToolGuard
-from src.governance.core.risk import RiskAssessor
-from src.governance.core.policy import PolicyEngine
-from src.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
+from drake.governance.core.prefilter import FastPreFilter
+from drake.governance.core.tool_guard import ToolGuard
+from drake.governance.core.risk import RiskAssessor
+from drake.governance.core.policy import PolicyEngine
+from drake.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
 
 # --- 1. Enumerate Discovered Workflows ---
 WORKFLOW_INVENTORY = [
@@ -136,7 +136,7 @@ def main():
     perf_res = test_perf_and_routing()
     
     # Write IMPLEMENTATION_REPORT.md
-    with open("IMPLEMENTATION_REPORT.md", "w") as f:
+    with open("IMPLEMENTATION_REPORT.md", "w", encoding="utf-8") as f:
         f.write("# DELL_MCP Governance Implementation Report\n\n")
         f.write("## 1. Files Modified & Created\n")
         f.write("- **Created:** `src/governance/runtime/workflow_campaign_tracker.py`\n")
@@ -149,7 +149,7 @@ def main():
         f.write("All new integrations execute in <2ms, operating strictly within acceptable bounds for enterprise service-mesh proxies.\n")
 
     # Write GOVERNANCE_HARDENING_TEST_PLAN.md
-    with open("GOVERNANCE_HARDENING_TEST_PLAN.md", "w") as f:
+    with open("GOVERNANCE_HARDENING_TEST_PLAN.md", "w", encoding="utf-8") as f:
         f.write("# Governance Hardening Test Plan\n\n")
         f.write("## Objectives\n")
         f.write("Validate the 4 new defensive mechanisms (Campaign Tracker, Blast Radius, Unicode Norm, Deep Decode) against iDRAC, Redfish, and OpenManage workloads.\n\n")
@@ -160,7 +160,7 @@ def main():
         f.write("- **Payload Tunneling**: Base64, URL, Hex, and nested encodings of `rm -rf /`.\n")
         
     # Write GOVERNANCE_HARDENING_RESULTS.md
-    with open("GOVERNANCE_HARDENING_RESULTS.md", "w") as f:
+    with open("GOVERNANCE_HARDENING_RESULTS.md", "w", encoding="utf-8") as f:
         f.write("# Governance Hardening Results\n\n")
         f.write("## 1. Campaign & Bulk Impact\n```\n")
         f.write(campaigns + "\n```\n\n")
@@ -172,7 +172,7 @@ def main():
         f.write(perf_res + "\n```\n")
 
     # Write SECURITY_FINDINGS.md
-    with open("SECURITY_FINDINGS.md", "w") as f:
+    with open("SECURITY_FINDINGS.md", "w", encoding="utf-8") as f:
         f.write("# Security Findings & Conclusion\n\n")
         f.write("## Observations\n")
         f.write("- **Workflow Campaign Tracker**: Successfully identifies split sequences. The 4th DELETE operation triggered `is_campaign: True` without requiring hardcoded lists.\n")

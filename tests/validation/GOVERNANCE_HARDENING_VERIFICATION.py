@@ -6,15 +6,15 @@ import base64
 import urllib.parse
 import unicodedata
 
-BASE_DIR = "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, BASE_DIR)
 
-from src.governance.ai_guardrails.prefilter import FastPreFilter
-from src.governance.ai_guardrails.tool_guard import ToolGuard
-from src.governance.core.risk import RiskAssessor
-from src.governance.core.policy import PolicyEngine
-from src.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
-from src.governance.middleware import GovernanceMiddleware
+from drake.governance.core.prefilter import FastPreFilter
+from drake.governance.core.tool_guard import ToolGuard
+from drake.governance.core.risk import RiskAssessor
+from drake.governance.core.policy import PolicyEngine
+from drake.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
+from drake.governance.middleware import GovernanceMiddleware
 
 def phase_4_unknown_workflows():
     mw = GovernanceMiddleware.get_instance()

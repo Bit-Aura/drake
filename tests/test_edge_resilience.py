@@ -65,7 +65,7 @@ async def test_3_downstream_rate_limiting_mid_step():
         MagicMock(id=5, operation_id="Step5", method="GET", url="/api/5", variable_bindings="{}", required_params="[]"),
     ]
     
-    with patch("src.proxy.executors.httpx_executor.async_session") as mock_session:
+    with patch("drake.proxy.executors.httpx_executor.async_session") as mock_session:
         mock_session_inst = mock_session.return_value.__aenter__.return_value
         mock_wf = MagicMock(id="wf_5_steps", steps=steps)
         mock_result = MagicMock()

@@ -836,107 +836,107 @@
         },
         {
           "step_id": 14,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Settings",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Settings",
-          "params": {}
-        },
-        {
-          "step_id": 15,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Assembly",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Assembly",
-          "params": {}
-        },
-        {
-          "step_id": 16,
           "name": "PATCH_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}",
           "method": "PATCH",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}",
           "params": {}
         },
         {
-          "step_id": 17,
+          "step_id": 15,
           "name": "Action_Reset_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Actions/Processor.Reset",
           "method": "POST",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Actions/Processor.Reset",
           "params": {}
         },
         {
-          "step_id": 18,
+          "step_id": 16,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/CacheMemory",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/CacheMemory",
           "params": {}
         },
         {
-          "step_id": 19,
+          "step_id": 17,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/CacheMemory/{MemoryId}",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/CacheMemory/{MemoryId}",
           "params": {}
         },
         {
-          "step_id": 20,
+          "step_id": 18,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/CacheMemory/{MemoryId}/MemoryMetrics",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/CacheMemory/{MemoryId}/MemoryMetrics",
           "params": {}
         },
         {
-          "step_id": 21,
+          "step_id": 19,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/EnvironmentMetrics",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/EnvironmentMetrics",
           "params": {}
         },
         {
-          "step_id": 22,
+          "step_id": 20,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/MemorySummary/MemoryMetrics",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/MemorySummary/MemoryMetrics",
           "params": {}
         },
         {
-          "step_id": 23,
+          "step_id": 21,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/ProcessorMetrics",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/ProcessorMetrics",
           "params": {}
         },
         {
-          "step_id": 24,
+          "step_id": 22,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors",
           "params": {}
         },
         {
-          "step_id": 25,
+          "step_id": 23,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}",
           "params": {}
         },
         {
-          "step_id": 26,
+          "step_id": 24,
           "name": "PATCH_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}",
           "method": "PATCH",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}",
           "params": {}
         },
         {
-          "step_id": 27,
+          "step_id": 25,
           "name": "Action_Reset_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}/Actions/Processor.Reset",
           "method": "POST",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}/Actions/Processor.Reset",
           "params": {}
         },
         {
-          "step_id": 28,
+          "step_id": 26,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Settings",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Settings",
+          "params": {}
+        },
+        {
+          "step_id": 27,
           "name": "PATCH_/redfish/v1/Systems/{ComputerSystemId}/Settings",
           "method": "PATCH",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Settings",
+          "params": {}
+        },
+        {
+          "step_id": 28,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Assembly",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Assembly",
           "params": {}
         }
       ]
@@ -961,37 +961,37 @@
         },
         {
           "step_id": 3,
+          "name": "Action_SubmitMetricValue_/redfish/v1/TelemetryService/Actions/Oem/DellTelemetryService.SubmitMetricValue",
+          "method": "POST",
+          "url": "/redfish/v1/TelemetryService/Actions/Oem/DellTelemetryService.SubmitMetricValue",
+          "params": {}
+        },
+        {
+          "step_id": 4,
           "name": "Action_ClearMetricReports_/redfish/v1/TelemetryService/Actions/TelemetryService.ClearMetricReports",
           "method": "POST",
           "url": "/redfish/v1/TelemetryService/Actions/TelemetryService.ClearMetricReports",
           "params": {}
         },
         {
-          "step_id": 4,
+          "step_id": 5,
           "name": "Action_ClearTelemetryData_/redfish/v1/TelemetryService/Actions/TelemetryService.ClearTelemetryData",
           "method": "POST",
           "url": "/redfish/v1/TelemetryService/Actions/TelemetryService.ClearTelemetryData",
           "params": {}
         },
         {
-          "step_id": 5,
+          "step_id": 6,
           "name": "Action_CollectTelemetryData_/redfish/v1/TelemetryService/Actions/TelemetryService.CollectTelemetryData",
           "method": "POST",
           "url": "/redfish/v1/TelemetryService/Actions/TelemetryService.CollectTelemetryData",
           "params": {}
         },
         {
-          "step_id": 6,
+          "step_id": 7,
           "name": "Action_ResetMetricReportDefinitionsToDefaults_/redfish/v1/TelemetryService/Actions/TelemetryService.ResetMetricReportDefinitionsToDefaults",
           "method": "POST",
           "url": "/redfish/v1/TelemetryService/Actions/TelemetryService.ResetMetricReportDefinitionsToDefaults",
-          "params": {}
-        },
-        {
-          "step_id": 7,
-          "name": "Action_SubmitMetricValue_/redfish/v1/TelemetryService/Actions/Oem/DellTelemetryService.SubmitMetricValue",
-          "method": "POST",
-          "url": "/redfish/v1/TelemetryService/Actions/Oem/DellTelemetryService.SubmitMetricValue",
           "params": {}
         },
         {
@@ -1003,120 +1003,120 @@
         },
         {
           "step_id": 9,
-          "name": "GET_/redfish/v1/TelemetryService/MetricReports",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/MetricReports",
-          "params": {}
-        },
-        {
-          "step_id": 10,
-          "name": "GET_/redfish/v1/TelemetryService/TelemetryData",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/TelemetryData",
-          "params": {}
-        },
-        {
-          "step_id": 11,
-          "name": "GET_/redfish/v1/TelemetryService/TelemetryData/{TelemetryDataId}",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/TelemetryData/{TelemetryDataId}",
-          "params": {}
-        },
-        {
-          "step_id": 12,
-          "name": "POST_/redfish/v1/TelemetryService/MetricDefinitions",
-          "method": "POST",
-          "url": "/redfish/v1/TelemetryService/MetricDefinitions",
-          "params": {}
-        },
-        {
-          "step_id": 13,
           "name": "GET_/redfish/v1/TelemetryService/MetricDefinitions",
           "method": "GET",
           "url": "/redfish/v1/TelemetryService/MetricDefinitions",
           "params": {}
         },
         {
-          "step_id": 14,
-          "name": "GET_/redfish/v1/TelemetryService/MetricDefinitions/{MetricDefinitionId}",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/MetricDefinitions/{MetricDefinitionId}",
+          "step_id": 10,
+          "name": "POST_/redfish/v1/TelemetryService/MetricDefinitions",
+          "method": "POST",
+          "url": "/redfish/v1/TelemetryService/MetricDefinitions",
           "params": {}
         },
         {
-          "step_id": 15,
+          "step_id": 11,
           "name": "DELETE_/redfish/v1/TelemetryService/MetricDefinitions/{MetricDefinitionId}",
           "method": "DELETE",
           "url": "/redfish/v1/TelemetryService/MetricDefinitions/{MetricDefinitionId}",
           "params": {}
         },
         {
-          "step_id": 16,
-          "name": "POST_/redfish/v1/TelemetryService/MetricReportDefinitions",
-          "method": "POST",
-          "url": "/redfish/v1/TelemetryService/MetricReportDefinitions",
+          "step_id": 12,
+          "name": "GET_/redfish/v1/TelemetryService/MetricDefinitions/{MetricDefinitionId}",
+          "method": "GET",
+          "url": "/redfish/v1/TelemetryService/MetricDefinitions/{MetricDefinitionId}",
           "params": {}
         },
         {
-          "step_id": 17,
+          "step_id": 13,
           "name": "GET_/redfish/v1/TelemetryService/MetricReportDefinitions",
           "method": "GET",
           "url": "/redfish/v1/TelemetryService/MetricReportDefinitions",
           "params": {}
         },
         {
-          "step_id": 18,
-          "name": "GET_/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
-          "params": {}
-        },
-        {
-          "step_id": 19,
-          "name": "POST_/redfish/v1/TelemetryService/Triggers",
+          "step_id": 14,
+          "name": "POST_/redfish/v1/TelemetryService/MetricReportDefinitions",
           "method": "POST",
-          "url": "/redfish/v1/TelemetryService/Triggers",
+          "url": "/redfish/v1/TelemetryService/MetricReportDefinitions",
           "params": {}
         },
         {
-          "step_id": 20,
-          "name": "GET_/redfish/v1/TelemetryService/Triggers",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/Triggers",
-          "params": {}
-        },
-        {
-          "step_id": 21,
-          "name": "GET_/redfish/v1/TelemetryService/Triggers/{TriggersId}",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/Triggers/{TriggersId}",
-          "params": {}
-        },
-        {
-          "step_id": 22,
-          "name": "PUT_/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
-          "method": "PUT",
-          "url": "/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
-          "params": {}
-        },
-        {
-          "step_id": 23,
-          "name": "PATCH_/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
-          "method": "PATCH",
-          "url": "/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
-          "params": {}
-        },
-        {
-          "step_id": 24,
+          "step_id": 15,
           "name": "DELETE_/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
           "method": "DELETE",
           "url": "/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
           "params": {}
         },
         {
-          "step_id": 25,
-          "name": "PUT_/redfish/v1/TelemetryService/Triggers/{TriggersId}",
+          "step_id": 16,
+          "name": "GET_/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
+          "method": "GET",
+          "url": "/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
+          "params": {}
+        },
+        {
+          "step_id": 17,
+          "name": "PATCH_/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
+          "method": "PATCH",
+          "url": "/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
+          "params": {}
+        },
+        {
+          "step_id": 18,
+          "name": "PUT_/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
           "method": "PUT",
+          "url": "/redfish/v1/TelemetryService/MetricReportDefinitions/{MetricReportDefinitionId}",
+          "params": {}
+        },
+        {
+          "step_id": 19,
+          "name": "GET_/redfish/v1/TelemetryService/MetricReports",
+          "method": "GET",
+          "url": "/redfish/v1/TelemetryService/MetricReports",
+          "params": {}
+        },
+        {
+          "step_id": 20,
+          "name": "GET_/redfish/v1/TelemetryService/TelemetryData",
+          "method": "GET",
+          "url": "/redfish/v1/TelemetryService/TelemetryData",
+          "params": {}
+        },
+        {
+          "step_id": 21,
+          "name": "GET_/redfish/v1/TelemetryService/TelemetryData/{TelemetryDataId}",
+          "method": "GET",
+          "url": "/redfish/v1/TelemetryService/TelemetryData/{TelemetryDataId}",
+          "params": {}
+        },
+        {
+          "step_id": 22,
+          "name": "GET_/redfish/v1/TelemetryService/Triggers",
+          "method": "GET",
+          "url": "/redfish/v1/TelemetryService/Triggers",
+          "params": {}
+        },
+        {
+          "step_id": 23,
+          "name": "POST_/redfish/v1/TelemetryService/Triggers",
+          "method": "POST",
+          "url": "/redfish/v1/TelemetryService/Triggers",
+          "params": {}
+        },
+        {
+          "step_id": 24,
+          "name": "DELETE_/redfish/v1/TelemetryService/Triggers/{TriggersId}",
+          "method": "DELETE",
+          "url": "/redfish/v1/TelemetryService/Triggers/{TriggersId}",
+          "params": {}
+        },
+        {
+          "step_id": 25,
+          "name": "GET_/redfish/v1/TelemetryService/Triggers/{TriggersId}",
+          "method": "GET",
           "url": "/redfish/v1/TelemetryService/Triggers/{TriggersId}",
           "params": {}
         },
@@ -1129,8 +1129,8 @@
         },
         {
           "step_id": 27,
-          "name": "DELETE_/redfish/v1/TelemetryService/Triggers/{TriggersId}",
-          "method": "DELETE",
+          "name": "PUT_/redfish/v1/TelemetryService/Triggers/{TriggersId}",
+          "method": "PUT",
           "url": "/redfish/v1/TelemetryService/Triggers/{TriggersId}",
           "params": {}
         }
@@ -1163,23 +1163,23 @@
         },
         {
           "step_id": 4,
+          "name": "Action_Reset_/redfish/v1/Chassis/{ChassisId}/Actions/Chassis.Reset",
+          "method": "POST",
+          "url": "/redfish/v1/Chassis/{ChassisId}/Actions/Chassis.Reset",
+          "params": {}
+        },
+        {
+          "step_id": 5,
           "name": "Action_ExtendedReset_/redfish/v1/Chassis/{ChassisId}/Actions/Oem/DellOemChassis.ExtendedReset",
           "method": "POST",
           "url": "/redfish/v1/Chassis/{ChassisId}/Actions/Oem/DellOemChassis.ExtendedReset",
           "params": {}
         },
         {
-          "step_id": 5,
+          "step_id": 6,
           "name": "Action_ResetFilterLife_/redfish/v1/Chassis/{ChassisId}/Actions/Oem/DellOemChassis.ResetFilterLife",
           "method": "POST",
           "url": "/redfish/v1/Chassis/{ChassisId}/Actions/Oem/DellOemChassis.ResetFilterLife",
-          "params": {}
-        },
-        {
-          "step_id": 6,
-          "name": "Action_Reset_/redfish/v1/Chassis/{ChassisId}/Actions/Chassis.Reset",
-          "method": "POST",
-          "url": "/redfish/v1/Chassis/{ChassisId}/Actions/Chassis.Reset",
           "params": {}
         },
         {
@@ -1191,127 +1191,127 @@
         },
         {
           "step_id": 8,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates",
-          "params": {}
-        },
-        {
-          "step_id": 9,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates/{CertificateId}",
-          "params": {}
-        },
-        {
-          "step_id": 10,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PCIeDevices",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PCIeDevices",
-          "params": {}
-        },
-        {
-          "step_id": 11,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/PCIeFunctions",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/PCIeFunctions",
-          "params": {}
-        },
-        {
-          "step_id": 12,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/PCIeFunctions/{PCIeFunctionId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/PCIeFunctions/{PCIeFunctionId}",
-          "params": {}
-        },
-        {
-          "step_id": 13,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Sensors",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/Sensors",
-          "params": {}
-        },
-        {
-          "step_id": 14,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Sensors/{SensorId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/Sensors/{SensorId}",
-          "params": {}
-        },
-        {
-          "step_id": 15,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Settings",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/Settings",
-          "params": {}
-        },
-        {
-          "step_id": 16,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/TrustedComponents",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents",
-          "params": {}
-        },
-        {
-          "step_id": 17,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}",
-          "params": {}
-        },
-        {
-          "step_id": 18,
           "name": "PATCH_/redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}",
           "method": "PATCH",
           "url": "/redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}",
           "params": {}
         },
         {
-          "step_id": 19,
+          "step_id": 9,
           "name": "Action_SecureErase_/redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}/Actions/Drive.SecureErase",
           "method": "POST",
           "url": "/redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}/Actions/Drive.SecureErase",
           "params": {}
         },
         {
-          "step_id": 20,
+          "step_id": 10,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates",
+          "params": {}
+        },
+        {
+          "step_id": 11,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates/{CertificateId}",
+          "params": {}
+        },
+        {
+          "step_id": 12,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PCIeDevices",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PCIeDevices",
+          "params": {}
+        },
+        {
+          "step_id": 13,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/PCIeFunctions",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/PCIeFunctions",
+          "params": {}
+        },
+        {
+          "step_id": 14,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/PCIeFunctions/{PCIeFunctionId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/PCIeFunctions/{PCIeFunctionId}",
+          "params": {}
+        },
+        {
+          "step_id": 15,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Sensors",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/Sensors",
+          "params": {}
+        },
+        {
+          "step_id": 16,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Sensors/{SensorId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/Sensors/{SensorId}",
+          "params": {}
+        },
+        {
+          "step_id": 17,
           "name": "PATCH_/redfish/v1/Chassis/{ChassisId}/Sensors/{SensorId}",
           "method": "PATCH",
           "url": "/redfish/v1/Chassis/{ChassisId}/Sensors/{SensorId}",
           "params": {}
         },
         {
-          "step_id": 21,
+          "step_id": 18,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Settings",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/Settings",
+          "params": {}
+        },
+        {
+          "step_id": 19,
           "name": "PATCH_/redfish/v1/Chassis/{ChassisId}/Settings",
           "method": "PATCH",
           "url": "/redfish/v1/Chassis/{ChassisId}/Settings",
           "params": {}
         },
         {
-          "step_id": 22,
-          "name": "POST_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates",
-          "method": "POST",
-          "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates",
+          "step_id": 20,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/TrustedComponents",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents",
           "params": {}
         },
         {
-          "step_id": 23,
+          "step_id": 21,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}",
+          "params": {}
+        },
+        {
+          "step_id": 22,
           "name": "GET_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates",
           "method": "GET",
           "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates",
           "params": {}
         },
         {
+          "step_id": 23,
+          "name": "POST_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates",
+          "method": "POST",
+          "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates",
+          "params": {}
+        },
+        {
           "step_id": 24,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates/{CertificateId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates/{CertificateId}",
+          "method": "DELETE",
           "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates/{CertificateId}",
           "params": {}
         },
         {
           "step_id": 25,
-          "name": "DELETE_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates/{CertificateId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates/{CertificateId}",
+          "method": "GET",
           "url": "/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates/{CertificateId}",
           "params": {}
         }
@@ -1351,142 +1351,142 @@
         },
         {
           "step_id": 5,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Power/PowerSupplies/{PowerSupplyId}/Assembly",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/Power/PowerSupplies/{PowerSupplyId}/Assembly",
-          "params": {}
-        },
-        {
-          "step_id": 6,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem",
-          "params": {}
-        },
-        {
-          "step_id": 7,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies",
-          "params": {}
-        },
-        {
-          "step_id": 8,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}",
-          "params": {}
-        },
-        {
-          "step_id": 9,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Assembly",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Assembly",
-          "params": {}
-        },
-        {
-          "step_id": 10,
           "name": "PATCH_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}",
           "method": "PATCH",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}",
           "params": {}
         },
         {
-          "step_id": 11,
+          "step_id": 6,
           "name": "Action_Reset_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Actions/NetworkAdapter.Reset",
           "method": "POST",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Actions/NetworkAdapter.Reset",
           "params": {}
         },
         {
-          "step_id": 12,
+          "step_id": 7,
           "name": "Action_SetPowerSavingMode_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Actions/Oem/DellNetworkAdapter.SetPowerSavingMode",
           "method": "POST",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Actions/Oem/DellNetworkAdapter.SetPowerSavingMode",
           "params": {}
         },
         {
-          "step_id": 13,
+          "step_id": 8,
           "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Assembly",
           "method": "GET",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Assembly",
           "params": {}
         },
         {
-          "step_id": 14,
+          "step_id": 9,
           "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/EnvironmentMetrics",
           "method": "GET",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/EnvironmentMetrics",
           "params": {}
         },
         {
-          "step_id": 15,
+          "step_id": 10,
           "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions",
           "method": "GET",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions",
           "params": {}
         },
         {
-          "step_id": 16,
+          "step_id": 11,
           "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}",
           "method": "GET",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}",
           "params": {}
         },
         {
-          "step_id": 17,
+          "step_id": 12,
           "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}/Settings",
           "method": "GET",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}/Settings",
           "params": {}
         },
         {
-          "step_id": 18,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkPorts",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkPorts",
-          "params": {}
-        },
-        {
-          "step_id": 19,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports",
-          "params": {}
-        },
-        {
-          "step_id": 20,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}",
-          "params": {}
-        },
-        {
-          "step_id": 21,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}/Metrics",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}/Metrics",
-          "params": {}
-        },
-        {
-          "step_id": 22,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Settings",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Settings",
-          "params": {}
-        },
-        {
-          "step_id": 23,
+          "step_id": 13,
           "name": "PATCH_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}/Settings",
           "method": "PATCH",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}/Settings",
           "params": {}
         },
         {
-          "step_id": 24,
+          "step_id": 14,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkPorts",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkPorts",
+          "params": {}
+        },
+        {
+          "step_id": 15,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports",
+          "params": {}
+        },
+        {
+          "step_id": 16,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}",
+          "params": {}
+        },
+        {
+          "step_id": 17,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}/Metrics",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}/Metrics",
+          "params": {}
+        },
+        {
+          "step_id": 18,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Settings",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Settings",
+          "params": {}
+        },
+        {
+          "step_id": 19,
           "name": "PATCH_/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Settings",
           "method": "PATCH",
           "url": "/redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Settings",
+          "params": {}
+        },
+        {
+          "step_id": 20,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Power/PowerSupplies/{PowerSupplyId}/Assembly",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/Power/PowerSupplies/{PowerSupplyId}/Assembly",
+          "params": {}
+        },
+        {
+          "step_id": 21,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem",
+          "params": {}
+        },
+        {
+          "step_id": 22,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies",
+          "params": {}
+        },
+        {
+          "step_id": 23,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}",
+          "params": {}
+        },
+        {
+          "step_id": 24,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Assembly",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Assembly",
           "params": {}
         }
       ]
@@ -1497,169 +1497,169 @@
       "steps": [
         {
           "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates",
-          "params": {}
-        },
-        {
-          "step_id": 3,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}",
-          "params": {}
-        },
-        {
-          "step_id": 4,
-          "name": "PATCH_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot",
-          "method": "PATCH",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot",
-          "params": {}
-        },
-        {
-          "step_id": 5,
-          "name": "Action_ResetKeys_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Actions/SecureBoot.ResetKeys",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Actions/SecureBoot.ResetKeys",
-          "params": {}
-        },
-        {
-          "step_id": 6,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases",
-          "params": {}
-        },
-        {
-          "step_id": 7,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}",
-          "params": {}
-        },
-        {
-          "step_id": 8,
-          "name": "Action_ResetKeys_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Actions/SecureBootDatabase.ResetKeys",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Actions/SecureBootDatabase.ResetKeys",
-          "params": {}
-        },
-        {
-          "step_id": 9,
-          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates",
-          "params": {}
-        },
-        {
-          "step_id": 10,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates",
           "params": {}
         },
         {
-          "step_id": 11,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates/{CertificateId}",
+          "step_id": 2,
+          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates",
           "params": {}
         },
         {
-          "step_id": 12,
+          "step_id": 3,
           "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates/{CertificateId}",
           "method": "DELETE",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 13,
-          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates",
+          "step_id": 4,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Boot/Certificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 14,
+          "step_id": 5,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates",
           "params": {}
         },
         {
-          "step_id": 15,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
+          "step_id": 6,
+          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates",
           "params": {}
         },
         {
-          "step_id": 16,
+          "step_id": 7,
           "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
           "method": "DELETE",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 17,
-          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates",
+          "step_id": 8,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 18,
+          "step_id": 9,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot",
+          "params": {}
+        },
+        {
+          "step_id": 10,
+          "name": "PATCH_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot",
+          "method": "PATCH",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot",
+          "params": {}
+        },
+        {
+          "step_id": 11,
+          "name": "Action_ResetKeys_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Actions/SecureBoot.ResetKeys",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Actions/SecureBoot.ResetKeys",
+          "params": {}
+        },
+        {
+          "step_id": 12,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases",
+          "params": {}
+        },
+        {
+          "step_id": 13,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}",
+          "params": {}
+        },
+        {
+          "step_id": 14,
+          "name": "Action_ResetKeys_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Actions/SecureBootDatabase.ResetKeys",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Actions/SecureBootDatabase.ResetKeys",
+          "params": {}
+        },
+        {
+          "step_id": 15,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates",
           "params": {}
         },
         {
-          "step_id": 19,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}",
+          "step_id": 16,
+          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates",
           "params": {}
         },
         {
-          "step_id": 20,
+          "step_id": 17,
           "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}",
           "method": "DELETE",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 21,
-          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates",
+          "step_id": 18,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 22,
+          "step_id": 19,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates",
+          "params": {}
+        },
+        {
+          "step_id": 20,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}",
+          "params": {}
+        },
+        {
+          "step_id": 21,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates",
           "params": {}
         },
         {
+          "step_id": 22,
+          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates",
+          "params": {}
+        },
+        {
           "step_id": 23,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}",
+          "method": "DELETE",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}",
           "params": {}
         },
         {
           "step_id": 24,
-          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}",
+          "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}",
           "params": {}
         }
@@ -1713,23 +1713,23 @@
         },
         {
           "step_id": 7,
-          "name": "Action_Reset_/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Actions/Switch.Reset",
-          "method": "POST",
-          "url": "/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Actions/Switch.Reset",
-          "params": {}
-        },
-        {
-          "step_id": 8,
           "name": "Action_SetLaneErrorInjection_/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Actions/Oem/DellSwitch.SetLaneErrorInjection",
           "method": "POST",
           "url": "/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Actions/Oem/DellSwitch.SetLaneErrorInjection",
           "params": {}
         },
         {
-          "step_id": 9,
+          "step_id": 8,
           "name": "Action_SetTraceSeverity_/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Actions/Oem/DellSwitch.SetTraceSeverity",
           "method": "POST",
           "url": "/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Actions/Oem/DellSwitch.SetTraceSeverity",
+          "params": {}
+        },
+        {
+          "step_id": 9,
+          "name": "Action_Reset_/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Actions/Switch.Reset",
+          "method": "POST",
+          "url": "/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Actions/Switch.Reset",
           "params": {}
         },
         {
@@ -1838,15 +1838,15 @@
       "steps": [
         {
           "step_id": 1,
-          "name": "POST_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/HTTPS/Certificates",
-          "method": "POST",
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/HTTPS/Certificates",
+          "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/HTTPS/Certificates",
           "params": {}
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/HTTPS/Certificates",
-          "method": "GET",
+          "name": "POST_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/HTTPS/Certificates",
+          "method": "POST",
           "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/HTTPS/Certificates",
           "params": {}
         },
@@ -1859,141 +1859,141 @@
         },
         {
           "step_id": 4,
-          "name": "POST_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC",
-          "params": {}
-        },
-        {
-          "step_id": 5,
           "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC",
           "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC",
           "params": {}
         },
         {
-          "step_id": 6,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC/{CertificateId}",
+          "step_id": 5,
+          "name": "POST_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC",
           "params": {}
         },
         {
-          "step_id": 7,
+          "step_id": 6,
           "name": "DELETE_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC/{CertificateId}",
           "method": "DELETE",
           "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 8,
-          "name": "POST_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates",
+          "step_id": 7,
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCSC/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 9,
+          "step_id": 8,
           "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates",
           "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates",
           "params": {}
         },
         {
-          "step_id": 10,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates/{CertificateId}",
+          "step_id": 9,
+          "name": "POST_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates",
           "params": {}
         },
         {
-          "step_id": 11,
+          "step_id": 10,
           "name": "DELETE_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates/{CertificateId}",
           "method": "DELETE",
           "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 12,
-          "name": "POST_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates",
+          "step_id": 11,
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ClientCertificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 13,
+          "step_id": 12,
           "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates",
           "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates",
           "params": {}
         },
         {
-          "step_id": 14,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates/{CertificateId}",
+          "step_id": 13,
+          "name": "POST_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates",
           "params": {}
         },
         {
-          "step_id": 15,
+          "step_id": 14,
           "name": "DELETE_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates/{CertificateId}",
           "method": "DELETE",
           "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 16,
-          "name": "POST_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates",
+          "step_id": 15,
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Managers/{ManagerId}/NetworkProtocol/Oem/Dell/PNAC/ServerCACertificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 17,
+          "step_id": 16,
           "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates",
           "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates",
           "params": {}
         },
         {
-          "step_id": 18,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates/{CertificateId}",
-          "method": "GET",
-          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates/{CertificateId}",
+          "step_id": 17,
+          "name": "POST_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates",
           "params": {}
         },
         {
-          "step_id": 19,
+          "step_id": 18,
           "name": "DELETE_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates/{CertificateId}",
           "method": "DELETE",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 20,
-          "name": "POST_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates",
+          "step_id": 19,
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates/{CertificateId}",
+          "method": "GET",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/CA/Certificates/{CertificateId}",
           "params": {}
         },
         {
-          "step_id": 21,
+          "step_id": 20,
           "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates",
           "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates",
           "params": {}
         },
         {
+          "step_id": 21,
+          "name": "POST_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates",
+          "params": {}
+        },
+        {
           "step_id": 22,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates/{CertificateId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates/{CertificateId}",
+          "method": "DELETE",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates/{CertificateId}",
           "params": {}
         },
         {
           "step_id": 23,
-          "name": "DELETE_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates/{CertificateId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates/{CertificateId}",
+          "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/RemoteSystemLogs/HTTPS/Certificates/{CertificateId}",
           "params": {}
         }
@@ -2131,29 +2131,29 @@
         },
         {
           "step_id": 19,
-          "name": "POST_/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs",
-          "params": {}
-        },
-        {
-          "step_id": 20,
           "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs",
           "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs",
           "params": {}
         },
         {
+          "step_id": 20,
+          "name": "POST_/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs",
+          "params": {}
+        },
+        {
           "step_id": 21,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs/{DellJobId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs/{DellJobId}",
+          "method": "DELETE",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs/{DellJobId}",
           "params": {}
         },
         {
           "step_id": 22,
-          "name": "DELETE_/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs/{DellJobId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs/{DellJobId}",
+          "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/Jobs/{DellJobId}",
           "params": {}
         }
@@ -2513,29 +2513,29 @@
         },
         {
           "step_id": 8,
-          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes",
-          "params": {}
-        },
-        {
-          "step_id": 9,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes",
           "params": {}
         },
         {
+          "step_id": 9,
+          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes",
+          "params": {}
+        },
+        {
           "step_id": 10,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}",
+          "method": "DELETE",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}",
           "params": {}
         },
         {
           "step_id": 11,
-          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}",
+          "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}",
           "params": {}
         },
@@ -2707,51 +2707,51 @@
         },
         {
           "step_id": 4,
-          "name": "Action_ExportSystemConfiguration_/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ExportSystemConfiguration",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ExportSystemConfiguration",
-          "params": {}
-        },
-        {
-          "step_id": 5,
-          "name": "Action_ImportSystemConfiguration_/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ImportSystemConfiguration",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ImportSystemConfiguration",
-          "params": {}
-        },
-        {
-          "step_id": 6,
-          "name": "Action_ImportSystemConfigurationPreview_/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ImportSystemConfigurationPreview",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ImportSystemConfigurationPreview",
-          "params": {}
-        },
-        {
-          "step_id": 7,
-          "name": "Action_ResetToDefaults_/redfish/v1/Managers/{ManagerId}/Actions/Oem/DellManager.ResetToDefaults",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/DellManager.ResetToDefaults",
-          "params": {}
-        },
-        {
-          "step_id": 8,
           "name": "Action_Reset_/redfish/v1/Managers/{ManagerId}/Actions/Manager.Reset",
           "method": "POST",
           "url": "/redfish/v1/Managers/{ManagerId}/Actions/Manager.Reset",
           "params": {}
         },
         {
-          "step_id": 9,
+          "step_id": 5,
           "name": "Action_ResetToDefaults_/redfish/v1/Managers/{ManagerId}/Actions/Manager.ResetToDefaults",
           "method": "POST",
           "url": "/redfish/v1/Managers/{ManagerId}/Actions/Manager.ResetToDefaults",
           "params": {}
         },
         {
-          "step_id": 10,
+          "step_id": 6,
+          "name": "Action_ResetToDefaults_/redfish/v1/Managers/{ManagerId}/Actions/Oem/DellManager.ResetToDefaults",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/DellManager.ResetToDefaults",
+          "params": {}
+        },
+        {
+          "step_id": 7,
           "name": "Action_SetCustomDefaults_/redfish/v1/Managers/{ManagerId}/Actions/Oem/DellManager.SetCustomDefaults",
           "method": "POST",
           "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/DellManager.SetCustomDefaults",
+          "params": {}
+        },
+        {
+          "step_id": 8,
+          "name": "Action_ExportSystemConfiguration_/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ExportSystemConfiguration",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ExportSystemConfiguration",
+          "params": {}
+        },
+        {
+          "step_id": 9,
+          "name": "Action_ImportSystemConfiguration_/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ImportSystemConfiguration",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ImportSystemConfiguration",
+          "params": {}
+        },
+        {
+          "step_id": 10,
+          "name": "Action_ImportSystemConfigurationPreview_/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ImportSystemConfigurationPreview",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Actions/Oem/EID_674_Manager.ImportSystemConfigurationPreview",
           "params": {}
         },
         {
@@ -2811,51 +2811,51 @@
         },
         {
           "step_id": 5,
-          "name": "GET_/redfish/v1/AccountService/Roles",
-          "method": "GET",
-          "url": "/redfish/v1/AccountService/Roles",
-          "params": {}
-        },
-        {
-          "step_id": 6,
-          "name": "GET_/redfish/v1/AccountService/Roles/{RoleId}",
-          "method": "GET",
-          "url": "/redfish/v1/AccountService/Roles/{RoleId}",
-          "params": {}
-        },
-        {
-          "step_id": 7,
           "name": "PATCH_/redfish/v1/AccountService/Accounts/{ManagerAccountId}",
           "method": "PATCH",
           "url": "/redfish/v1/AccountService/Accounts/{ManagerAccountId}",
           "params": {}
         },
         {
-          "step_id": 8,
-          "name": "POST_/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys",
-          "method": "POST",
-          "url": "/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys",
-          "params": {}
-        },
-        {
-          "step_id": 9,
+          "step_id": 6,
           "name": "GET_/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys",
           "method": "GET",
           "url": "/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys",
           "params": {}
         },
         {
-          "step_id": 10,
+          "step_id": 7,
+          "name": "POST_/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys",
+          "method": "POST",
+          "url": "/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys",
+          "params": {}
+        },
+        {
+          "step_id": 8,
+          "name": "DELETE_/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys/{KeyId}",
+          "method": "DELETE",
+          "url": "/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys/{KeyId}",
+          "params": {}
+        },
+        {
+          "step_id": 9,
           "name": "GET_/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys/{KeyId}",
           "method": "GET",
           "url": "/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys/{KeyId}",
           "params": {}
         },
         {
+          "step_id": 10,
+          "name": "GET_/redfish/v1/AccountService/Roles",
+          "method": "GET",
+          "url": "/redfish/v1/AccountService/Roles",
+          "params": {}
+        },
+        {
           "step_id": 11,
-          "name": "DELETE_/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys/{KeyId}",
-          "method": "DELETE",
-          "url": "/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys/{KeyId}",
+          "name": "GET_/redfish/v1/AccountService/Roles/{RoleId}",
+          "method": "GET",
+          "url": "/redfish/v1/AccountService/Roles/{RoleId}",
           "params": {}
         }
       ]
@@ -3115,36 +3115,36 @@
       "steps": [
         {
           "step_id": 1,
-          "name": "POST_/redfish/v1/AccountService/ExternalAccountProviders",
-          "method": "POST",
-          "url": "/redfish/v1/AccountService/ExternalAccountProviders",
-          "params": {}
-        },
-        {
-          "step_id": 2,
           "name": "GET_/redfish/v1/AccountService/ExternalAccountProviders",
           "method": "GET",
           "url": "/redfish/v1/AccountService/ExternalAccountProviders",
           "params": {}
         },
         {
+          "step_id": 2,
+          "name": "POST_/redfish/v1/AccountService/ExternalAccountProviders",
+          "method": "POST",
+          "url": "/redfish/v1/AccountService/ExternalAccountProviders",
+          "params": {}
+        },
+        {
           "step_id": 3,
+          "name": "DELETE_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}",
+          "method": "DELETE",
+          "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}",
+          "params": {}
+        },
+        {
+          "step_id": 4,
           "name": "GET_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}",
           "method": "GET",
           "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}",
           "params": {}
         },
         {
-          "step_id": 4,
+          "step_id": 5,
           "name": "PATCH_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}",
           "method": "PATCH",
-          "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}",
-          "params": {}
-        },
-        {
-          "step_id": 5,
-          "name": "DELETE_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}",
-          "method": "DELETE",
           "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}",
           "params": {}
         },
@@ -3157,29 +3157,29 @@
         },
         {
           "step_id": 7,
-          "name": "POST_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates",
-          "method": "POST",
-          "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates",
-          "params": {}
-        },
-        {
-          "step_id": 8,
           "name": "GET_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates",
           "method": "GET",
           "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates",
           "params": {}
         },
         {
+          "step_id": 8,
+          "name": "POST_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates",
+          "method": "POST",
+          "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates",
+          "params": {}
+        },
+        {
           "step_id": 9,
-          "name": "GET_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}",
+          "method": "DELETE",
           "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}",
           "params": {}
         },
         {
           "step_id": 10,
-          "name": "DELETE_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}",
+          "method": "GET",
           "url": "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}",
           "params": {}
         }
@@ -3198,57 +3198,57 @@
         },
         {
           "step_id": 2,
-          "name": "POST_/redfish/v1/JobService/Jobs",
-          "method": "POST",
-          "url": "/redfish/v1/JobService/Jobs",
-          "params": {}
-        },
-        {
-          "step_id": 3,
           "name": "GET_/redfish/v1/JobService/Jobs",
           "method": "GET",
           "url": "/redfish/v1/JobService/Jobs",
           "params": {}
         },
         {
-          "step_id": 4,
-          "name": "GET_/redfish/v1/JobService/Jobs/{JobId}",
-          "method": "GET",
-          "url": "/redfish/v1/JobService/Jobs/{JobId}",
+          "step_id": 3,
+          "name": "POST_/redfish/v1/JobService/Jobs",
+          "method": "POST",
+          "url": "/redfish/v1/JobService/Jobs",
           "params": {}
         },
         {
-          "step_id": 5,
+          "step_id": 4,
           "name": "DELETE_/redfish/v1/JobService/Jobs/{JobId}",
           "method": "DELETE",
           "url": "/redfish/v1/JobService/Jobs/{JobId}",
           "params": {}
         },
         {
-          "step_id": 6,
-          "name": "POST_/redfish/v1/JobService/Jobs/{JobId}/Steps",
-          "method": "POST",
-          "url": "/redfish/v1/JobService/Jobs/{JobId}/Steps",
+          "step_id": 5,
+          "name": "GET_/redfish/v1/JobService/Jobs/{JobId}",
+          "method": "GET",
+          "url": "/redfish/v1/JobService/Jobs/{JobId}",
           "params": {}
         },
         {
-          "step_id": 7,
+          "step_id": 6,
           "name": "GET_/redfish/v1/JobService/Jobs/{JobId}/Steps",
           "method": "GET",
           "url": "/redfish/v1/JobService/Jobs/{JobId}/Steps",
           "params": {}
         },
         {
+          "step_id": 7,
+          "name": "POST_/redfish/v1/JobService/Jobs/{JobId}/Steps",
+          "method": "POST",
+          "url": "/redfish/v1/JobService/Jobs/{JobId}/Steps",
+          "params": {}
+        },
+        {
           "step_id": 8,
-          "name": "GET_/redfish/v1/JobService/Jobs/{JobId}/Steps/{JobId2}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/JobService/Jobs/{JobId}/Steps/{JobId2}",
+          "method": "DELETE",
           "url": "/redfish/v1/JobService/Jobs/{JobId}/Steps/{JobId2}",
           "params": {}
         },
         {
           "step_id": 9,
-          "name": "DELETE_/redfish/v1/JobService/Jobs/{JobId}/Steps/{JobId2}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/JobService/Jobs/{JobId}/Steps/{JobId2}",
+          "method": "GET",
           "url": "/redfish/v1/JobService/Jobs/{JobId}/Steps/{JobId2}",
           "params": {}
         }
@@ -3281,36 +3281,36 @@
         },
         {
           "step_id": 4,
-          "name": "POST_/redfish/v1/EventService/Subscriptions",
-          "method": "POST",
-          "url": "/redfish/v1/EventService/Subscriptions",
-          "params": {}
-        },
-        {
-          "step_id": 5,
           "name": "GET_/redfish/v1/EventService/Subscriptions",
           "method": "GET",
           "url": "/redfish/v1/EventService/Subscriptions",
           "params": {}
         },
         {
+          "step_id": 5,
+          "name": "POST_/redfish/v1/EventService/Subscriptions",
+          "method": "POST",
+          "url": "/redfish/v1/EventService/Subscriptions",
+          "params": {}
+        },
+        {
           "step_id": 6,
+          "name": "DELETE_/redfish/v1/EventService/Subscriptions/{EventDestinationId}",
+          "method": "DELETE",
+          "url": "/redfish/v1/EventService/Subscriptions/{EventDestinationId}",
+          "params": {}
+        },
+        {
+          "step_id": 7,
           "name": "GET_/redfish/v1/EventService/Subscriptions/{EventDestinationId}",
           "method": "GET",
           "url": "/redfish/v1/EventService/Subscriptions/{EventDestinationId}",
           "params": {}
         },
         {
-          "step_id": 7,
+          "step_id": 8,
           "name": "PATCH_/redfish/v1/EventService/Subscriptions/{EventDestinationId}",
           "method": "PATCH",
-          "url": "/redfish/v1/EventService/Subscriptions/{EventDestinationId}",
-          "params": {}
-        },
-        {
-          "step_id": 8,
-          "name": "DELETE_/redfish/v1/EventService/Subscriptions/{EventDestinationId}",
-          "method": "DELETE",
           "url": "/redfish/v1/EventService/Subscriptions/{EventDestinationId}",
           "params": {}
         },
@@ -3405,51 +3405,51 @@
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/TelemetryService/Oem/Dell/D4D/Reports",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/Reports",
-          "params": {}
-        },
-        {
-          "step_id": 3,
-          "name": "GET_/redfish/v1/TelemetryService/Oem/Dell/D4D/Reports/{D4DReportId}",
-          "method": "GET",
-          "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/Reports/{D4DReportId}",
-          "params": {}
-        },
-        {
-          "step_id": 4,
-          "name": "POST_/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions",
-          "method": "POST",
-          "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions",
-          "params": {}
-        },
-        {
-          "step_id": 5,
           "name": "GET_/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions",
           "method": "GET",
           "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions",
           "params": {}
         },
         {
-          "step_id": 6,
+          "step_id": 3,
+          "name": "POST_/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions",
+          "method": "POST",
+          "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions",
+          "params": {}
+        },
+        {
+          "step_id": 4,
+          "name": "DELETE_/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions/{Id}",
+          "method": "DELETE",
+          "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions/{Id}",
+          "params": {}
+        },
+        {
+          "step_id": 5,
           "name": "GET_/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions/{Id}",
           "method": "GET",
           "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions/{Id}",
           "params": {}
         },
         {
-          "step_id": 7,
+          "step_id": 6,
           "name": "PATCH_/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions/{Id}",
           "method": "PATCH",
           "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions/{Id}",
           "params": {}
         },
         {
+          "step_id": 7,
+          "name": "GET_/redfish/v1/TelemetryService/Oem/Dell/D4D/Reports",
+          "method": "GET",
+          "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/Reports",
+          "params": {}
+        },
+        {
           "step_id": 8,
-          "name": "DELETE_/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions/{Id}",
-          "method": "DELETE",
-          "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/ReportDefinitions/{Id}",
+          "name": "GET_/redfish/v1/TelemetryService/Oem/Dell/D4D/Reports/{D4DReportId}",
+          "method": "GET",
+          "url": "/redfish/v1/TelemetryService/Oem/Dell/D4D/Reports/{D4DReportId}",
           "params": {}
         }
       ]
@@ -3708,29 +3708,29 @@
         },
         {
           "step_id": 3,
-          "name": "POST_/redfish/v1/LicenseService/Licenses",
-          "method": "POST",
-          "url": "/redfish/v1/LicenseService/Licenses",
-          "params": {}
-        },
-        {
-          "step_id": 4,
           "name": "GET_/redfish/v1/LicenseService/Licenses",
           "method": "GET",
           "url": "/redfish/v1/LicenseService/Licenses",
           "params": {}
         },
         {
+          "step_id": 4,
+          "name": "POST_/redfish/v1/LicenseService/Licenses",
+          "method": "POST",
+          "url": "/redfish/v1/LicenseService/Licenses",
+          "params": {}
+        },
+        {
           "step_id": 5,
-          "name": "GET_/redfish/v1/LicenseService/Licenses/{LicenseId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/LicenseService/Licenses/{LicenseId}",
+          "method": "DELETE",
           "url": "/redfish/v1/LicenseService/Licenses/{LicenseId}",
           "params": {}
         },
         {
           "step_id": 6,
-          "name": "DELETE_/redfish/v1/LicenseService/Licenses/{LicenseId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/LicenseService/Licenses/{LicenseId}",
+          "method": "GET",
           "url": "/redfish/v1/LicenseService/Licenses/{LicenseId}",
           "params": {}
         }
@@ -3742,15 +3742,15 @@
       "steps": [
         {
           "step_id": 1,
-          "name": "POST_/redfish/v1/AccountService/ActiveDirectory/Certificates",
-          "method": "POST",
+          "name": "GET_/redfish/v1/AccountService/ActiveDirectory/Certificates",
+          "method": "GET",
           "url": "/redfish/v1/AccountService/ActiveDirectory/Certificates",
           "params": {}
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/AccountService/ActiveDirectory/Certificates",
-          "method": "GET",
+          "name": "POST_/redfish/v1/AccountService/ActiveDirectory/Certificates",
+          "method": "POST",
           "url": "/redfish/v1/AccountService/ActiveDirectory/Certificates",
           "params": {}
         },
@@ -3763,15 +3763,15 @@
         },
         {
           "step_id": 4,
-          "name": "POST_/redfish/v1/AccountService/LDAP/Certificates",
-          "method": "POST",
+          "name": "GET_/redfish/v1/AccountService/LDAP/Certificates",
+          "method": "GET",
           "url": "/redfish/v1/AccountService/LDAP/Certificates",
           "params": {}
         },
         {
           "step_id": 5,
-          "name": "GET_/redfish/v1/AccountService/LDAP/Certificates",
-          "method": "GET",
+          "name": "POST_/redfish/v1/AccountService/LDAP/Certificates",
+          "method": "POST",
           "url": "/redfish/v1/AccountService/LDAP/Certificates",
           "params": {}
         },
@@ -3804,29 +3804,29 @@
         },
         {
           "step_id": 3,
-          "name": "POST_/redfish/v1/SessionService/Sessions",
-          "method": "POST",
-          "url": "/redfish/v1/SessionService/Sessions",
-          "params": {}
-        },
-        {
-          "step_id": 4,
           "name": "GET_/redfish/v1/SessionService/Sessions",
           "method": "GET",
           "url": "/redfish/v1/SessionService/Sessions",
           "params": {}
         },
         {
+          "step_id": 4,
+          "name": "POST_/redfish/v1/SessionService/Sessions",
+          "method": "POST",
+          "url": "/redfish/v1/SessionService/Sessions",
+          "params": {}
+        },
+        {
           "step_id": 5,
-          "name": "GET_/redfish/v1/SessionService/Sessions/{SessionId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/SessionService/Sessions/{SessionId}",
+          "method": "DELETE",
           "url": "/redfish/v1/SessionService/Sessions/{SessionId}",
           "params": {}
         },
         {
           "step_id": 6,
-          "name": "DELETE_/redfish/v1/SessionService/Sessions/{SessionId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/SessionService/Sessions/{SessionId}",
+          "method": "GET",
           "url": "/redfish/v1/SessionService/Sessions/{SessionId}",
           "params": {}
         }
@@ -3845,30 +3845,30 @@
         },
         {
           "step_id": 2,
-          "name": "Action_GenerateCSRAndImport_/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GenerateCSRAndImport",
-          "method": "POST",
-          "url": "/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GenerateCSRAndImport",
-          "params": {}
-        },
-        {
-          "step_id": 3,
           "name": "Action_GenerateCSR_/redfish/v1/CertificateService/Actions/CertificateService.GenerateCSR",
           "method": "POST",
           "url": "/redfish/v1/CertificateService/Actions/CertificateService.GenerateCSR",
           "params": {}
         },
         {
-          "step_id": 4,
-          "name": "Action_GetLastGeneratedCSR_/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GetLastGeneratedCSR",
+          "step_id": 3,
+          "name": "Action_ReplaceCertificate_/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate",
           "method": "POST",
-          "url": "/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GetLastGeneratedCSR",
+          "url": "/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate",
+          "params": {}
+        },
+        {
+          "step_id": 4,
+          "name": "Action_GenerateCSRAndImport_/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GenerateCSRAndImport",
+          "method": "POST",
+          "url": "/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GenerateCSRAndImport",
           "params": {}
         },
         {
           "step_id": 5,
-          "name": "Action_ReplaceCertificate_/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate",
+          "name": "Action_GetLastGeneratedCSR_/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GetLastGeneratedCSR",
           "method": "POST",
-          "url": "/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate",
+          "url": "/redfish/v1/CertificateService/Actions/Oem/DellCertificateService.GetLastGeneratedCSR",
           "params": {}
         },
         {
@@ -3907,15 +3907,15 @@
         },
         {
           "step_id": 4,
-          "name": "GET_/redfish/v1/TaskService/Tasks/{TaskId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/TaskService/Tasks/{TaskId}",
+          "method": "DELETE",
           "url": "/redfish/v1/TaskService/Tasks/{TaskId}",
           "params": {}
         },
         {
           "step_id": 5,
-          "name": "DELETE_/redfish/v1/TaskService/Tasks/{TaskId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/TaskService/Tasks/{TaskId}",
+          "method": "GET",
           "url": "/redfish/v1/TaskService/Tasks/{TaskId}",
           "params": {}
         }
@@ -4057,29 +4057,29 @@
         },
         {
           "step_id": 2,
-          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}",
-          "params": {}
-        },
-        {
-          "step_id": 3,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}",
           "params": {}
         },
         {
+          "step_id": 3,
+          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}",
+          "params": {}
+        },
+        {
           "step_id": 4,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}/{CertificateId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}/{CertificateId}",
+          "method": "DELETE",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}/{CertificateId}",
           "params": {}
         },
         {
           "step_id": 5,
-          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}/{CertificateId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}/{CertificateId}",
+          "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/Certificates/{CertificateStoreId}/{CertificateId}",
           "params": {}
         }
@@ -4207,29 +4207,29 @@
       "steps": [
         {
           "step_id": 1,
-          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures",
-          "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures",
-          "params": {}
-        },
-        {
-          "step_id": 2,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures",
           "params": {}
         },
         {
+          "step_id": 2,
+          "name": "POST_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures",
+          "params": {}
+        },
+        {
           "step_id": 3,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures/{SignatureId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures/{SignatureId}",
+          "method": "DELETE",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures/{SignatureId}",
           "params": {}
         },
         {
           "step_id": 4,
-          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures/{SignatureId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures/{SignatureId}",
+          "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Signatures/{SignatureId}",
           "params": {}
         }
@@ -4316,22 +4316,22 @@
         },
         {
           "step_id": 2,
+          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
+          "method": "DELETE",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
+          "params": {}
+        },
+        {
+          "step_id": 3,
           "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
           "method": "GET",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
           "params": {}
         },
         {
-          "step_id": 3,
+          "step_id": 4,
           "name": "PATCH_/redfish/v1/Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
           "method": "PATCH",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
-          "params": {}
-        },
-        {
-          "step_id": 4,
-          "name": "DELETE_/redfish/v1/Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
-          "method": "DELETE",
           "url": "/redfish/v1/Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
           "params": {}
         }
@@ -4493,16 +4493,16 @@
         },
         {
           "step_id": 3,
-          "name": "Action_ExportNVMeDeviceLogs_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Actions/Oem/DellDrive.ExportNVMeDeviceLogs",
+          "name": "Action_SecureErase_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Actions/Drive.SecureErase",
           "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Actions/Oem/DellDrive.ExportNVMeDeviceLogs",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Actions/Drive.SecureErase",
           "params": {}
         },
         {
           "step_id": 4,
-          "name": "Action_SecureErase_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Actions/Drive.SecureErase",
+          "name": "Action_ExportNVMeDeviceLogs_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Actions/Oem/DellDrive.ExportNVMeDeviceLogs",
           "method": "POST",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Actions/Drive.SecureErase",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Actions/Oem/DellDrive.ExportNVMeDeviceLogs",
           "params": {}
         }
       ]
@@ -4628,15 +4628,15 @@
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/HWCertificates/{CertificateId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/Managers/{ManagerId}/Oem/Dell/HWCertificates/{CertificateId}",
+          "method": "DELETE",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/HWCertificates/{CertificateId}",
           "params": {}
         },
         {
           "step_id": 3,
-          "name": "DELETE_/redfish/v1/Managers/{ManagerId}/Oem/Dell/HWCertificates/{CertificateId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/HWCertificates/{CertificateId}",
+          "method": "GET",
           "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/HWCertificates/{CertificateId}",
           "params": {}
         }
@@ -5236,15 +5236,15 @@
       "steps": [
         {
           "step_id": 1,
-          "name": "GET_/redfish/v1/TelemetryService/MetricReports/{MetricReportId}",
-          "method": "GET",
+          "name": "DELETE_/redfish/v1/TelemetryService/MetricReports/{MetricReportId}",
+          "method": "DELETE",
           "url": "/redfish/v1/TelemetryService/MetricReports/{MetricReportId}",
           "params": {}
         },
         {
           "step_id": 2,
-          "name": "DELETE_/redfish/v1/TelemetryService/MetricReports/{MetricReportId}",
-          "method": "DELETE",
+          "name": "GET_/redfish/v1/TelemetryService/MetricReports/{MetricReportId}",
+          "method": "GET",
           "url": "/redfish/v1/TelemetryService/MetricReports/{MetricReportId}",
           "params": {}
         }

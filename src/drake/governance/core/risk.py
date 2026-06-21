@@ -116,16 +116,10 @@ class RiskAssessor:  # noqa: E302
         gov_rules = self.gov_config.get("governance_score", {})
         gov_score = 100.0 - (risk_score * gov_rules.get("risk_deduction_coefficient", 0.5))
         if not has_schemas:
-<<<<<<< HEAD:src/governance/core/risk.py
             pen = gov_rules.get("missing_schema_penalty", 20.0)
             gov_score -= pen
             explanations.append(f"Missing request/response schemas (-{pen} gov score)")
-            
-=======
-            gov_score -= 20.0
-            explanations.append("Missing request/response schemas (-20 gov score)")
-
->>>>>>> origin/main:src/drake/governance/core/risk.py
+            # Alternate config block removed
         if is_read_only:
             gov_score = min(gov_score + gov_rules.get("read_only_bonus", 10.0), 100.0)
 

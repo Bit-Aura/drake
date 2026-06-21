@@ -85,7 +85,7 @@ async def main():
     # Actually, we can use unittest.mock to mock the AsyncClient.
     from unittest.mock import patch, AsyncMock, MagicMock
 
-    with patch("src.proxy.executors.httpx_executor.httpx.AsyncClient") as MockClient:
+    with patch("drake.proxy.executors.httpx_executor.httpx.AsyncClient") as MockClient:
         mock_client_instance = AsyncMock()
         mock_resp_1 = MagicMock()
         mock_resp_1.status_code = 200

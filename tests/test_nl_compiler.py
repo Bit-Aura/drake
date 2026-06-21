@@ -44,7 +44,7 @@ async def test_generate_from_nl_success():
     mock_client = MagicMock()
     mock_client.chat.completions.create = AsyncMock(return_value=mock_workflow)
     
-    with patch("src.ai_clustering.nl_compiler.instructor.from_openai", return_value=mock_client):
+    with patch("drake.ai_clustering.nl_compiler.instructor.from_openai", return_value=mock_client):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             response = await ac.post(
                 "/api/v1/workflows/generate-from-nl",
@@ -77,7 +77,7 @@ async def test_generate_from_nl_failure():
     mock_client = MagicMock()
     mock_client.chat.completions.create = AsyncMock(side_effect=ValueError("LLM Error"))
     
-    with patch("src.ai_clustering.nl_compiler.instructor.from_openai", return_value=mock_client):
+    with patch("drake.ai_clustering.nl_compiler.instructor.from_openai", return_value=mock_client):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             response = await ac.post(
                 "/api/v1/workflows/generate-from-nl",

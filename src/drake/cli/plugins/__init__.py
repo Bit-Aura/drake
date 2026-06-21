@@ -28,7 +28,7 @@ def load_plugins(app: typer.Typer) -> None:
         if module_name:
             try:
                 # Import module dynamically relative to this package
-                module = importlib.import_module(f"src.cli.plugins.{module_name}")
+                module = importlib.import_module(f"drake.cli.plugins.{module_name}")
 
                 # Check for registration helper or raw Typer app attribute
                 if hasattr(module, "register_plugin"):

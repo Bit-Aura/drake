@@ -6,8 +6,8 @@ from unittest.mock import patch, AsyncMock, MagicMock
 client = TestClient(app)
 
 
-@patch("src.proxy.api.sync_workflow_mappings_async")
-@patch("src.proxy.api.aiosqlite.connect")
+@patch("drake.proxy.api.sync_workflow_mappings_async")
+@patch("drake.proxy.api.aiosqlite.connect")
 def test_runtime_reload(mock_db_connect, mock_sync_mappings):
     # Setup API key
     valid_key = os.getenv("DELL_MCP_API_KEY", "default_dev_key")

@@ -7,14 +7,14 @@ import urllib.parse
 from dataclasses import dataclass
 from typing import List, Dict, Any
 
-BASE_DIR = "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, BASE_DIR)
 
-from src.governance.ai_guardrails.prefilter import FastPreFilter
-from src.governance.ai_guardrails.tool_guard import ToolGuard
-from src.governance.core.risk import RiskAssessor
-from src.governance.core.policy import PolicyEngine
-from src.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
+from drake.governance.core.prefilter import FastPreFilter
+from drake.governance.core.tool_guard import ToolGuard
+from drake.governance.core.risk import RiskAssessor
+from drake.governance.core.policy import PolicyEngine
+from drake.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
 
 def run_performance_test():
     pf = FastPreFilter()
@@ -137,7 +137,7 @@ def generate_reports():
     print("Writing Reports...")
     
     # 1. IMPLEMENTATION_REPORT.md
-    with open("IMPLEMENTATION_REPORT.md", "w") as f:
+    with open("IMPLEMENTATION_REPORT.md", "w", encoding="utf-8") as f:
         f.write("# Governance Hardening Implementation Report\n\n")
         f.write("## Features Implemented\n")
         f.write("1. **Workflow Campaign Detection**: Created `WorkflowCampaignTracker` to aggregate semantic risk across temporal sessions.\n")
@@ -151,7 +151,7 @@ def generate_reports():
         f.write("\nAll latencies remain strictly under the 5ms SLA, verifying minimal overhead.\n")
 
     # 2. GOVERNANCE_HARDENING_TEST_PLAN.md
-    with open("GOVERNANCE_HARDENING_TEST_PLAN.md", "w") as f:
+    with open("GOVERNANCE_HARDENING_TEST_PLAN.md", "w", encoding="utf-8") as f:
         f.write("# Governance Hardening Test Plan\n\n")
         f.write("## 1. Unicode & Obfuscation Attacks\nTests inputs containing Cyrillic substitutions, dotless i, and aggressive spacing to bypass regex.\n\n")
         f.write("## 2. Encoding Attacks\nTests Base64, URL encoding, Hex encoding, and multi-layer Hex(Base64) wrapping malicious commands.\n\n")
@@ -159,7 +159,7 @@ def generate_reports():
         f.write("## 4. Blast Radius (Bulk Operations)\nSimulates a bulk operation touching 50% of a simulated fleet to verify dynamic risk multiplier triggers CRITICAL escalation.\n")
 
     # 3. GOVERNANCE_HARDENING_RESULTS.md
-    with open("GOVERNANCE_HARDENING_RESULTS.md", "w") as f:
+    with open("GOVERNANCE_HARDENING_RESULTS.md", "w", encoding="utf-8") as f:
         f.write("# Governance Hardening Results\n\n")
         f.write("## Unicode & Obfuscation\n")
         for r in unicode_res:
@@ -174,7 +174,7 @@ def generate_reports():
             f.write(f"- {r['type']} (Step {r['step']}): Risk Score: {r.get('risk_score')}, Campaign Triggered: {r.get('is_campaign', 'N/A')}\n")
 
     # 4. SECURITY_FINDINGS.md
-    with open("SECURITY_FINDINGS.md", "w") as f:
+    with open("SECURITY_FINDINGS.md", "w", encoding="utf-8") as f:
         f.write("# Security Findings & Conclusion\n\n")
         f.write("## Findings\n")
         f.write("- **Unicode Evasion (Resolved)**: The `FastPreFilter` successfully blocks homoglyphs and leetspeak attacks.\n")

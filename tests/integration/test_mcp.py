@@ -12,4 +12,5 @@ async def main():
                 if t.name == "dell_enclosure_management":
                     print(json.dumps(t.inputSchema, indent=2))
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

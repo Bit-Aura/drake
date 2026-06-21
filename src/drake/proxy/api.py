@@ -1142,7 +1142,6 @@ async def get_workflow_explainability(workflow_id: str, target_ip: Optional[str]
             if v.remediation_step:
                 remediation.append(v.remediation_step)
 
-        from drake.core.database import get_db, WorkflowLog, PendingWorkflow, Deployment, Component, Node
         from drake.core.compatibility.models import GovernanceExplainabilityReport
         return GovernanceExplainabilityReport(
             workflow_id=workflow_id,

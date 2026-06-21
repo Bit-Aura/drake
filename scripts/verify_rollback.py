@@ -97,7 +97,7 @@ async def verify_rollback():
     # We mock the HTTP client to avoid hitting actual endpoints during execution
     print("\n[3] Simulating Workflow Execution & Pre-Flight Interceptor...")
     
-    with patch("src.proxy.executors.workflow_execution_service.httpx.AsyncClient") as MockClient:
+    with patch("drake.proxy.executors.workflow_execution_service.httpx.AsyncClient") as MockClient:
         mock_client_instance = AsyncMock()
         mock_response = MagicMock()
         mock_response.status_code = 200

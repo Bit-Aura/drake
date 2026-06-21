@@ -542,7 +542,7 @@ def save_workflows(workflows_list: List[Dict[str, Any]]) -> None:
 
         # Intercept and enrich workflows with policy status
         try:
-            from src.drake.governance.middleware import GovernanceMiddleware
+            from drake.governance.middleware import GovernanceMiddleware
             workflows_list = GovernanceMiddleware.get_instance().process_new_workflows(workflows_list, all_endpoints)
         except Exception as e:
             print(f"Governance interception failed: {e}")

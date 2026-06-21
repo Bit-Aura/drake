@@ -7,7 +7,7 @@ import logging
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 from drake.proxy.server import mcp, load_approved_tools_from_db
-from drake.core.database import get_db, WorkflowLog, init_db, PendingWorkflow, init_db_sync
+from drake.core.database import init_db, init_db_sync
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("dell_mcp_stdio")

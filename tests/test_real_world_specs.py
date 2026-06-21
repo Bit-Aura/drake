@@ -16,7 +16,7 @@ def test_real_world_specs_ingestion():
     assert ome_graphql_spec.exists(), "OME GraphQL spec not found"
     
     # Mock the graph and DB pipeline to only test the ingestion and merging layer
-    with patch("src.cli.services.cluster.init_db_sync"), patch("src.cli.services.cluster.run_pipeline") as mock_run:
+    with patch("drake.cli.services.cluster.init_db_sync"), patch("drake.cli.services.cluster.run_pipeline") as mock_run:
         service = ClusterCLIService()
         
         # Ingest the three realistic specs representing a cross-product environment

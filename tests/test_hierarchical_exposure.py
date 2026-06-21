@@ -85,7 +85,7 @@ async def test_hierarchical_expansion_execution_and_cleanup():
     
         # 3. Test Execution
         # Mock the execute_step of MockExecutor
-        with patch("src.proxy.executors.httpx_executor.MockExecutor.execute_step", new_callable=AsyncMock) as mock_execute:
+        with patch("drake.proxy.executors.httpx_executor.MockExecutor.execute_step", new_callable=AsyncMock) as mock_execute:
             mock_execute.return_value = {"status": "mocked_success"}
             
             # We simulate the MCP calling it

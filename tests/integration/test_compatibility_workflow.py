@@ -74,7 +74,7 @@ async def test_orchestrator_invalid_policy_fallback(monkeypatch):
         target_ip="1.1.1.1", device_model="R750", bios_version="1.0.0"
     )
     monkeypatch.setattr(
-        "src.core.compatibility.sources.CachedFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.CachedFactsProvider.get_device_facts",
         AsyncMock(return_value=mock_facts),
     )
 
@@ -89,11 +89,11 @@ async def test_orchestrator_invalid_policy_fallback(monkeypatch):
         confidence_score=100,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         AsyncMock(return_value=mock_report),
     )
     monkeypatch.setattr(
-        "src.core.compatibility.repository.CompatibilityRepository.save_report",
+        "drake.core.compatibility.repository.CompatibilityRepository.save_report",
         AsyncMock(),
     )
 
@@ -142,7 +142,7 @@ async def test_orchestrator_naive_cache_timestamp(monkeypatch):
     # Stub executors to prevent real executor calls
     mock_executor_res = {"status": "mock_executed"}
     monkeypatch.setattr(
-        "src.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
+        "drake.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
         AsyncMock(return_value=mock_executor_res),
     )
 
@@ -158,7 +158,7 @@ async def test_orchestrator_naive_cache_timestamp(monkeypatch):
         confidence_score=80,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         AsyncMock(return_value=mock_report),
     )
 
@@ -191,18 +191,18 @@ async def test_orchestrator_cache_failure_fallback_static(monkeypatch):
         raise ValueError("Simulated network/DB error")
 
     monkeypatch.setattr(
-        "src.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
         raise_error,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.sources.CachedFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.CachedFactsProvider.get_device_facts",
         raise_error,
     )
 
     # Stub executors
     mock_executor_res = {"status": "mock_executed"}
     monkeypatch.setattr(
-        "src.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
+        "drake.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
         AsyncMock(return_value=mock_executor_res),
     )
 
@@ -220,7 +220,7 @@ async def test_orchestrator_cache_failure_fallback_static(monkeypatch):
         )
     )
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         engine_spy,
     )
 
@@ -289,7 +289,7 @@ async def test_orchestrator_auto_live_refresh_low_confidence(monkeypatch):
 
     validate_mock = AsyncMock(side_effect=[mock_low_conf, mock_high_conf])
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         validate_mock,
     )
 
@@ -302,18 +302,18 @@ async def test_orchestrator_auto_live_refresh_low_confidence(monkeypatch):
     )
     redfish_mock = AsyncMock(return_value=mock_live_facts)
     monkeypatch.setattr(
-        "src.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
         redfish_mock,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.repository.CompatibilityRepository.save_device_facts",
+        "drake.core.compatibility.repository.CompatibilityRepository.save_device_facts",
         AsyncMock(),
     )
 
     # Stub executors
     mock_executor_res = {"status": "mock_executed"}
     monkeypatch.setattr(
-        "src.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
+        "drake.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
         AsyncMock(return_value=mock_executor_res),
     )
 
@@ -355,11 +355,11 @@ async def test_orchestrator_low_confidence_policy_block(monkeypatch):
         confidence_score=30,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         AsyncMock(return_value=mock_report),
     )
     monkeypatch.setattr(
-        "src.core.compatibility.sources.CachedFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.CachedFactsProvider.get_device_facts",
         AsyncMock(
             return_value=DeviceFacts(
                 target_ip="1.1.1.5", device_model="R750", bios_version="1.0.0"
@@ -372,7 +372,7 @@ async def test_orchestrator_low_confidence_policy_block(monkeypatch):
         raise ValueError("Network down")
 
     monkeypatch.setattr(
-        "src.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
         raise_error,
     )
 
@@ -414,11 +414,11 @@ async def test_orchestrator_executor_backends(monkeypatch):
         confidence_score=100,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         AsyncMock(return_value=mock_report),
     )
     monkeypatch.setattr(
-        "src.core.compatibility.sources.CachedFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.CachedFactsProvider.get_device_facts",
         AsyncMock(
             return_value=DeviceFacts(
                 target_ip="1.1.1.6", device_model="R750", bios_version="1.0.0"
@@ -433,11 +433,11 @@ async def test_orchestrator_executor_backends(monkeypatch):
         exec_spy(exec_inst)
 
     monkeypatch.setattr(
-        "src.proxy.executors.workflow_execution_service.WorkflowExecutionService.__init__",
+        "drake.proxy.executors.workflow_execution_service.WorkflowExecutionService.__init__",
         mock_init,
     )
     monkeypatch.setattr(
-        "src.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
+        "drake.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
         AsyncMock(return_value={}),
     )
 
@@ -485,7 +485,7 @@ async def test_orchestrator_cache_miss_live_redfish_success(monkeypatch):
         raise ValueError("Cache miss")
 
     monkeypatch.setattr(
-        "src.core.compatibility.sources.CachedFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.CachedFactsProvider.get_device_facts",
         cache_raise,
     )
 
@@ -495,13 +495,13 @@ async def test_orchestrator_cache_miss_live_redfish_success(monkeypatch):
     )
     redfish_mock = AsyncMock(return_value=mock_facts)
     monkeypatch.setattr(
-        "src.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
         redfish_mock,
     )
 
     save_device_facts_spy = AsyncMock()
     monkeypatch.setattr(
-        "src.core.compatibility.repository.CompatibilityRepository.save_device_facts",
+        "drake.core.compatibility.repository.CompatibilityRepository.save_device_facts",
         save_device_facts_spy,
     )
 
@@ -517,11 +517,11 @@ async def test_orchestrator_cache_miss_live_redfish_success(monkeypatch):
         confidence_score=100,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         AsyncMock(return_value=mock_report),
     )
     monkeypatch.setattr(
-        "src.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
+        "drake.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
         AsyncMock(return_value={}),
     )
 
@@ -559,7 +559,7 @@ async def test_orchestrator_auto_live_refresh_failure(monkeypatch):
         last_scanned=datetime.now(timezone.utc),
     )
     monkeypatch.setattr(
-        "src.core.compatibility.sources.CachedFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.CachedFactsProvider.get_device_facts",
         AsyncMock(return_value=mock_facts),
     )
 
@@ -575,7 +575,7 @@ async def test_orchestrator_auto_live_refresh_failure(monkeypatch):
         confidence_score=30,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         AsyncMock(return_value=mock_report),
     )
 
@@ -584,13 +584,13 @@ async def test_orchestrator_auto_live_refresh_failure(monkeypatch):
         raise ValueError("Network down during refresh")
 
     monkeypatch.setattr(
-        "src.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.RedfishFactsProvider.get_device_facts",
         redfish_raise,
     )
 
     # Stub execution
     monkeypatch.setattr(
-        "src.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
+        "drake.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
         AsyncMock(return_value={}),
     )
 
@@ -621,7 +621,7 @@ async def test_orchestrator_warn_only_policy_gates(monkeypatch):
     )
 
     monkeypatch.setattr(
-        "src.core.compatibility.sources.CachedFactsProvider.get_device_facts",
+        "drake.core.compatibility.sources.CachedFactsProvider.get_device_facts",
         AsyncMock(
             return_value=DeviceFacts(
                 target_ip="1.1.1.9", device_model="R750", bios_version="1.0.0"
@@ -641,11 +641,11 @@ async def test_orchestrator_warn_only_policy_gates(monkeypatch):
         confidence_score=80,
     )
     monkeypatch.setattr(
-        "src.core.compatibility.engine.CompatibilityEngine.validate_workflow",
+        "drake.core.compatibility.engine.CompatibilityEngine.validate_workflow",
         AsyncMock(return_value=mock_report),
     )
     monkeypatch.setattr(
-        "src.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
+        "drake.proxy.executors.workflow_execution_service.WorkflowExecutionService.execute_workflow",
         AsyncMock(return_value={"status": "executed"}),
     )
 

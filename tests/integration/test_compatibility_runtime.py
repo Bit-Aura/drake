@@ -181,7 +181,7 @@ async def test_runtime_policy_enforcement():
         conn.commit()
 
     # Setup mocks for executor requests
-    with patch("src.proxy.executors.httpx_executor.httpx.AsyncClient") as MockClient:
+    with patch("drake.proxy.executors.httpx_executor.httpx.AsyncClient") as MockClient:
         mock_client_instance = AsyncMock()
         mock_resp = MagicMock()
         mock_resp.status_code = 200
@@ -209,7 +209,7 @@ async def test_runtime_policy_enforcement():
             last_scanned=datetime.now(timezone.utc)
         )
         
-        with patch("src.core.compatibility.sources.RedfishFactsProvider.get_device_facts", AsyncMock(return_value=mock_facts)):
+        with patch("drake.core.compatibility.sources.RedfishFactsProvider.get_device_facts", AsyncMock(return_value=mock_facts)):
             with pytest.raises(CompatibilityPolicyViolation) as exc_info:
                 await manager.execute_workflow_with_validation(
                     "test_workflow_2",

@@ -54,7 +54,7 @@ function Load-Env {
 # ---------------------------------------------------------------------
 # Step 1: Environment File Configuration
 # ---------------------------------------------------------------------
-Write-Host "[1/6] Configuring Environment Files..." -ForegroundColor Yellow
+Write-Host "[1/7] Configuring Environment Files..." -ForegroundColor Yellow
 if (!(Test-Path ".env")) {
     Write-Host "  -> No .env found. Copying .env.example..." -ForegroundColor Gray
     Copy-Item ".env.example" ".env"
@@ -75,7 +75,7 @@ Write-Host ""
 # ---------------------------------------------------------------------
 # Step 2: Check uv and Setup Virtual Environment
 # ---------------------------------------------------------------------
-Write-Host "[2/6] Preparing Python Virtual Environment..." -ForegroundColor Yellow
+Write-Host "[2/7] Preparing Python Virtual Environment..." -ForegroundColor Yellow
 
 $hasUv = $false
 if (Get-Command uv -ErrorAction SilentlyContinue) {
@@ -120,7 +120,7 @@ Write-Host ""
 # ---------------------------------------------------------------------
 # Step 3: Check local LLM Engine (Ollama)
 # ---------------------------------------------------------------------
-Write-Host "[3/6] Checking LLM Engine (Ollama)..." -ForegroundColor Yellow
+Write-Host "[3/7] Checking LLM Engine (Ollama)..." -ForegroundColor Yellow
 
 $ollamaHost = $env:OLLAMA_HOST
 if (!$ollamaHost) {
@@ -175,7 +175,7 @@ Write-Host ""
 # ---------------------------------------------------------------------
 # Step 4: Check & Start Mock API Server (Prism)
 # ---------------------------------------------------------------------
-Write-Host "[4/6] Checking Mock API Server (Prism)..." -ForegroundColor Yellow
+Write-Host "[4/7] Checking Mock API Server (Prism)..." -ForegroundColor Yellow
 
 if (Test-PortOpen 4010) {
     Write-Host "  $tick Mock API server is already running on port 4010." -ForegroundColor Green
@@ -207,9 +207,28 @@ if (Test-PortOpen 4010) {
 Write-Host ""
 
 # ---------------------------------------------------------------------
-# Step 5: Start FastAPI + FastMCP Backend
+# Step 5: Verify AI Guardrail & Governance Engine Integrity
 # ---------------------------------------------------------------------
-Write-Host "[5/6] Starting FastMCP & FastAPI Proxy Server..." -ForegroundColor Yellow
+Write-Host "[5/7] Verifying AI Guardrail & Governance Engine..." -ForegroundColor Yellow
+Write-Host "  -> Running AI Guardrail security verification suite..." -ForegroundColor Gray
+
+if (Test-Path ".venv\Scripts\python.exe") {
+    & .venv\Scripts\python.exe tests/security/GOVERNANCE_HARDENING_TEST_V2.py | Out-Null
+} else {
+    & python tests/security/GOVERNANCE_HARDENING_TEST_V2.py | Out-Null
+}
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "  $tick AI Guardrails successfully verified (Evasion, Obfuscation, and Campaign blocks operational)." -ForegroundColor Green
+} else {
+    Write-Host "  $warn Warning: AI Guardrail security tests failed or completed with warnings." -ForegroundColor Yellow
+}
+Write-Host ""
+
+# ---------------------------------------------------------------------
+# Step 6: Start FastAPI + FastMCP Backend
+# ---------------------------------------------------------------------
+Write-Host "[6/7] Starting FastMCP & FastAPI Proxy Server..." -ForegroundColor Yellow
 
 if (Test-PortOpen 8001) {
     Write-Host "  $warn Port 8001 is already in use! Backend may already be running." -ForegroundColor Yellow
@@ -249,9 +268,9 @@ Read-Host 'Press Enter to exit'
 Write-Host ""
 
 # ---------------------------------------------------------------------
-# Step 6: Start Next.js Frontend Console
+# Step 7: Start Next.js Frontend Console
 # ---------------------------------------------------------------------
-Write-Host "[6/6] Starting Next.js Governance Console..." -ForegroundColor Yellow
+Write-Host "[7/7] Starting Next.js Governance Console..." -ForegroundColor Yellow
 
 if (Test-PortOpen 3000) {
     Write-Host "  $warn Port 3000 is already in use! Frontend Console may already be running." -ForegroundColor Yellow

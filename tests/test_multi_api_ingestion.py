@@ -110,7 +110,7 @@ def test_cluster_service_merges_multiple_specs(
     dummy_asyncapi_path
 ):
     # Mock database init and pipeline runner
-    with patch("src.cli.services.cluster.init_db_sync"), patch("src.cli.services.cluster.run_pipeline") as mock_run:
+    with patch("drake.cli.services.cluster.init_db_sync"), patch("drake.cli.services.cluster.run_pipeline") as mock_run:
         service = ClusterCLIService()
         paths = [
             dummy_openapi_path,

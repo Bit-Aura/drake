@@ -1,13 +1,13 @@
 import logging
 from typing import Dict, Any, List
 
-from src.drake.governance.core.policy import PolicyEngine
-from src.drake.governance.core.risk import RiskAssessor
-from src.drake.governance.core.validator import WorkflowValidator
-from src.drake.governance.runtime.interceptor import RuntimeGovernance
-from src.drake.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
-from src.drake.governance.ai_guardrails.prefilter import FastPreFilter
-from src.drake.core.database import log_audit_event
+from drake.governance.core.policy import PolicyEngine
+from drake.governance.core.risk import RiskAssessor
+from drake.governance.core.validator import WorkflowValidator
+from drake.governance.runtime.interceptor import RuntimeGovernance
+from drake.governance.runtime.workflow_campaign_tracker import WorkflowCampaignTracker
+from drake.governance.core.prefilter import FastPreFilter
+from drake.core.database import log_audit_event
 
 logger = logging.getLogger(__name__)
 

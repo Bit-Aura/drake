@@ -5,8 +5,8 @@ from drake.core.database import Workflow, EndpointStep
 
 
 @pytest.mark.anyio
-@patch("src.proxy.executors.httpx_executor.async_session")
-@patch("src.proxy.executors.httpx_executor.httpx.AsyncClient")
+@patch("drake.proxy.executors.httpx_executor.async_session")
+@patch("drake.proxy.executors.httpx_executor.httpx.AsyncClient")
 async def test_mock_httpx_executor_success(mock_async_client, mock_async_session):
     # Setup mock DB session
     mock_session = AsyncMock()
