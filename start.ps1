@@ -66,7 +66,7 @@ if (!(Test-Path "frontend/.env.local")) {
     if (Test-Path "frontend/.env.example") {
         Copy-Item "frontend/.env.example" "frontend/.env.local"
     } else {
-        Set-Content -Path "frontend/.env.local" -Value "NEXT_PUBLIC_API_BASE_URL=http://localhost:8000"
+        Set-Content -Path "frontend/.env.local" -Value "NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8001"
     }
 }
 Write-Host "  $tick Environment files verified." -ForegroundColor Green
@@ -211,8 +211,8 @@ Write-Host ""
 # ---------------------------------------------------------------------
 Write-Host "[5/6] Starting FastMCP & FastAPI Proxy Server..." -ForegroundColor Yellow
 
-if (Test-PortOpen 8000) {
-    Write-Host "  $warn Port 8000 is already in use! Backend may already be running." -ForegroundColor Yellow
+if (Test-PortOpen 8001) {
+    Write-Host "  $warn Port 8001 is already in use! Backend may already be running." -ForegroundColor Yellow
 } else {
     Write-Host "  -> Launching FastAPI Server in a separate window..." -ForegroundColor Gray
     
@@ -223,9 +223,9 @@ Write-Host '=====================================================' -ForegroundCo
 Write-Host '            DELL DRAKE BACKEND PROXY SERVER' -ForegroundColor Cyan;
 Write-Host '=====================================================' -ForegroundColor Cyan;
 if (Test-Path ".venv\Scripts\python.exe") {
-    & .venv\Scripts\python.exe -m uvicorn src.proxy.server:app --port 8000
+    & .venv\Scripts\python.exe -m uvicorn src.proxy.server:app --port 8001 --host 127.0.0.1
 } else {
-    python -m uvicorn src.proxy.server:app --port 8000
+    python -m uvicorn src.proxy.server:app --port 8001 --host 127.0.0.1
 }
 Read-Host 'Press Enter to exit'
 "@
@@ -235,14 +235,14 @@ Read-Host 'Press Enter to exit'
     # Wait for the backend to start accepting connections
     Write-Host "  -> Waiting for backend API to initialize..." -ForegroundColor Gray
     for ($i=1; $i -le 10; $i++) {
-        if (Test-PortOpen 8000) { break }
+        if (Test-PortOpen 8001) { break }
         Start-Sleep -Seconds 1
     }
     
-    if (Test-PortOpen 8000) {
-        Write-Host "  $tick FastMCP/FastAPI backend successfully started on port 8000." -ForegroundColor Green
+    if (Test-PortOpen 8001) {
+        Write-Host "  $tick FastMCP/FastAPI backend successfully started on port 8001." -ForegroundColor Green
     } else {
-        Write-Host "  $warn Backend server process started, but not yet responding on port 8000." -ForegroundColor Yellow
+        Write-Host "  $warn Backend server process started, but not yet responding on port 8001." -ForegroundColor Yellow
         Write-Host "     Check the newly opened PowerShell window for errors." -ForegroundColor Yellow
     }
 }
@@ -266,6 +266,7 @@ if (Test-PortOpen 3000) {
         
         Write-Host "  -> Launching Next.js development server in a separate window..." -ForegroundColor Gray
         $frontendCmd = @"
+`$env:PORT=3000;
 Write-Host '=====================================================' -ForegroundColor Cyan;
 Write-Host '            DELL DRAKE GOVERNANCE FRONTEND' -ForegroundColor Cyan;
 Write-Host '=====================================================' -ForegroundColor Cyan;
@@ -301,8 +302,8 @@ Write-Host "====================================================================
 Write-Host "                      SERVICES SYSTEM SUMMARY" -ForegroundColor Cyan
 Write-Host "=====================================================================" -ForegroundColor Cyan
 Write-Host "  - Next.js Web Governance Console : http://localhost:3000" -ForegroundColor Green
-Write-Host "  - FastAPI REST Subsystems        : http://localhost:8000/docs" -ForegroundColor Green
-Write-Host "  - FastMCP SSE Proxy Endpoint     : http://localhost:8000/mcp/sse" -ForegroundColor Green
+Write-Host "  - FastAPI REST Subsystems        : http://127.0.0.1:8001/docs" -ForegroundColor Green
+Write-Host "  - FastMCP SSE Proxy Endpoint     : http://127.0.0.1:8001/mcp/sse" -ForegroundColor Green
 Write-Host "  - Mock Redfish Server (Prism)    : http://localhost:4010" -ForegroundColor Green
 Write-Host "  - Local Ollama Service           : http://localhost:11434" -ForegroundColor Green
 Write-Host "=====================================================================" -ForegroundColor Cyan

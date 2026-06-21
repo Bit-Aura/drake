@@ -12,7 +12,7 @@ def start_server(
         "127.0.0.1", "--host", "-h", help="Host binding IP address"
     ),
     port: int = typer.Option(
-        8000, "--port", "-p", help="Port to bind the server to"
+        8001, "--port", "-p", help="Port to bind the server to"
     ),
     reload: bool = typer.Option(
         False, "--reload", help="Enable auto-reload for development"

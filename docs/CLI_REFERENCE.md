@@ -236,7 +236,7 @@ Renders a health status matrix for all five platform subsystems:
 | Database | SQLite connectivity and integrity |
 | Governance | Governance middleware availability |
 | Compatibility | Compatibility engine index and rule count |
-| FastMCP | Proxy server availability on port 8000 |
+| FastMCP | Proxy server availability on port 8001 |
 | Runtime | Tool registration and MCP runtime status |
 
 Status values: `HEALTHY` | `DEGRADED` | `UNAVAILABLE`
@@ -1259,7 +1259,7 @@ dell-mcp diagnostics api
 
 #### Description
 
-Probes the FastAPI proxy server at `http://localhost:8000`, verifying port availability, response latency, and endpoint registration status. Reports `CONNECTED` or `UNAVAILABLE`.
+Probes the FastAPI proxy server at `http://127.0.0.1:8001`, verifying port availability, response latency, and endpoint registration status. Reports `CONNECTED` or `UNAVAILABLE`.
 
 #### Expected Output Header
 
@@ -1506,7 +1506,7 @@ dell-mcp cluster run --spec data/raw_specs/openapi-7.xx.yaml
 **Fix:**
 ```bash
 # Start the proxy server in a separate terminal
-uv run uvicorn src.proxy.api:app --host 127.0.0.1 --port 8000
+uv run uvicorn src.proxy.api:app --host 127.0.0.1 --port 8001
 ```
 
 ---

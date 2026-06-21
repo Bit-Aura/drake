@@ -36,9 +36,9 @@ class RuntimeCLIService:
 
     def reload_mcp(self) -> Dict[str, Any]:
         async def _async_reload() -> Dict[str, Any]:
-            port = os.getenv("PORT", "8000")
+            port = os.getenv("PORT", "8001")
             api_key = os.getenv("DELL_MCP_API_KEY", "default_dev_key")
-            url = f"http://localhost:{port}/api/v1/mcp/reload"
+            url = f"http://127.0.0.1:{port}/api/v1/mcp/reload"
             try:
                 async with httpx.AsyncClient() as client:
                     resp = await client.post(

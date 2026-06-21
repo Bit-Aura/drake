@@ -73,3 +73,4 @@ yarn-error.log*
 
 # Data files
 data/output/snapshots/
+data/governance.db

@@ -43,7 +43,7 @@ def _handle_config_output(ctx: typer.Context, client_name: str, config: dict, pa
 @app.command("claude-desktop")
 def config_claude(
     ctx: typer.Context,
-    port: int = typer.Option(8000, "--port", "-p", help="Port the Drake server is running on"),
+    port: int = typer.Option(8001, "--port", "-p", help="Port the Drake server is running on"),
     write: bool = typer.Option(False, "--write", "-w", help="Auto-write to the standard config path"),
 ) -> None:
     """Generate MCP configuration for Claude Desktop."""
@@ -54,7 +54,7 @@ def config_claude(
 @app.command("cursor")
 def config_cursor(
     ctx: typer.Context,
-    port: int = typer.Option(8000, "--port", "-p", help="Port the Drake server is running on"),
+    port: int = typer.Option(8001, "--port", "-p", help="Port the Drake server is running on"),
     write: bool = typer.Option(False, "--write", "-w", help="Auto-write to .cursor/mcp.json"),
 ) -> None:
     """Generate MCP configuration for Cursor IDE."""
@@ -65,7 +65,7 @@ def config_cursor(
 @app.command("vscode")
 def config_vscode(
     ctx: typer.Context,
-    port: int = typer.Option(8000, "--port", "-p", help="Port the Drake server is running on"),
+    port: int = typer.Option(8001, "--port", "-p", help="Port the Drake server is running on"),
     write: bool = typer.Option(False, "--write", "-w", help="Auto-write to .vscode/mcp.json"),
 ) -> None:
     """Generate MCP configuration for VS Code."""

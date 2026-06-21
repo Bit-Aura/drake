@@ -32,10 +32,11 @@ export function Sidebar() {
       <div className="px-6 pt-3 pb-6">
         <Link href="/" className="inline-block transition-transform hover:scale-105 active:scale-95">
           <Image 
-            src="/drake-logo.png?v=2" 
+            src="/drake-logo.png" 
             alt="Drake Logo" 
             width={240} 
             height={74} 
+            style={{ height: "auto" }}
             className="object-contain mix-blend-multiply -ml-4 -mt-2" 
             priority 
           />

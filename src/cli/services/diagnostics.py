@@ -23,10 +23,10 @@ class DiagnosticsCLIService:
         except Exception:
             health["Database"] = "DEGRADED"
 
-        port = os.getenv("PORT", "8000")
+        port = os.getenv("PORT", "8001")
         try:
             # Quick check if API is alive
-            r = httpx.get(f"http://localhost:{port}/metrics", timeout=1.0)
+            r = httpx.get(f"http://127.0.0.1:{port}/metrics", timeout=1.0)
             if r.status_code != 200:
                 health["FastMCP"] = "DEGRADED"
         except Exception:
@@ -63,8 +63,8 @@ class DiagnosticsCLIService:
             return {"database_status": "DEGRADED", "error": str(e)}
 
     def check_api(self) -> Dict[str, Any]:
-        port = os.getenv("PORT", "8000")
-        url = f"http://localhost:{port}/metrics"
+        port = os.getenv("PORT", "8001")
+        url = f"http://127.0.0.1:{port}/metrics"
         try:
             resp = httpx.get(url, timeout=2.0)
             return {
@@ -130,10 +130,10 @@ class DiagnosticsCLIService:
                 ).fetchone()[0]
                 total_wfs = conn.execute("SELECT COUNT(*) FROM workflows").fetchone()[0]
 
-            port = os.getenv("PORT", "8000")
+            port = os.getenv("PORT", "8001")
             api_status = "ONLINE"
             try:
-                httpx.get(f"http://localhost:{port}/metrics", timeout=1.0)
+                httpx.get(f"http://127.0.0.1:{port}/metrics", timeout=1.0)
             except Exception:
                 api_status = "OFFLINE"
 

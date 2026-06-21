@@ -53,10 +53,11 @@ export default function LoginPage() {
     <div className="w-full max-w-md mx-auto -mt-24">
       <div className="flex justify-center mb-8">
         <Image 
-          src="/drake-logo.png?v=5" 
+          src="/drake-logo.png" 
           alt="Drake Logo" 
           width={280} 
           height={88} 
+          style={{ height: "auto" }}
           className="object-contain mix-blend-multiply ml-4" 
           priority 
         />

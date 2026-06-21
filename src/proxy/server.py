@@ -213,11 +213,26 @@ async def load_approved_tools_from_db() -> None:
             # Allow policy overrides for low confidence executions
             all_params["override_policy"] = (str, None)
 
+            # Sanitize parameter names for inspect.Signature (e.g. $filter -> filter)
+            safe_params = {}
+            param_mapping = {}
+            for k, v in all_params.items():
+                safe_k = k.replace("$", "").replace("-", "_")
+                # Handle edge cases where sanitization creates duplicate keys or empty strings
+                if not safe_k:
+                    safe_k = "param"
+                while safe_k in safe_params and safe_params[safe_k] != v:
+                    safe_k += "_"
+                safe_params[safe_k] = v
+                param_mapping[safe_k] = k
+
             # Use inspect.Signature to create dynamic kwargs
             import inspect
-            def make_tool(wf_name, wf_desc, params_dict):
+            def make_tool(wf_name, wf_desc, params_dict, mapping):
                 async def dynamic_tool(**kwargs) -> dict:
-                    return await execute_workflow_route(wf_name, kwargs)
+                    # Restore original parameter names
+                    restored_kwargs = {mapping.get(k, k): v for k, v in kwargs.items()}
+                    return await execute_workflow_route(wf_name, restored_kwargs)
 
                 dynamic_tool.__name__ = wf_name
                 dynamic_tool.__doc__ = wf_desc
@@ -237,7 +252,7 @@ async def load_approved_tools_from_db() -> None:
                 dynamic_tool.__annotations__["return"] = dict
                 return dynamic_tool
 
-            dynamic_tool = make_tool(name, desc, all_params)
+            dynamic_tool = make_tool(name, desc, safe_params, param_mapping)
             mcp.add_tool(dynamic_tool)
             logger.info(f"Dynamically registered workflow tool: {name} with schema params: {list(all_params.keys())}")
 

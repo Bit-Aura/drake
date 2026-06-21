@@ -10,7 +10,7 @@ def pipeline_cmd(
     spec: str = typer.Argument(..., help="Path to OpenAPI spec YAML/JSON"),
     auto_approve: bool = typer.Option(False, "--auto-approve", help="Auto-approve all READ_ONLY workflows"),
     serve: bool = typer.Option(False, "--serve", help="Start the server after clustering"),
-    port: int = typer.Option(8000, "--port", "-p", help="Port to bind the server to (if --serve is used)"),
+    port: int = typer.Option(8001, "--port", "-p", help="Port to bind the server to (if --serve is used)"),
     explain: bool = typer.Option(False, "--explain", help="Use AI to generate human-readable workflow names"),
 ) -> None:
     """Run the complete pipeline: Ingest -> Cluster -> (Optionally) Serve."""

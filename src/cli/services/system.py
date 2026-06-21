@@ -17,7 +17,7 @@ class SystemCLIService:
         import urllib.request
         try:
             req = urllib.request.Request(
-                "http://localhost:8000/api/v1/mcp/reload",
+                "http://127.0.0.1:8001/api/v1/mcp/reload",
                 method="POST",
                 headers={"X-API-Key": "default_dev_key"}
             )

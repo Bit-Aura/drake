@@ -107,9 +107,55 @@ Or simply double-click the `start.bat` file in Windows Explorer, or run:
 start.bat
 ```
 
-The launcher will verify your dependencies and launch the backend and frontend services in dedicated terminal windows.
+The launcher will verify your dependencies and launch the backend and frontend services in dedicated terminal windows. At the end, it prompts you to launch the **AI Agent Terminal** directly.
 
 ---
+
+## AI Agent Terminal (Dual-Mode)
+
+Drake includes an Ollama-powered AI agent that understands natural language and can execute **both** infrastructure workflows and platform admin commands:
+
+```powershell
+# Launch via start.ps1 (recommended) — choose Y when prompted
+.\start.ps1
+
+# Or launch manually after activating venv
+python scripts/interactive_agent.py
+```
+
+The agent has **two tool namespaces**:
+
+| Mode | When the LLM uses it | Example prompt |
+|---|---|---|
+| **CLI** (`cli`) | Platform admin: cluster, govern, audit, diagnose | *"show me pending workflows"* |
+| **MCP** (`mcp`) | Infrastructure execution: firmware, config, rollback | *"execute the firmware update workflow"* |
+
+```
+[USER]> ingest openapi.json and discover workflows
+[AGENT]> Running the clustering pipeline on openapi.json now.
+[SYSTEM] Executing CLI tool 'drake_cluster_run'...
+  - Arguments: {"specs": "openapi.json"}
+[SYSTEM] CLI Execution Complete:
+  Ingested Endpoints: 714
+  Discovered Workflows: 119
+  Communities: 119
+
+[USER]> list pending workflows
+[AGENT]> Fetching all workflows awaiting governance review.
+[SYSTEM] CLI Execution Complete:
+  Found 33 result(s):
+  [1]
+      id: wf_c_d489c865
+      display_name: Server Power Management
+      ...
+```
+
+> **Works without the backend**: If the FastMCP server is offline, the agent automatically starts in CLI-only mode. All 29 admin CLI tools remain fully available.
+
+See [`docs/AGENT_CLI_GUIDE.md`](docs/AGENT_CLI_GUIDE.md) for the full guide, including example prompts and troubleshooting.
+
+---
+
 
 ## Quick Start (Manual Setup)
 
