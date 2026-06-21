@@ -31,8 +31,10 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Float, Boolean, Date
 
 from sqlalchemy import create_engine, text
 
-# File path resolved relative to project root
+import os
 DB_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "governance.db"
+if "DELL_TEST_DB_PATH" in os.environ:
+    DB_FILE = Path(os.environ["DELL_TEST_DB_PATH"])
 
 SYNC_DB_URL = f"sqlite:///{DB_FILE}"
 

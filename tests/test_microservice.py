@@ -129,6 +129,6 @@ def test_workflow_lifecycle_and_reload():
 
             # Built-in diagnostic tools should be preserved
             assert "get_proxy_status" in tool_names
-            assert "preview_workflow_steps" in tool_names
+            assert "preview_compatibility_report" in tool_names
 
         asyncio.run(verify_mcp_registration())

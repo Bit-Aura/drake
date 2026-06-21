@@ -1,0 +1,294 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP
+configfile: pyproject.toml
+plugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 9 items
+
+tests/test_edge_security.py::test_1_prompt_injection_defense PASSED      [ 11%]
+tests/test_edge_security.py::test_2_malicious_payload_path_traversal FAILED [ 22%]
+tests/test_edge_security.py::test_3_policy_violation_destructive_act FAILED [ 33%]
+tests/test_edge_concurrency.py::test_1_concurrent_expansion_race_condition FAILED [ 44%]
+tests/test_edge_concurrency.py::test_2_get_cache_race_condition PASSED   [ 55%]
+tests/test_edge_concurrency.py::test_3_infinite_workflow_loop_detection PASSED [ 66%]
+tests/test_edge_resilience.py::test_1_duplicate_operation_ids_namespaces PASSED [ 77%]
+tests/test_edge_resilience.py::test_2_llm_timeout_and_invalid_json PASSED [ 88%]
+tests/test_edge_resilience.py::test_3_downstream_rate_limiting_mid_step FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_2_malicious_payload_path_traversal ____________________
+
+loaded_mcp = FastMCP('Dell Enterprise Proxy')
+
+    @pytest.mark.asyncio
+    async def test_2_malicious_payload_path_traversal(loaded_mcp):
+        with patch("src.core.compatibility.engine.CompatibilityEngine.validate_workflow") as mock_engine:
+            mock_report = MagicMock()
+            from src.core.compatibility.models import CompatibilityStatus
+            mock_report.status = CompatibilityStatus.BLOCK
+            mock_report.findings = ["Malicious payload detected: Path Traversal"]
+            mock_engine.return_value = mock_report
+    
+            with patch("src.core.compatibility.orchestrator.CompatibilityRepository.save_report", new_callable=AsyncMock):
+                with patch("httpx.AsyncClient.request") as mock_request:
+                    with patch.dict(os.environ, {"DELL_EXECUTOR_TYPE": "mock", "DELL_COMPATIBILITY_POLICY": "STRICT"}):
+                        with pytest.raises(ToolError) as exc:
+                            await loaded_mcp.call_tool("wf_path_traversal", arguments={"filepath": "../../../etc/passwd"})
+    
+>                       assert "STRICT Policy blocked execution" in str(exc.value)
+E                       assert 'STRICT Policy blocked execution' in "Error calling tool 'wf_path_traversal': '<' not supported between instances of 'MagicMock' and 'int'"
+E                        +  where "Error calling tool 'wf_path_traversal': '<' not supported between instances of 'MagicMock' and 'int'" = str(ToolError("Error calling tool 'wf_path_traversal': '<' not supported between instances of 'MagicMock' and 'int'"))
+E                        +    where ToolError("Error calling tool 'wf_path_traversal': '<' not supported between instances of 'MagicMock' and 'int'") = <ExceptionInfo ToolError("Error calling tool 'wf_path_traversal': '<' not supported between instances of 'MagicMock' and 'int'") tblen=12>.value
+
+tests/test_edge_security.py:79: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[06/21/26 15:07:50] Error calling tool 'wf_path_traversal'                      
+                    ╭─────────── Traceback (most recent call last) ────────────╮
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+                    │ tmcp/server/server.py:1282 in call_tool                  │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+                    │ tmcp/tools/base.py:392 in _run                           │
+                    │                                                          │
+                    │                 ... 2 frames hidden ...                  │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/src/proxy/server.py:68 in              │
+                    │ execute_workflow_route                                   │
+                    │                                                          │
+                    │    65 │   │                                              │
+                    │    66 │   │   from src.core.compatibility.orchestrator i │
+                    │    67 │   │   manager = WorkflowExecutionManager()       │
+                    │ ❱  68 │   │   result = await manager.execute_workflow_wi │
+                    │    69 │   │                                              │
+                    │    70 │   │   log_audit_event("EXECUTION_COMPLETE", "SUC │
+                    │       workflow_name=workflow_name)                       │
+                    │    71                                                    │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/src/core/compatibility/orchestrator.py │
+                    │ :151 in execute_workflow_with_validation                 │
+                    │                                                          │
+                    │   148 │   │   │   await self.repository.save_report(repo │
+                    │   149 │   │   │                                          │
+                    │   150 │   │   │   # Enforce policy block on low confiden │
+                    │ ❱ 151 │   │   │   if report.confidence_score < 50 and po │
+                    │   152 │   │   │   │   log_audit_event(                   │
+                    │   153 │   │   │   │   │   event_type="compatibility_bloc │
+                    │   154 │   │   │   │   │   status="failed",               │
+                    ╰──────────────────────────────────────────────────────────╯
+                    TypeError: '<' not supported between instances of           
+                    'MagicMock' and 'int'                                       
+------------------------------ Captured log call -------------------------------
+ERROR    src.core.compatibility.sources:sources.py:123 Live Redfish query failed for target 192.168.0.120: Failed to query Systems endpoint, status: <AsyncMock name='request().status_code' id='135108770850736'>
+WARNING  src.core.compatibility.orchestrator:orchestrator.py:116 Live Redfish query failed for 192.168.0.120: Failed to query Systems endpoint, status: <AsyncMock name='request().status_code' id='135108770850736'>. Falling back to cache...
+WARNING  src.core.compatibility.orchestrator:orchestrator.py:123 Cache lookup failed for 192.168.0.120: Device configuration cache not found for IP: 192.168.0.120. Falling back to static mock.
+ERROR    fastmcp.server.server:server.py:1297 Error calling tool 'wf_path_traversal'
+Traceback (most recent call last):
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py", line 1282, in call_tool
+    return await tool._run(arguments or {}, task_meta=task_meta)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/base.py", line 392, in _run
+    return await self.run(arguments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/function_tool.py", line 331, in run
+    result = await type_adapter.validate_python(arguments)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 189, in dynamic_tool
+    return await execute_workflow_route(wf_name, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 68, in execute_workflow_route
+    result = await manager.execute_workflow_with_validation(workflow_name, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/compatibility/orchestrator.py", line 151, in execute_workflow_with_validation
+    if report.confidence_score < 50 and policy in ("STRICT", "WARN_ONLY"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: '<' not supported between instances of 'MagicMock' and 'int'
+___________________ test_3_policy_violation_destructive_act ____________________
+
+loaded_mcp = FastMCP('Dell Enterprise Proxy')
+
+    @pytest.mark.asyncio
+    async def test_3_policy_violation_destructive_act(loaded_mcp):
+        with patch("src.core.compatibility.engine.CompatibilityEngine.validate_workflow") as mock_engine:
+            mock_report = MagicMock()
+            from src.core.compatibility.models import CompatibilityStatus
+            mock_report.status = CompatibilityStatus.BLOCK
+            mock_engine.return_value = mock_report
+    
+            with patch("src.core.compatibility.orchestrator.CompatibilityRepository.save_report", new_callable=AsyncMock):
+>               with patch("src.proxy.executors.workflow_execution_service.log_audit_event") as mock_log:
+
+tests/test_edge_security.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/unittest/mock.py:1458: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <unittest.mock._patch object at 0x7ae1761fbdd0>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'src.proxy.executors.workflow_execution_service' from '/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/executors/workflow_execution_service.py'> does not have the attribute 'log_audit_event'
+
+/usr/lib/python3.12/unittest/mock.py:1431: AttributeError
+---------------------------- Captured stderr setup -----------------------------
+[06/21/26 15:07:51] WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_path_traversal@                            
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_destructive_delete@                        
+------------------------------ Captured log setup ------------------------------
+WARNING  fastmcp.server.providers.local_provider.local_provider:local_provider.py:192 Component already exists: tool:wf_path_traversal@
+WARNING  fastmcp.server.providers.local_provider.local_provider:local_provider.py:192 Component already exists: tool:wf_destructive_delete@
+__________________ test_1_concurrent_expansion_race_condition __________________
+
+    @pytest.mark.asyncio
+    async def test_1_concurrent_expansion_race_condition():
+        from src.proxy.server import expand_workflow, expanded_tools_registry
+    
+        # Ensure starting clean
+        if "wf_race" in expanded_tools_registry:
+            del expanded_tools_registry["wf_race"]
+    
+        results = await asyncio.gather(*[expand_workflow("wf_race") for _ in range(10)])
+    
+        successes = sum(1 for r in results if r.get("message") == "Expansion successful")
+        already = sum(1 for r in results if r.get("message") == "Already expanded")
+    
+        # Assert FastMCP server handled locks and registered exactly once
+>       assert successes == 1
+E       assert 0 == 1
+
+tests/test_edge_concurrency.py:20: AssertionError
+___________________ test_3_downstream_rate_limiting_mid_step ___________________
+
+    @pytest.mark.asyncio
+    async def test_3_downstream_rate_limiting_mid_step():
+        from src.proxy.executors.httpx_executor import MockExecutor
+        from unittest.mock import AsyncMock
+        import httpx
+    
+        executor = MockExecutor()
+    
+        steps = [
+            MagicMock(id=1, operation_id="Step1", method="GET", url="/api/1"),
+            MagicMock(id=2, operation_id="Step2", method="GET", url="/api/2"),
+            MagicMock(id=3, operation_id="Step3", method="GET", url="/api/3"),
+            MagicMock(id=4, operation_id="Step4", method="GET", url="/api/4"),
+            MagicMock(id=5, operation_id="Step5", method="GET", url="/api/5"),
+        ]
+    
+        with patch("src.proxy.executors.httpx_executor.async_session") as mock_session:
+            mock_session_inst = mock_session.return_value.__aenter__.return_value
+            mock_wf = MagicMock(id="wf_5_steps", steps=steps)
+            mock_result = MagicMock()
+            mock_result.scalar_one_or_none.return_value = mock_wf
+            mock_session_inst.execute.return_value = mock_result
+    
+            with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_request:
+                async def side_effect(method, url, **kwargs):
+                    resp = MagicMock()
+                    if "api/3" in url:
+                        resp.status_code = 429
+                        raise httpx.HTTPStatusError("429 Too Many Requests", request=MagicMock(), response=resp)
+                    resp.status_code = 200
+                    resp.json.return_value = {"success": True}
+                    resp.raise_for_status = MagicMock()
+                    return resp
+    
+                mock_request.side_effect = side_effect
+    
+                # Since AsyncRetrying handles 429, it will try 3 times and then fail
+>               result = await executor.execute_workflow("wf_5_steps", {})
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_edge_resilience.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/proxy/executors/httpx_executor.py:234: in execute_workflow
+    step_bindings = json.loads(step.variable_bindings) if step.variable_bindings else {}
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = <MagicMock name='mock.variable_bindings' id='135108770965568'>, cls = None
+object_hook = None, parse_float = None, parse_int = None, parse_constant = None
+object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+>               raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+E               TypeError: the JSON object must be str, bytes or bytearray, not MagicMock
+
+/usr/lib/python3.12/json/__init__.py:339: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_edge_security.py::test_2_malicious_payload_path_traversal
+FAILED tests/test_edge_security.py::test_3_policy_violation_destructive_act
+FAILED tests/test_edge_concurrency.py::test_1_concurrent_expansion_race_condition
+FAILED tests/test_edge_resilience.py::test_3_downstream_rate_limiting_mid_step
+========================= 4 failed, 5 passed in 5.74s ==========================

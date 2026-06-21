@@ -1,0 +1,600 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP
+configfile: pyproject.toml
+plugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/test_generator_bootstrap.py::test_dynamic_test_generator_bootstrap FAILED [100%]
+
+=================================== FAILURES ===================================
+____________________ test_dynamic_test_generator_bootstrap _____________________
+
+dummy_db = '/tmp/tmp48nsk26l'
+
+    def test_dynamic_test_generator_bootstrap(dummy_db):
+        os.environ["DELL_TEST_DB_PATH"] = dummy_db
+        # 1. Run generator
+        generate_tests_from_db(dummy_db)
+    
+        # 2. Assert generated file exists
+        expected_file = os.path.join(GENERATED_DIR, "test_wf_wf_bootstrap_999.py")
+        assert os.path.exists(expected_file), f"Generated file {expected_file} does not exist"
+    
+        # 3. Read content and verify assertions structure
+        with open(expected_file, "r") as f:
+            content = f.read()
+    
+        assert "async def test_generated_workflow_wf_bootstrap_999_execution" in content
+        assert "assert len(calls) == 2" in content  # 3 steps, but 1 is cached
+        assert "assert calls[0].args[0] == 'GET'" in content
+        assert "assert calls[1].args[0] == 'POST'" in content
+        assert "No new network call expected" in content
+    
+        # 4. Programmatically run pytest on the generated file to ensure it is valid
+        # Must use the same environment's python/pytest
+        import sys
+        env = os.environ.copy()
+        env["DELL_TEST_DB_PATH"] = dummy_db
+    
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", expected_file, "-v"],
+            capture_output=True,
+            text=True,
+            env=env,
+            cwd=os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        )
+    
+>       assert result.returncode == 0, f"Generated test failed!\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
+E       AssertionError: Generated test failed!
+E         STDOUT:
+E         ============================= test session starts ==============================
+E         platform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python
+E         cachedir: .pytest_cache
+E         rootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP
+E         configfile: pyproject.toml
+E         plugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0
+E         asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+E         collecting ... collected 1 item
+E         
+E         DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py::test_generated_workflow_wf_bootstrap_999_execution FAILED [100%]
+E         
+E         =================================== FAILURES ===================================
+E         ______________ test_generated_workflow_wf_bootstrap_999_execution ______________
+E         
+E         workflow_name = 'check_server_health_update', params = {}
+E         
+E             async def execute_workflow_route(
+E                 workflow_name: str, params: Dict[str, Any]
+E             ) -> Dict[str, Any]:
+E                 """
+E                 Routes execution to the designated executor selected by env configuration.
+E                 Integrates pre-flight validation rules under the orchestrator WorkflowExecutionManager.
+E                 """
+E                 from src.governance.middleware import GovernanceMiddleware
+E                 from src.core.database import log_audit_event, async_session, Workflow
+E                 from sqlalchemy import update
+E             
+E                 try:
+E                     masked_params = GovernanceMiddleware.get_instance().intercept_execution(workflow_name, params)
+E         >           log_audit_event("EXECUTION_START", "SUCCESS", f"Started {workflow_name}", workflow_name=workflow_name, metadata={"inputs": masked_params})
+E         
+E         DELL_MCP/src/proxy/server.py:65: 
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         
+E         event_type = 'EXECUTION_START', status = 'SUCCESS'
+E         description = 'Started check_server_health_update'
+E         workflow_name = 'check_server_health_update', actor = 'system'
+E         metadata = {'inputs': {}}
+E         
+E             def log_audit_event(
+E                 event_type: str,
+E                 status: str,
+E                 description: str,
+E                 workflow_name: Optional[str] = None,
+E                 actor: str = "system",
+E                 metadata: Optional[Dict[str, Any]] = None,
+E             ) -> None:
+E                 """Create a new audit trail event in the database with a tamper-evident hash chain."""
+E                 import hashlib
+E                 event_id = (
+E                     f"evt_{datetime.now(timezone.utc).timestamp()}_{hash(description) & 0xffff}"
+E                 )
+E                 timestamp = datetime.now(timezone.utc).isoformat()
+E                 meta_json = json.dumps(metadata) if metadata else None
+E             
+E                 with get_db_connection() as conn:
+E         >           cursor = conn.execute("SELECT hash FROM audit_events ORDER BY rowid DESC LIMIT 1")
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         E           sqlite3.OperationalError: no such table: audit_events
+E         
+E         DELL_MCP/src/core/database.py:409: OperationalError
+E         
+E         During handling of the above exception, another exception occurred:
+E         
+E         self = FastMCP('Dell Enterprise Proxy'), name = 'check_server_health_update'
+E         arguments = {}, version = None, run_middleware = False, task_meta = None
+E         
+E             async def call_tool(
+E                 self,
+E                 name: str,
+E                 arguments: dict[str, Any] | None = None,
+E                 *,
+E                 version: VersionSpec | None = None,
+E                 run_middleware: bool = True,
+E                 task_meta: TaskMeta | None = None,
+E             ) -> ToolResult | mcp.types.CreateTaskResult:
+E                 """Call a tool by name.
+E             
+E                 This is the public API for executing tools. By default, middleware is applied.
+E             
+E                 Args:
+E                     name: The tool name
+E                     arguments: Tool arguments (optional)
+E                     version: Specific version to call. If None, calls highest version.
+E                     run_middleware: If True (default), apply the middleware chain.
+E                         Set to False when called from middleware to avoid re-applying.
+E                     task_meta: If provided, execute as a background task and return
+E                         CreateTaskResult. If None (default), execute synchronously and
+E                         return ToolResult.
+E             
+E                 Returns:
+E                     ToolResult when task_meta is None.
+E                     CreateTaskResult when task_meta is provided.
+E             
+E                 Raises:
+E                     NotFoundError: If tool not found or disabled
+E                     ToolError: If tool execution fails
+E                     ValidationError: If arguments fail validation
+E                 """
+E                 # Note: fn_key enrichment happens here after finding the tool.
+E                 # For mounted servers, the parent's provider sets fn_key to the
+E                 # namespaced key before delegating, ensuring correct Docket routing.
+E             
+E                 from fastmcp.server.providers.addressing import (
+E                     parse_hashed_backend_name,
+E                 )
+E             
+E                 # Two routing paths:
+E                 #   1. Hashed-name path — backend tools that opted into
+E                 #      app-callable visibility. Recognized by their
+E                 #      `<hash>_<local_name>` format and resolved via the
+E                 #      reverse-hash map. Address is known eagerly.
+E                 #   2. Display-name path — everything else. Goes through normal
+E                 #      `get_tool` aggregation/transforms. Address is determined
+E                 #      after resolution by walking the registry.
+E                 async with fastmcp.server.context.Context(fastmcp=self) as ctx:
+E                     if run_middleware:
+E                         mw_context = MiddlewareContext[CallToolRequestParams](
+E                             message=mcp.types.CallToolRequestParams(
+E                                 name=name, arguments=arguments or {}
+E                             ),
+E                             source="client",
+E                             type="request",
+E                             method="tools/call",
+E                             fastmcp_context=ctx,
+E                         )
+E                         return await self._run_middleware(
+E                             context=mw_context,
+E                             call_next=lambda context: self.call_tool(
+E                                 context.message.name,
+E                                 context.message.arguments or {},
+E                                 version=version,
+E                                 run_middleware=False,
+E                                 task_meta=task_meta,
+E                             ),
+E                         )
+E             
+E                     # Core logic: find and execute tool
+E                     with server_span(
+E                         f"tools/call {name}",
+E                         "tools/call",
+E                         self.name,
+E                         "tool",
+E                         name,
+E                         tool_name=name,
+E                     ) as span:
+E                         # Try normal display-name resolution first.
+E                         tool: Tool | None = await self.get_tool(name, version=version)
+E             
+E                         # If that fails, try hashed-name dispatch. This walks
+E                         # the provider tree recursively (same pattern as the old
+E                         # get_app_tool) looking for a tool whose stored hash
+E                         # matches the parsed prefix.
+E                         if tool is None:
+E                             hashed = parse_hashed_backend_name(name)
+E                             if hashed is not None:
+E                                 digest, local_name = hashed
+E                                 tool = await self.get_tool_by_hash(digest, local_name)
+E                                 if tool is not None:
+E                                     # Auth still applies on the bypass path.
+E                                     skip_auth, token = _get_auth_context()
+E                                     if not skip_auth and tool.auth is not None:
+E                                         try:
+E                                             auth_ctx = AuthContext(token=token, component=tool)
+E                                             if not await run_auth_checks(tool.auth, auth_ctx):
+E                                                 raise NotFoundError(f"Unknown tool: {name!r}")
+E                                         except AuthorizationError:
+E                                             raise NotFoundError(
+E                                                 f"Unknown tool: {name!r}"
+E                                             ) from None
+E             
+E                         if tool is None:
+E                             raise NotFoundError(f"Unknown tool: {name!r}")
+E                         span.set_attributes(tool.get_span_attributes())
+E                         if task_meta is not None and task_meta.fn_key is None:
+E                             task_meta = replace(task_meta, fn_key=tool.key)
+E                         try:
+E         >                   return await tool._run(arguments or {}, task_meta=task_meta)
+E                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1282: 
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/base.py:392: in _run
+E             return await self.run(arguments)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/function_tool.py:331: in run
+E             result = await type_adapter.validate_python(arguments)
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/src/proxy/server.py:190: in dynamic_tool
+E             return await execute_workflow_route(wf_name, kwargs)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/src/proxy/server.py:87: in execute_workflow_route
+E             log_audit_event("EXECUTION_FAILED", "FAILED", str(e), workflow_name=workflow_name)
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         
+E         event_type = 'EXECUTION_FAILED', status = 'FAILED'
+E         description = 'no such table: audit_events'
+E         workflow_name = 'check_server_health_update', actor = 'system', metadata = None
+E         
+E             def log_audit_event(
+E                 event_type: str,
+E                 status: str,
+E                 description: str,
+E                 workflow_name: Optional[str] = None,
+E                 actor: str = "system",
+E                 metadata: Optional[Dict[str, Any]] = None,
+E             ) -> None:
+E                 """Create a new audit trail event in the database with a tamper-evident hash chain."""
+E                 import hashlib
+E                 event_id = (
+E                     f"evt_{datetime.now(timezone.utc).timestamp()}_{hash(description) & 0xffff}"
+E                 )
+E                 timestamp = datetime.now(timezone.utc).isoformat()
+E                 meta_json = json.dumps(metadata) if metadata else None
+E             
+E                 with get_db_connection() as conn:
+E         >           cursor = conn.execute("SELECT hash FROM audit_events ORDER BY rowid DESC LIMIT 1")
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         E           sqlite3.OperationalError: no such table: audit_events
+E         
+E         DELL_MCP/src/core/database.py:409: OperationalError
+E         
+E         The above exception was the direct cause of the following exception:
+E         
+E             @pytest.mark.asyncio
+E             async def test_generated_workflow_wf_bootstrap_999_execution():
+E                 from src.proxy.server import load_approved_tools_from_db
+E                 await load_approved_tools_from_db()
+E                 with patch("httpx.AsyncClient.request") as mock_request:
+E                     # Mock Response
+E                     mock_response = MagicMock()
+E                     mock_response.status_code = 200
+E                     mock_response.json.return_value = {"mocked": "success"}
+E                     mock_response.raise_for_status = MagicMock()
+E                     mock_request.return_value = mock_response
+E             
+E                     # Use mock executor and clear cache
+E                     with patch.dict(os.environ, {"DELL_EXECUTOR_TYPE": "mock", "DELL_CACHE_TTL": "60"}):
+E                         async with _cache_lock:
+E                             _execution_cache.clear()
+E             
+E                         # Execute tool
+E         >               res = await mcp.call_tool("check_server_health_update", arguments={})
+E                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         
+E         DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py:27: 
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1231: in call_tool
+E             return await self._run_middleware(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:497: in _run_middleware
+E             return await chain(context)
+E                    ^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:494: in wrapped
+E             return await mw(ctx, call_next)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:101: in __call__
+E             return await handler_chain(context)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+E             return await handler(context, call_next=call_next)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:145: in on_message
+E             return await call_next(context)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+E             return await handler(context, call_next=call_next)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:152: in on_request
+E             return await call_next(context)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+E             return await handler(context, call_next=call_next)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:173: in on_call_tool
+E             return await call_next(context)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         
+E         self = FastMCP('Dell Enterprise Proxy'), name = 'check_server_health_update'
+E         arguments = {}, version = None, run_middleware = False, task_meta = None
+E         
+E             async def call_tool(
+E                 self,
+E                 name: str,
+E                 arguments: dict[str, Any] | None = None,
+E                 *,
+E                 version: VersionSpec | None = None,
+E                 run_middleware: bool = True,
+E                 task_meta: TaskMeta | None = None,
+E             ) -> ToolResult | mcp.types.CreateTaskResult:
+E                 """Call a tool by name.
+E             
+E                 This is the public API for executing tools. By default, middleware is applied.
+E             
+E                 Args:
+E                     name: The tool name
+E                     arguments: Tool arguments (optional)
+E                     version: Specific version to call. If None, calls highest version.
+E                     run_middleware: If True (default), apply the middleware chain.
+E                         Set to False when called from middleware to avoid re-applying.
+E                     task_meta: If provided, execute as a background task and return
+E                         CreateTaskResult. If None (default), execute synchronously and
+E                         return ToolResult.
+E             
+E                 Returns:
+E                     ToolResult when task_meta is None.
+E                     CreateTaskResult when task_meta is provided.
+E             
+E                 Raises:
+E                     NotFoundError: If tool not found or disabled
+E                     ToolError: If tool execution fails
+E                     ValidationError: If arguments fail validation
+E                 """
+E                 # Note: fn_key enrichment happens here after finding the tool.
+E                 # For mounted servers, the parent's provider sets fn_key to the
+E                 # namespaced key before delegating, ensuring correct Docket routing.
+E             
+E                 from fastmcp.server.providers.addressing import (
+E                     parse_hashed_backend_name,
+E                 )
+E             
+E                 # Two routing paths:
+E                 #   1. Hashed-name path — backend tools that opted into
+E                 #      app-callable visibility. Recognized by their
+E                 #      `<hash>_<local_name>` format and resolved via the
+E                 #      reverse-hash map. Address is known eagerly.
+E                 #   2. Display-name path — everything else. Goes through normal
+E                 #      `get_tool` aggregation/transforms. Address is determined
+E                 #      after resolution by walking the registry.
+E                 async with fastmcp.server.context.Context(fastmcp=self) as ctx:
+E                     if run_middleware:
+E                         mw_context = MiddlewareContext[CallToolRequestParams](
+E                             message=mcp.types.CallToolRequestParams(
+E                                 name=name, arguments=arguments or {}
+E                             ),
+E                             source="client",
+E                             type="request",
+E                             method="tools/call",
+E                             fastmcp_context=ctx,
+E                         )
+E                         return await self._run_middleware(
+E                             context=mw_context,
+E                             call_next=lambda context: self.call_tool(
+E                                 context.message.name,
+E                                 context.message.arguments or {},
+E                                 version=version,
+E                                 run_middleware=False,
+E                                 task_meta=task_meta,
+E                             ),
+E                         )
+E             
+E                     # Core logic: find and execute tool
+E                     with server_span(
+E                         f"tools/call {name}",
+E                         "tools/call",
+E                         self.name,
+E                         "tool",
+E                         name,
+E                         tool_name=name,
+E                     ) as span:
+E                         # Try normal display-name resolution first.
+E                         tool: Tool | None = await self.get_tool(name, version=version)
+E             
+E                         # If that fails, try hashed-name dispatch. This walks
+E                         # the provider tree recursively (same pattern as the old
+E                         # get_app_tool) looking for a tool whose stored hash
+E                         # matches the parsed prefix.
+E                         if tool is None:
+E                             hashed = parse_hashed_backend_name(name)
+E                             if hashed is not None:
+E                                 digest, local_name = hashed
+E                                 tool = await self.get_tool_by_hash(digest, local_name)
+E                                 if tool is not None:
+E                                     # Auth still applies on the bypass path.
+E                                     skip_auth, token = _get_auth_context()
+E                                     if not skip_auth and tool.auth is not None:
+E                                         try:
+E                                             auth_ctx = AuthContext(token=token, component=tool)
+E                                             if not await run_auth_checks(tool.auth, auth_ctx):
+E                                                 raise NotFoundError(f"Unknown tool: {name!r}")
+E                                         except AuthorizationError:
+E                                             raise NotFoundError(
+E                                                 f"Unknown tool: {name!r}"
+E                                             ) from None
+E             
+E                         if tool is None:
+E                             raise NotFoundError(f"Unknown tool: {name!r}")
+E                         span.set_attributes(tool.get_span_attributes())
+E                         if task_meta is not None and task_meta.fn_key is None:
+E                             task_meta = replace(task_meta, fn_key=tool.key)
+E                         try:
+E                             return await tool._run(arguments or {}, task_meta=task_meta)
+E                         except FastMCPError as e:
+E                             logger.log(
+E                                 e.log_level, f"Error calling tool {name!r}", exc_info=False
+E                             )
+E                             raise
+E                         except PydanticValidationError as e:
+E                             # fastmcp's own ValidationError is a FastMCPError, already handled above.
+E                             logger.warning(
+E                                 "Invalid arguments for tool %r: %s",
+E                                 name,
+E                                 e.errors(include_url=False),
+E                             )
+E                             raise
+E                         except Exception as e:
+E                             logger.exception(f"Error calling tool {name!r}")
+E                             # Handle actionable errors that should reach the LLM
+E                             # even when masking is enabled
+E                             if isinstance(e, httpx.HTTPStatusError):
+E                                 if e.response.status_code == 429:
+E                                     raise ToolError(
+E                                         "Rate limited by upstream API, please retry later"
+E                                     ) from e
+E                             if isinstance(e, httpx.TimeoutException):
+E                                 raise ToolError(
+E                                     "Upstream request timed out, please retry"
+E                                 ) from e
+E                             # Standard masking logic
+E                             if self._mask_error_details:
+E                                 raise ToolError(f"Error calling tool {name!r}") from e
+E         >                   raise ToolError(f"Error calling tool {name!r}: {e}") from e
+E         E                   fastmcp.exceptions.ToolError: Error calling tool 'check_server_health_update': no such table: audit_events
+E         
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1312: ToolError
+E         ----------------------------- Captured stderr call -----------------------------
+E         [06/21/26 15:21:33] Error calling tool 'check_server_health_update'             
+E                             ╭─────────── Traceback (most recent call last) ────────────╮
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/src/proxy/server.py:65 in              │
+E                             │ execute_workflow_route                                   │
+E                             │                                                          │
+E                             │    62 │                                                  │
+E                             │    63 │   try:                                           │
+E                             │    64 │   │   masked_params =                            │
+E                             │       GovernanceMiddleware.get_instance().intercept_exec │
+E                             │ ❱  65 │   │   log_audit_event("EXECUTION_START", "SUCCES │
+E                             │       workflow_name=workflow_name, metadata={"inputs": m │
+E                             │    66 │   │                                              │
+E                             │    67 │   │   from src.core.compatibility.orchestrator i │
+E                             │    68 │   │   manager = WorkflowExecutionManager()       │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/src/core/database.py:409 in            │
+E                             │ log_audit_event                                          │
+E                             │                                                          │
+E                             │    406 │   meta_json = json.dumps(metadata) if metadata  │
+E                             │    407 │                                                 │
+E                             │    408 │   with get_db_connection() as conn:             │
+E                             │ ❱  409 │   │   cursor = conn.execute("SELECT hash FROM a │
+E                             │        1")                                               │
+E                             │    410 │   │   row = cursor.fetchone()                   │
+E                             │    411 │   │   previous_hash = row["hash"] if row and ro │
+E                             │    412                                                   │
+E                             ╰──────────────────────────────────────────────────────────╯
+E                             OperationalError: no such table: audit_events               
+E                                                                                         
+E                             During handling of the above exception, another exception   
+E                             occurred:                                                   
+E                                                                                         
+E                             ╭─────────── Traceback (most recent call last) ────────────╮
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+E                             │ tmcp/server/server.py:1282 in call_tool                  │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+E                             │ tmcp/tools/base.py:392 in _run                           │
+E                             │                                                          │
+E                             │                 ... 2 frames hidden ...                  │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/src/proxy/server.py:87 in              │
+E                             │ execute_workflow_route                                   │
+E                             │                                                          │
+E                             │    84 │   │                                              │
+E                             │    85 │   │   return result                              │
+E                             │    86 │   except Exception as e:                         │
+E                             │ ❱  87 │   │   log_audit_event("EXECUTION_FAILED", "FAILE │
+E                             │       workflow_name=workflow_name)                       │
+E                             │    88 │   │                                              │
+E                             │    89 │   │   # Update execution metrics for failure     │
+E                             │    90 │   │   async with async_session() as session:     │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/src/core/database.py:409 in            │
+E                             │ log_audit_event                                          │
+E                             │                                                          │
+E                             │    406 │   meta_json = json.dumps(metadata) if metadata  │
+E                             │    407 │                                                 │
+E                             │    408 │   with get_db_connection() as conn:             │
+E                             │ ❱  409 │   │   cursor = conn.execute("SELECT hash FROM a │
+E                             │        1")                                               │
+E                             │    410 │   │   row = cursor.fetchone()                   │
+E                             │    411 │   │   previous_hash = row["hash"] if row and ro │
+E                             │    412                                                   │
+E                             ╰──────────────────────────────────────────────────────────╯
+E                             OperationalError: no such table: audit_events               
+E         ------------------------------ Captured log call -------------------------------
+E         ERROR    fastmcp.server.server:server.py:1297 Error calling tool 'check_server_health_update'
+E         Traceback (most recent call last):
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 65, in execute_workflow_route
+E             log_audit_event("EXECUTION_START", "SUCCESS", f"Started {workflow_name}", workflow_name=workflow_name, metadata={"inputs": masked_params})
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/database.py", line 409, in log_audit_event
+E             cursor = conn.execute("SELECT hash FROM audit_events ORDER BY rowid DESC LIMIT 1")
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         sqlite3.OperationalError: no such table: audit_events
+E         
+E         During handling of the above exception, another exception occurred:
+E         
+E         Traceback (most recent call last):
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py", line 1282, in call_tool
+E             return await tool._run(arguments or {}, task_meta=task_meta)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/base.py", line 392, in _run
+E             return await self.run(arguments)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/function_tool.py", line 331, in run
+E             result = await type_adapter.validate_python(arguments)
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 190, in dynamic_tool
+E             return await execute_workflow_route(wf_name, kwargs)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 87, in execute_workflow_route
+E             log_audit_event("EXECUTION_FAILED", "FAILED", str(e), workflow_name=workflow_name)
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/database.py", line 409, in log_audit_event
+E             cursor = conn.execute("SELECT hash FROM audit_events ORDER BY rowid DESC LIMIT 1")
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         sqlite3.OperationalError: no such table: audit_events
+E         =========================== short test summary info ============================
+E         FAILED DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py::test_generated_workflow_wf_bootstrap_999_execution
+E         ============================== 1 failed in 3.61s ===============================
+E         
+E         STDERR:
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python', '-m', 'pytest', '/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py', '-v'], returncode=1, stdout='============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP\nconfigfile: pyproject.toml\nplugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function\ncollecting ... collected 1 item\n\nDELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py::test_generated_workflow_wf_bootstrap_999_execution FAILED [100%]\n\n=================================== FAILURES ===================================\n____________...varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 190, in dynamic_tool\n    return await execute_workflow_route(wf_name, kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 87, in execute_workflow_route\n    log_audit_event("EXECUTION_FAILED", "FAILED", str(e), workflow_name=workflow_name)\n  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/database.py", line 409, in log_audit_event\n    cursor = conn.execute("SELECT hash FROM audit_events ORDER BY rowid DESC LIMIT 1")\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: no such table: audit_events\n=========================== short test summary info ============================\nFAILED DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py::test_generated_workflow_wf_bootstrap_999_execution\n============================== 1 failed in 3.61s ===============================\n', stderr='').returncode
+
+tests/test_generator_bootstrap.py:126: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_generator_bootstrap.py::test_dynamic_test_generator_bootstrap
+============================== 1 failed in 5.30s ===============================

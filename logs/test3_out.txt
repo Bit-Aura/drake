@@ -1,0 +1,893 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP
+configfile: pyproject.toml
+plugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... [06/21/26 15:02:01] WARNING  Component already exists:     local_provider.py:192
+                             tool:check_workflow_compatibi                      
+                             lity@                                              
+collected 1 item
+
+tests/test_workflow_lifecycle_patterns.py::test_3_policy_violation_security_block [06/21/26 15:02:02] Error calling tool 'wf_policy_block'                        
+                    ╭─────────── Traceback (most recent call last) ────────────╮
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sql │
+                    │ alchemy/engine/base.py:1969 in _exec_single_context      │
+                    │                                                          │
+                    │   1966 │   │   │   │   │   │   │   evt_handled = True    │
+                    │   1967 │   │   │   │   │   │   │   break                 │
+                    │   1968 │   │   │   │   if not evt_handled:               │
+                    │ ❱ 1969 │   │   │   │   │   self.dialect.do_execute(      │
+                    │   1970 │   │   │   │   │   │   cursor, str_statement, ef │
+                    │   1971 │   │   │   │   │   )                             │
+                    │   1972                                                   │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sql │
+                    │ alchemy/engine/default.py:952 in do_execute              │
+                    │                                                          │
+                    │    949 │   │   cursor.executemany(statement, parameters) │
+                    │    950 │                                                 │
+                    │    951 │   def do_execute(self, cursor, statement, param │
+                    │ ❱  952 │   │   cursor.execute(statement, parameters)     │
+                    │    953 │                                                 │
+                    │    954 │   def do_execute_no_params(self, cursor, statem │
+                    │    955 │   │   cursor.execute(statement)                 │
+                    │                                                          │
+                    │                 ... 7 frames hidden ...                  │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aio │
+                    │ sqlite/core.py:160 in _execute                           │
+                    │                                                          │
+                    │   157 │   │                                              │
+                    │   158 │   │   self._tx.put_nowait((future, function))    │
+                    │   159 │   │                                              │
+                    │ ❱ 160 │   │   return await future                        │
+                    │   161 │                                                  │
+                    │   162 │   async def _connect(self) -> "Connection":      │
+                    │   163 │   │   """Connect to the actual sqlite database." │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aio │
+                    │ sqlite/core.py:63 in _connection_worker_thread           │
+                    │                                                          │
+                    │    60 │   │                                              │
+                    │    61 │   │   try:                                       │
+                    │    62 │   │   │   LOG.debug("executing %s", function)    │
+                    │ ❱  63 │   │   │   result = function()                    │
+                    │    64 │   │   │                                          │
+                    │    65 │   │   │   if future:                             │
+                    │    66 │   │   │   │   future.get_loop().call_soon_thread │
+                    ╰──────────────────────────────────────────────────────────╯
+                    ProgrammingError: Error binding parameter 2: type           
+                    'MagicMock' is not supported                                
+                                                                                
+                    The above exception was the direct cause of the following   
+                    exception:                                                  
+                                                                                
+                    ╭─────────── Traceback (most recent call last) ────────────╮
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+                    │ tmcp/server/server.py:1282 in call_tool                  │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+                    │ tmcp/tools/base.py:392 in _run                           │
+                    │                                                          │
+                    │                 ... 37 frames hidden ...                 │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aio │
+                    │ sqlite/core.py:160 in _execute                           │
+                    │                                                          │
+                    │   157 │   │                                              │
+                    │   158 │   │   self._tx.put_nowait((future, function))    │
+                    │   159 │   │                                              │
+                    │ ❱ 160 │   │   return await future                        │
+                    │   161 │                                                  │
+                    │   162 │   async def _connect(self) -> "Connection":      │
+                    │   163 │   │   """Connect to the actual sqlite database." │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aio │
+                    │ sqlite/core.py:63 in _connection_worker_thread           │
+                    │                                                          │
+                    │    60 │   │                                              │
+                    │    61 │   │   try:                                       │
+                    │    62 │   │   │   LOG.debug("executing %s", function)    │
+                    │ ❱  63 │   │   │   result = function()                    │
+                    │    64 │   │   │                                          │
+                    │    65 │   │   │   if future:                             │
+                    │    66 │   │   │   │   future.get_loop().call_soon_thread │
+                    ╰──────────────────────────────────────────────────────────╯
+                    ProgrammingError: (sqlite3.ProgrammingError) Error binding  
+                    parameter 2: type 'MagicMock' is not supported              
+                    [SQL: INSERT INTO compatibility_reports (id, workflow_id,   
+                    target_ip, status, compatibility_score, risk_score,         
+                    report_json, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)]    
+                    [parameters: ('mock_report_123', <MagicMock                 
+                    name='validate_workflow().workflow_id'                      
+                    id='135530187061968'>, <MagicMock                           
+                    name='validate_workflow().target_ip' id='135530177394400'>, 
+                    'BLOCK', 0, 100, <MagicMock                                 
+                    name='validate_workflow().model_dump_json()'                
+                    id='135530177160800'>, '2026-06-21T09:32:02.170671+00:00')] 
+                    (Background on this error at: https://sqlalche.me/e/20/f405)
+FAILED
+
+=================================== FAILURES ===================================
+____________________ test_3_policy_violation_security_block ____________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x7b439415a450>
+dialect = <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteDialect_aiosqlite object at 0x7b43951daff0>
+context = <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteExecutionContext_aiosqlite object at 0x7b439415a8d0>
+statement = <sqlalchemy.dialects.sqlite.base.SQLiteCompiler object at 0x7b43940b0350>
+parameters = [('mock_report_123', <MagicMock name='validate_workflow().workflow_id' id='135530187061968'>, <MagicMock name='validate_workflow().target_ip' id='135530177394400'>, 'BLOCK', 0, 100, ...)]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:183: in execute
+    self._adapt_connection._handle_exception(error)
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:343: in _handle_exception
+    raise error
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:165: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/aiosqlite/cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv/lib/python3.12/site-packages/aiosqlite/cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/aiosqlite/core.py:160: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tx = <_queue.SimpleQueue object at 0x7b4394ff8900>
+
+    def _connection_worker_thread(tx: _TxQueue):
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            future, function = tx.get()
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.ProgrammingError: Error binding parameter 2: type 'MagicMock' is not supported
+
+.venv/lib/python3.12/site-packages/aiosqlite/core.py:63: ProgrammingError
+
+The above exception was the direct cause of the following exception:
+
+self = FastMCP('Dell Enterprise Proxy'), name = 'wf_policy_block'
+arguments = {}, version = None, run_middleware = False, task_meta = None
+
+    async def call_tool(
+        self,
+        name: str,
+        arguments: dict[str, Any] | None = None,
+        *,
+        version: VersionSpec | None = None,
+        run_middleware: bool = True,
+        task_meta: TaskMeta | None = None,
+    ) -> ToolResult | mcp.types.CreateTaskResult:
+        """Call a tool by name.
+    
+        This is the public API for executing tools. By default, middleware is applied.
+    
+        Args:
+            name: The tool name
+            arguments: Tool arguments (optional)
+            version: Specific version to call. If None, calls highest version.
+            run_middleware: If True (default), apply the middleware chain.
+                Set to False when called from middleware to avoid re-applying.
+            task_meta: If provided, execute as a background task and return
+                CreateTaskResult. If None (default), execute synchronously and
+                return ToolResult.
+    
+        Returns:
+            ToolResult when task_meta is None.
+            CreateTaskResult when task_meta is provided.
+    
+        Raises:
+            NotFoundError: If tool not found or disabled
+            ToolError: If tool execution fails
+            ValidationError: If arguments fail validation
+        """
+        # Note: fn_key enrichment happens here after finding the tool.
+        # For mounted servers, the parent's provider sets fn_key to the
+        # namespaced key before delegating, ensuring correct Docket routing.
+    
+        from fastmcp.server.providers.addressing import (
+            parse_hashed_backend_name,
+        )
+    
+        # Two routing paths:
+        #   1. Hashed-name path — backend tools that opted into
+        #      app-callable visibility. Recognized by their
+        #      `<hash>_<local_name>` format and resolved via the
+        #      reverse-hash map. Address is known eagerly.
+        #   2. Display-name path — everything else. Goes through normal
+        #      `get_tool` aggregation/transforms. Address is determined
+        #      after resolution by walking the registry.
+        async with fastmcp.server.context.Context(fastmcp=self) as ctx:
+            if run_middleware:
+                mw_context = MiddlewareContext[CallToolRequestParams](
+                    message=mcp.types.CallToolRequestParams(
+                        name=name, arguments=arguments or {}
+                    ),
+                    source="client",
+                    type="request",
+                    method="tools/call",
+                    fastmcp_context=ctx,
+                )
+                return await self._run_middleware(
+                    context=mw_context,
+                    call_next=lambda context: self.call_tool(
+                        context.message.name,
+                        context.message.arguments or {},
+                        version=version,
+                        run_middleware=False,
+                        task_meta=task_meta,
+                    ),
+                )
+    
+            # Core logic: find and execute tool
+            with server_span(
+                f"tools/call {name}",
+                "tools/call",
+                self.name,
+                "tool",
+                name,
+                tool_name=name,
+            ) as span:
+                # Try normal display-name resolution first.
+                tool: Tool | None = await self.get_tool(name, version=version)
+    
+                # If that fails, try hashed-name dispatch. This walks
+                # the provider tree recursively (same pattern as the old
+                # get_app_tool) looking for a tool whose stored hash
+                # matches the parsed prefix.
+                if tool is None:
+                    hashed = parse_hashed_backend_name(name)
+                    if hashed is not None:
+                        digest, local_name = hashed
+                        tool = await self.get_tool_by_hash(digest, local_name)
+                        if tool is not None:
+                            # Auth still applies on the bypass path.
+                            skip_auth, token = _get_auth_context()
+                            if not skip_auth and tool.auth is not None:
+                                try:
+                                    auth_ctx = AuthContext(token=token, component=tool)
+                                    if not await run_auth_checks(tool.auth, auth_ctx):
+                                        raise NotFoundError(f"Unknown tool: {name!r}")
+                                except AuthorizationError:
+                                    raise NotFoundError(
+                                        f"Unknown tool: {name!r}"
+                                    ) from None
+    
+                if tool is None:
+                    raise NotFoundError(f"Unknown tool: {name!r}")
+                span.set_attributes(tool.get_span_attributes())
+                if task_meta is not None and task_meta.fn_key is None:
+                    task_meta = replace(task_meta, fn_key=tool.key)
+                try:
+>                   return await tool._run(arguments or {}, task_meta=task_meta)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/fastmcp/tools/base.py:392: in _run
+    return await self.run(arguments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/tools/function_tool.py:331: in run
+    result = await type_adapter.validate_python(arguments)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/proxy/server.py:189: in dynamic_tool
+    return await execute_workflow_route(wf_name, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/proxy/server.py:68: in execute_workflow_route
+    result = await manager.execute_workflow_with_validation(workflow_name, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/core/compatibility/orchestrator.py:148: in execute_workflow_with_validation
+    await self.repository.save_report(report)
+src/core/compatibility/repository.py:185: in save_report
+    await session.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py:999: in commit
+    await greenlet_spawn(self.sync_session.commit)
+.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2035: in commit
+    trans.commit(_to_root=True)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1316: in commit
+    self._prepare_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1290: in _prepare_impl
+    self.session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4353: in flush
+    self._flush(objects)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4488: in _flush
+    with util.safe_reraise():
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:122: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4449: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:465: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:641: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:94: in save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1049: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:183: in execute
+    self._adapt_connection._handle_exception(error)
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:343: in _handle_exception
+    raise error
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:165: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/aiosqlite/cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv/lib/python3.12/site-packages/aiosqlite/cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/aiosqlite/core.py:160: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tx = <_queue.SimpleQueue object at 0x7b4394ff8900>
+
+    def _connection_worker_thread(tx: _TxQueue):
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            future, function = tx.get()
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlalchemy.exc.ProgrammingError: (sqlite3.ProgrammingError) Error binding parameter 2: type 'MagicMock' is not supported
+E               [SQL: INSERT INTO compatibility_reports (id, workflow_id, target_ip, status, compatibility_score, risk_score, report_json, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)]
+E               [parameters: ('mock_report_123', <MagicMock name='validate_workflow().workflow_id' id='135530187061968'>, <MagicMock name='validate_workflow().target_ip' id='135530177394400'>, 'BLOCK', 0, 100, <MagicMock name='validate_workflow().model_dump_json()' id='135530177160800'>, '2026-06-21T09:32:02.170671+00:00')]
+E               (Background on this error at: https://sqlalche.me/e/20/f405)
+
+.venv/lib/python3.12/site-packages/aiosqlite/core.py:63: ProgrammingError
+
+The above exception was the direct cause of the following exception:
+
+loaded_mcp = FastMCP('Dell Enterprise Proxy')
+
+    @pytest.mark.asyncio
+    async def test_3_policy_violation_security_block(loaded_mcp):
+        from src.core.compatibility.models import CompatibilityStatus
+    
+        with patch("src.core.compatibility.engine.CompatibilityEngine.validate_workflow") as mock_engine:
+            # Engine validates and returns blocked status
+            mock_report = MagicMock()
+            mock_report.status = CompatibilityStatus.BLOCK
+            mock_report.confidence_score = 100
+            mock_report.findings = []
+            mock_report.violations = []
+            mock_report.id = "mock_report_123"
+            mock_report.compatibility_score = 0
+            mock_report.risk_score = 100
+            mock_report.blast_radius = "HIGH"
+            mock_report.timestamp = datetime.datetime.now(datetime.timezone.utc)
+            mock_engine.return_value = mock_report
+    
+            with patch("httpx.AsyncClient.request") as mock_request:
+                with patch.dict(os.environ, {"DELL_EXECUTOR_TYPE": "mock", "DELL_COMPATIBILITY_POLICY": "STRICT"}):
+                    with pytest.raises(CompatibilityPolicyViolation) as exc:
+>                       await loaded_mcp.call_tool("wf_policy_block", arguments={})
+
+tests/test_workflow_lifecycle_patterns.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1231: in call_tool
+    return await self._run_middleware(
+.venv/lib/python3.12/site-packages/fastmcp/server/server.py:497: in _run_middleware
+    return await chain(context)
+           ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/server/server.py:494: in wrapped
+    return await mw(ctx, call_next)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:101: in __call__
+    return await handler_chain(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+    return await handler(context, call_next=call_next)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:145: in on_message
+    return await call_next(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+    return await handler(context, call_next=call_next)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:152: in on_request
+    return await call_next(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+    return await handler(context, call_next=call_next)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:173: in on_call_tool
+    return await call_next(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = FastMCP('Dell Enterprise Proxy'), name = 'wf_policy_block'
+arguments = {}, version = None, run_middleware = False, task_meta = None
+
+    async def call_tool(
+        self,
+        name: str,
+        arguments: dict[str, Any] | None = None,
+        *,
+        version: VersionSpec | None = None,
+        run_middleware: bool = True,
+        task_meta: TaskMeta | None = None,
+    ) -> ToolResult | mcp.types.CreateTaskResult:
+        """Call a tool by name.
+    
+        This is the public API for executing tools. By default, middleware is applied.
+    
+        Args:
+            name: The tool name
+            arguments: Tool arguments (optional)
+            version: Specific version to call. If None, calls highest version.
+            run_middleware: If True (default), apply the middleware chain.
+                Set to False when called from middleware to avoid re-applying.
+            task_meta: If provided, execute as a background task and return
+                CreateTaskResult. If None (default), execute synchronously and
+                return ToolResult.
+    
+        Returns:
+            ToolResult when task_meta is None.
+            CreateTaskResult when task_meta is provided.
+    
+        Raises:
+            NotFoundError: If tool not found or disabled
+            ToolError: If tool execution fails
+            ValidationError: If arguments fail validation
+        """
+        # Note: fn_key enrichment happens here after finding the tool.
+        # For mounted servers, the parent's provider sets fn_key to the
+        # namespaced key before delegating, ensuring correct Docket routing.
+    
+        from fastmcp.server.providers.addressing import (
+            parse_hashed_backend_name,
+        )
+    
+        # Two routing paths:
+        #   1. Hashed-name path — backend tools that opted into
+        #      app-callable visibility. Recognized by their
+        #      `<hash>_<local_name>` format and resolved via the
+        #      reverse-hash map. Address is known eagerly.
+        #   2. Display-name path — everything else. Goes through normal
+        #      `get_tool` aggregation/transforms. Address is determined
+        #      after resolution by walking the registry.
+        async with fastmcp.server.context.Context(fastmcp=self) as ctx:
+            if run_middleware:
+                mw_context = MiddlewareContext[CallToolRequestParams](
+                    message=mcp.types.CallToolRequestParams(
+                        name=name, arguments=arguments or {}
+                    ),
+                    source="client",
+                    type="request",
+                    method="tools/call",
+                    fastmcp_context=ctx,
+                )
+                return await self._run_middleware(
+                    context=mw_context,
+                    call_next=lambda context: self.call_tool(
+                        context.message.name,
+                        context.message.arguments or {},
+                        version=version,
+                        run_middleware=False,
+                        task_meta=task_meta,
+                    ),
+                )
+    
+            # Core logic: find and execute tool
+            with server_span(
+                f"tools/call {name}",
+                "tools/call",
+                self.name,
+                "tool",
+                name,
+                tool_name=name,
+            ) as span:
+                # Try normal display-name resolution first.
+                tool: Tool | None = await self.get_tool(name, version=version)
+    
+                # If that fails, try hashed-name dispatch. This walks
+                # the provider tree recursively (same pattern as the old
+                # get_app_tool) looking for a tool whose stored hash
+                # matches the parsed prefix.
+                if tool is None:
+                    hashed = parse_hashed_backend_name(name)
+                    if hashed is not None:
+                        digest, local_name = hashed
+                        tool = await self.get_tool_by_hash(digest, local_name)
+                        if tool is not None:
+                            # Auth still applies on the bypass path.
+                            skip_auth, token = _get_auth_context()
+                            if not skip_auth and tool.auth is not None:
+                                try:
+                                    auth_ctx = AuthContext(token=token, component=tool)
+                                    if not await run_auth_checks(tool.auth, auth_ctx):
+                                        raise NotFoundError(f"Unknown tool: {name!r}")
+                                except AuthorizationError:
+                                    raise NotFoundError(
+                                        f"Unknown tool: {name!r}"
+                                    ) from None
+    
+                if tool is None:
+                    raise NotFoundError(f"Unknown tool: {name!r}")
+                span.set_attributes(tool.get_span_attributes())
+                if task_meta is not None and task_meta.fn_key is None:
+                    task_meta = replace(task_meta, fn_key=tool.key)
+                try:
+                    return await tool._run(arguments or {}, task_meta=task_meta)
+                except FastMCPError as e:
+                    logger.log(
+                        e.log_level, f"Error calling tool {name!r}", exc_info=False
+                    )
+                    raise
+                except PydanticValidationError as e:
+                    # fastmcp's own ValidationError is a FastMCPError, already handled above.
+                    logger.warning(
+                        "Invalid arguments for tool %r: %s",
+                        name,
+                        e.errors(include_url=False),
+                    )
+                    raise
+                except Exception as e:
+                    logger.exception(f"Error calling tool {name!r}")
+                    # Handle actionable errors that should reach the LLM
+                    # even when masking is enabled
+                    if isinstance(e, httpx.HTTPStatusError):
+                        if e.response.status_code == 429:
+                            raise ToolError(
+                                "Rate limited by upstream API, please retry later"
+                            ) from e
+                    if isinstance(e, httpx.TimeoutException):
+                        raise ToolError(
+                            "Upstream request timed out, please retry"
+                        ) from e
+                    # Standard masking logic
+                    if self._mask_error_details:
+                        raise ToolError(f"Error calling tool {name!r}") from e
+>                   raise ToolError(f"Error calling tool {name!r}: {e}") from e
+E                   fastmcp.exceptions.ToolError: Error calling tool 'wf_policy_block': (sqlite3.ProgrammingError) Error binding parameter 2: type 'MagicMock' is not supported
+E                   [SQL: INSERT INTO compatibility_reports (id, workflow_id, target_ip, status, compatibility_score, risk_score, report_json, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)]
+E                   [parameters: ('mock_report_123', <MagicMock name='validate_workflow().workflow_id' id='135530187061968'>, <MagicMock name='validate_workflow().target_ip' id='135530177394400'>, 'BLOCK', 0, 100, <MagicMock name='validate_workflow().model_dump_json()' id='135530177160800'>, '2026-06-21T09:32:02.170671+00:00')]
+E                   (Background on this error at: https://sqlalche.me/e/20/f405)
+
+.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1312: ToolError
+------------------------------ Captured log call -------------------------------
+ERROR    src.core.compatibility.sources:sources.py:123 Live Redfish query failed for target 192.168.0.120: Failed to query Systems endpoint, status: <AsyncMock name='request().status_code' id='135530177310224'>
+WARNING  src.core.compatibility.orchestrator:orchestrator.py:116 Live Redfish query failed for 192.168.0.120: Failed to query Systems endpoint, status: <AsyncMock name='request().status_code' id='135530177310224'>. Falling back to cache...
+WARNING  src.core.compatibility.orchestrator:orchestrator.py:123 Cache lookup failed for 192.168.0.120: Device configuration cache not found for IP: 192.168.0.120. Falling back to static mock.
+ERROR    fastmcp.server.server:server.py:1297 Error calling tool 'wf_policy_block'
+Traceback (most recent call last):
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 183, in execute
+    self._adapt_connection._handle_exception(error)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 343, in _handle_exception
+    raise error
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 165, in execute
+    self.await_(_cursor.execute(operation, parameters))
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 40, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 32, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 160, in _execute
+    return await future
+           ^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 63, in _connection_worker_thread
+    result = function()
+             ^^^^^^^^^^
+sqlite3.ProgrammingError: Error binding parameter 2: type 'MagicMock' is not supported
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py", line 1282, in call_tool
+    return await tool._run(arguments or {}, task_meta=task_meta)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/base.py", line 392, in _run
+    return await self.run(arguments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/function_tool.py", line 331, in run
+    result = await type_adapter.validate_python(arguments)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 189, in dynamic_tool
+    return await execute_workflow_route(wf_name, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 68, in execute_workflow_route
+    result = await manager.execute_workflow_with_validation(workflow_name, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/compatibility/orchestrator.py", line 148, in execute_workflow_with_validation
+    await self.repository.save_report(report)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/compatibility/repository.py", line 185, in save_report
+    await session.commit()
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 999, in commit
+    await greenlet_spawn(self.sync_session.commit)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2035, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1316, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1290, in _prepare_impl
+    self.session.flush()
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4353, in flush
+    self._flush(objects)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4488, in _flush
+    with util.safe_reraise():
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4449, in _flush
+    flush_context.execute()
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 465, in execute
+    rec.execute(self)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 641, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 94, in save_obj
+    _emit_insert_statements(
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 1049, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1421, in execute
+    return meth(
+           ^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 183, in execute
+    self._adapt_connection._handle_exception(error)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 343, in _handle_exception
+    raise error
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 165, in execute
+    self.await_(_cursor.execute(operation, parameters))
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 40, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 32, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 160, in _execute
+    return await future
+           ^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 63, in _connection_worker_thread
+    result = function()
+             ^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (sqlite3.ProgrammingError) Error binding parameter 2: type 'MagicMock' is not supported
+[SQL: INSERT INTO compatibility_reports (id, workflow_id, target_ip, status, compatibility_score, risk_score, report_json, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('mock_report_123', <MagicMock name='validate_workflow().workflow_id' id='135530187061968'>, <MagicMock name='validate_workflow().target_ip' id='135530177394400'>, 'BLOCK', 0, 100, <MagicMock name='validate_workflow().model_dump_json()' id='135530177160800'>, '2026-06-21T09:32:02.170671+00:00')]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+=========================== short test summary info ============================
+FAILED tests/test_workflow_lifecycle_patterns.py::test_3_policy_violation_security_block
+============================== 1 failed in 4.73s ===============================

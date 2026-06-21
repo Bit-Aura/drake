@@ -1,0 +1,207 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP
+configfile: pyproject.toml
+plugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... [06/21/26 15:03:03] WARNING  Component already exists:     local_provider.py:192
+                             tool:check_workflow_compatibi                      
+                             lity@                                              
+collected 5 items
+
+tests/test_workflow_lifecycle_patterns.py::test_1_happy_path_approved_workflow PASSED
+tests/test_workflow_lifecycle_patterns.py::test_2_governance_block_pending_state [06/21/26 15:03:04] WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_happy_path@                                
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_policy_block@                              
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_param_validation@                          
+PASSED
+tests/test_workflow_lifecycle_patterns.py::test_3_policy_violation_security_block                     WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_happy_path@                                
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_policy_block@                              
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_param_validation@                          
+[06/21/26 15:03:04] Error calling tool 'wf_policy_block'                        
+                    ╭─────────── Traceback (most recent call last) ────────────╮
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+                    │ tmcp/server/server.py:1282 in call_tool                  │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+                    │ tmcp/tools/base.py:392 in _run                           │
+                    │                                                          │
+                    │                 ... 2 frames hidden ...                  │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/src/proxy/server.py:68 in              │
+                    │ execute_workflow_route                                   │
+                    │                                                          │
+                    │    65 │   │                                              │
+                    │    66 │   │   from src.core.compatibility.orchestrator i │
+                    │    67 │   │   manager = WorkflowExecutionManager()       │
+                    │ ❱  68 │   │   result = await manager.execute_workflow_wi │
+                    │    69 │   │                                              │
+                    │    70 │   │   log_audit_event("EXECUTION_COMPLETE", "SUC │
+                    │       workflow_name=workflow_name)                       │
+                    │    71                                                    │
+                    │                                                          │
+                    │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+                    │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+                    │ SEM/DELL/DELL_MCP/src/core/compatibility/orchestrator.py │
+                    │ :173 in execute_workflow_with_validation                 │
+                    │                                                          │
+                    │   170 │   │   │   │   │   workflow_name=workflow_name,   │
+                    │   171 │   │   │   │   │   actor="system",                │
+                    │   172 │   │   │   │   )                                  │
+                    │ ❱ 173 │   │   │   │   raise CompatibilityPolicyViolation │
+                    │   174 │   │   │   │   │   f"STRICT Policy blocked execut │
+                    │       target {ip} due to validation failures.",          │
+                    │   175 │   │   │   │   │   report=report,                 │
+                    │   176 │   │   │   │   )                                  │
+                    ╰──────────────────────────────────────────────────────────╯
+                    CompatibilityPolicyViolation: STRICT Policy blocked         
+                    execution of workflow 'wf_policy_block' on target           
+                    192.168.0.120 due to validation failures.                   
+FAILED
+tests/test_workflow_lifecycle_patterns.py::test_4_parameter_validation_block [06/21/26 15:03:05] WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_happy_path@                                
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_policy_block@                              
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_param_validation@                          
+                    WARNING  Invalid arguments for tool           server.py:1290
+                             'wf_param_validation': [{'type':                   
+                             'missing_argument', 'loc':                         
+                             ('target_ip',), 'msg': 'Missing                    
+                             required argument', 'input': {}}]                  
+PASSED
+tests/test_workflow_lifecycle_patterns.py::test_5_downstream_failure_handling                     WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_happy_path@                                
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_policy_block@                              
+                    WARNING  Component already exists:     local_provider.py:192
+                             tool:wf_param_validation@                          
+FAILED
+
+=================================== FAILURES ===================================
+____________________ test_3_policy_violation_security_block ____________________
+
+loaded_mcp = FastMCP('Dell Enterprise Proxy')
+
+    @pytest.mark.asyncio
+    async def test_3_policy_violation_security_block(loaded_mcp):
+        from src.core.compatibility.models import CompatibilityStatus
+    
+        with patch("src.core.compatibility.engine.CompatibilityEngine.validate_workflow") as mock_engine:
+            # Engine validates and returns blocked status
+            mock_report = MagicMock()
+            mock_report.status = CompatibilityStatus.BLOCK
+            mock_report.confidence_score = 100
+            mock_report.findings = []
+            mock_report.violations = []
+            mock_report.id = "mock_report_123"
+            mock_report.compatibility_score = 0
+            mock_report.risk_score = 100
+            mock_report.blast_radius = "HIGH"
+            mock_report.timestamp = datetime.datetime.now(datetime.timezone.utc)
+            mock_engine.return_value = mock_report
+    
+            with patch("src.core.compatibility.orchestrator.CompatibilityRepository.save_report", new_callable=AsyncMock):
+                with patch("httpx.AsyncClient.request") as mock_request:
+                    with patch.dict(os.environ, {"DELL_EXECUTOR_TYPE": "mock", "DELL_COMPATIBILITY_POLICY": "STRICT"}):
+                        from fastmcp.exceptions import ToolError
+                        with pytest.raises(ToolError) as exc:
+                            await loaded_mcp.call_tool("wf_policy_block", arguments={})
+    
+                        assert "STRICT Policy blocked execution" in str(exc.value)
+>                       mock_request.assert_not_called()
+
+tests/test_workflow_lifecycle_patterns.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <AsyncMock name='request' id='138241150640080'>
+
+    def assert_not_called(self):
+        """assert that the mock was never called.
+        """
+        if self.call_count != 0:
+            msg = ("Expected '%s' to not have been called. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'request' to not have been called. Called 2 times.
+E           Calls: [call('GET', 'http://localhost:4010/redfish/v1/Systems/System.Embedded.1', params=None, headers={'Authorization': 'Bearer redfish-live-facts-token', 'Accept': 'application/json'}, cookies=None, auth=<httpx._client.UseClientDefault object at 0x7dbacb2d3320>, follow_redirects=<httpx._client.UseClientDefault object at 0x7dbacb2d3320>, timeout=<httpx._client.UseClientDefault object at 0x7dbacb2d3320>, extensions=None),
+E            call().status_code.__ne__(200),
+E            call('GET', 'http://localhost:4010/redfish/v1/Systems/1', params=None, headers={'Authorization': 'Bearer redfish-live-facts-token', 'Accept': 'application/json'}, cookies=None, auth=<httpx._client.UseClientDefault object at 0x7dbacb2d3320>, follow_redirects=<httpx._client.UseClientDefault object at 0x7dbacb2d3320>, timeout=<httpx._client.UseClientDefault object at 0x7dbacb2d3320>, extensions=None),
+E            call().status_code.__ne__(200),
+E            call().status_code.__str__()].
+
+/usr/lib/python3.12/unittest/mock.py:905: AssertionError
+------------------------------ Captured log setup ------------------------------
+WARNING  fastmcp.server.providers.local_provider.local_provider:local_provider.py:192 Component already exists: tool:wf_happy_path@
+WARNING  fastmcp.server.providers.local_provider.local_provider:local_provider.py:192 Component already exists: tool:wf_policy_block@
+WARNING  fastmcp.server.providers.local_provider.local_provider:local_provider.py:192 Component already exists: tool:wf_param_validation@
+------------------------------ Captured log call -------------------------------
+ERROR    src.core.compatibility.sources:sources.py:123 Live Redfish query failed for target 192.168.0.120: Failed to query Systems endpoint, status: <AsyncMock name='request().status_code' id='138241160893296'>
+WARNING  src.core.compatibility.orchestrator:orchestrator.py:116 Live Redfish query failed for 192.168.0.120: Failed to query Systems endpoint, status: <AsyncMock name='request().status_code' id='138241160893296'>. Falling back to cache...
+WARNING  src.core.compatibility.orchestrator:orchestrator.py:123 Cache lookup failed for 192.168.0.120: Device configuration cache not found for IP: 192.168.0.120. Falling back to static mock.
+ERROR    fastmcp.server.server:server.py:1297 Error calling tool 'wf_policy_block'
+Traceback (most recent call last):
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py", line 1282, in call_tool
+    return await tool._run(arguments or {}, task_meta=task_meta)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/base.py", line 392, in _run
+    return await self.run(arguments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/function_tool.py", line 331, in run
+    result = await type_adapter.validate_python(arguments)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 189, in dynamic_tool
+    return await execute_workflow_route(wf_name, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 68, in execute_workflow_route
+    result = await manager.execute_workflow_with_validation(workflow_name, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/compatibility/orchestrator.py", line 173, in execute_workflow_with_validation
+    raise CompatibilityPolicyViolation(
+src.core.compatibility.orchestrator.CompatibilityPolicyViolation: STRICT Policy blocked execution of workflow 'wf_policy_block' on target 192.168.0.120 due to validation failures.
+______________________ test_5_downstream_failure_handling ______________________
+
+loaded_mcp = FastMCP('Dell Enterprise Proxy')
+
+    @pytest.mark.asyncio
+    async def test_5_downstream_failure_handling(loaded_mcp):
+        import httpx
+        with patch("httpx.AsyncClient.request") as mock_request:
+            # Simulate 500 error from downstream mock API
+            mock_response = MagicMock()
+            mock_response.status_code = 500
+    
+            mock_request.side_effect = httpx.HTTPStatusError(
+                "Internal Server Error",
+                request=MagicMock(),
+                response=mock_response
+            )
+    
+            with patch.dict(os.environ, {"DELL_EXECUTOR_TYPE": "mock", "DELL_COMPATIBILITY_POLICY": "DISABLED"}):
+                from fastmcp.exceptions import ToolError
+>               with pytest.raises(ToolError) as exc:
+E               Failed: DID NOT RAISE ToolError
+
+tests/test_workflow_lifecycle_patterns.py:179: Failed
+------------------------------ Captured log setup ------------------------------
+WARNING  fastmcp.server.providers.local_provider.local_provider:local_provider.py:192 Component already exists: tool:wf_happy_path@
+WARNING  fastmcp.server.providers.local_provider.local_provider:local_provider.py:192 Component already exists: tool:wf_policy_block@
+WARNING  fastmcp.server.providers.local_provider.local_provider:local_provider.py:192 Component already exists: tool:wf_param_validation@
+=========================== short test summary info ============================
+FAILED tests/test_workflow_lifecycle_patterns.py::test_3_policy_violation_security_block
+FAILED tests/test_workflow_lifecycle_patterns.py::test_5_downstream_failure_handling
+========================= 2 failed, 3 passed in 5.61s ==========================
