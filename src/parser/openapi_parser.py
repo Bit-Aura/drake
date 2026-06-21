@@ -245,6 +245,8 @@ class OpenAPIParser:
                 endpoint = EndpointContract(
                     operation_id=operation.get("operationId", f"{method.upper()}_{path}"),
                     method=method.upper(),
+                    protocol="REST",
+                    source_file=self.file_path.name,
                     url=path,
                     required_params=required_params,
                     tags=(
