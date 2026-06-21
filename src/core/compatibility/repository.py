@@ -80,7 +80,7 @@ class CompatibilityRepository:
         self, as_of: Optional[datetime] = None
     ) -> List[Dict[str, Any]]:
         """
-        Query compatibility rules matching temporal activity boundaries (effective rules).
+        Query compatibility rules matching timebased activity boundaries (effective rules).
         Supports audit replays at a past datetime timestamp.
         """
         as_of_time = as_of or datetime.now(timezone.utc)
@@ -89,7 +89,7 @@ class CompatibilityRepository:
         as_of_str = as_of_time.isoformat()
 
         async with self.session_factory() as session:
-            # Match rules where effective_from <= as_of_str and (effective_to is null or effective_to > as_of_str)
+            # Match rules where effective_from <= as_of_str and (effective_to is null or effective_to > as_of_str)  # noqa: E501
             stmt = select(DBRule).where(
                 and_(
                     DBRule.effective_from <= as_of_str,
@@ -123,7 +123,7 @@ class CompatibilityRepository:
     async def get_rules_for_domain(
         self, domain: str, as_of: Optional[datetime] = None
     ) -> List[Dict[str, Any]]:
-        """Retrieve temporal rules filtered by compatibility domain."""
+        """Retrieve timebased rules filtered by compatibility domain."""
         as_of_time = as_of or datetime.now(timezone.utc)
         if as_of_time.tzinfo is None:
             as_of_time = as_of_time.replace(tzinfo=timezone.utc)

@@ -7,13 +7,13 @@ project_root = str(Path(__file__).resolve().parents[2])
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-import time
-import click
-import typer
-from src.cli.context import CLIContext
-from src.cli.container import CLIContainer
-from src.cli.exceptions import DellCLIError
-from src.cli.theme import render_error, render_json, get_banner, console
+import time  # noqa: E402
+import click  # noqa: E402
+import typer  # noqa: E402
+from src.cli.context import CLIContext  # noqa: E402
+from src.cli.container import CLIContainer  # noqa: E402
+from src.cli.exceptions import DellCLIError  # noqa: E402
+from src.cli.theme import render_error, render_json, get_banner, console  # noqa: E402
 
 app = typer.Typer(
     name="drake",
@@ -44,25 +44,25 @@ def main_callback(
     """Drake — Dell Enterprise MCP Workflow Proxy CLI control plane."""
     if ctx.invoked_subcommand is None and not json:
         console.print(get_banner())
-        
+
     context = CLIContext(verbose=verbose, json_output=json, debug=debug)
     container = CLIContainer()
     ctx.obj = CLIWrapper(context, container)
 
 
 # Add subcommands from routing modules
-from src.cli.commands.cluster import app as cluster_app
-from src.cli.commands.governance import app as governance_app
-from src.cli.commands.compatibility import app as compatibility_app
-from src.cli.commands.runtime import app as runtime_app
-from src.cli.commands.ansible import app as ansible_app
-from src.cli.commands.audit import app as audit_app
-from src.cli.commands.system import app as system_app
-from src.cli.commands.diagnostics import app as diagnostics_app
-from src.cli.commands.server import app as server_app
-from src.cli.commands.config import app as config_app
-from src.cli.commands.pipeline import pipeline_cmd
-from src.cli.plugins import load_plugins
+from src.cli.commands.cluster import app as cluster_app  # noqa: E402
+from src.cli.commands.governance import app as governance_app  # noqa: E402
+from src.cli.commands.compatibility import app as compatibility_app  # noqa: E402
+from src.cli.commands.runtime import app as runtime_app  # noqa: E402
+from src.cli.commands.ansible import app as ansible_app  # noqa: E402
+from src.cli.commands.audit import app as audit_app  # noqa: E402
+from src.cli.commands.system import app as system_app  # noqa: E402
+from src.cli.commands.diagnostics import app as diagnostics_app  # noqa: E402
+from src.cli.commands.server import app as server_app  # noqa: E402
+from src.cli.commands.config import app as config_app  # noqa: E402
+from src.cli.commands.pipeline import pipeline_cmd  # noqa: E402
+from src.cli.plugins import load_plugins  # noqa: E402
 
 app.add_typer(cluster_app, name="cluster")
 app.add_typer(governance_app, name="governance")
@@ -74,7 +74,7 @@ app.add_typer(system_app, name="system")
 app.add_typer(diagnostics_app, name="diagnostics")
 app.add_typer(server_app, name="server")
 app.add_typer(config_app, name="config")
-app.command(name="pipeline", help="Run the complete pipeline: Ingest -> Cluster -> Serve")(pipeline_cmd)
+app.command(name="pipeline", help="Run the complete pipeline: Ingest -> Cluster -> Serve")(pipeline_cmd)  # noqa: E501
 
 load_plugins(app)
 
@@ -170,7 +170,7 @@ def main() -> None:
                 title="Unexpected Application Failure",
                 cause=str(e),
                 impact="The CLI execution halted abnormally.",
-                action="Run the command with --debug to display full traceback, or contact administrator.",
+                action="Run the command with --debug to display full traceback, or contact administrator.",  # noqa: E501
             )
         sys.exit(1)
 

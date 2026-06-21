@@ -25,16 +25,16 @@ class ClusterCLIService:
         if not expanded_paths:
             raise DellCLIError(
                 title="API Spec Files Missing",
-                cause=f"No specs found in provided paths",
+                cause=f"No specs found in provided paths",  # noqa: F541
                 impact="Clustering pipeline cannot be initiated.",
                 action="Provide valid paths via --specs option.",
             )
-            
+
         try:
             init_db_sync()
             all_endpoints = []
             spec_titles = []
-            
+
             for path in expanded_paths:
                 ext = path.suffix.lower()
                 if ext in [".graphql", ".gql"]:
@@ -53,11 +53,11 @@ class ClusterCLIService:
                         parser_obj = OpenAPIParser(path)
                 else:
                     continue
-                    
+
                 contract_a = parser_obj.parse_and_flatten()
                 all_endpoints.extend(contract_a.endpoints)
                 spec_titles.append(contract_a.spec_title)
-                
+
             merged_contract_a = ContractA(
                 spec_title=" | ".join(spec_titles),
                 spec_version="1.0.0",

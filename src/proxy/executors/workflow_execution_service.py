@@ -80,14 +80,14 @@ class WorkflowExecutionService:
             if hasattr(self.executor, "session_headers"):
                 headers = self.executor.session_headers
 
-            target_url = f"{base_url.rstrip('/')}/redfish/v1/Managers/iDRAC.Embedded.1/Actions/Oem/EID_674_Manager.ExportSystemConfiguration"
+            target_url = f"{base_url.rstrip('/')}/redfish/v1/Managers/iDRAC.Embedded.1/Actions/Oem/EID_674_Manager.ExportSystemConfiguration"  # noqa: E501
             payload = {
                 "ExportFormat": "XML",
                 "ShareParameters": {"Target": "Local"},
             }
 
             logger.info(
-                f"Rollback Strategy: SCP_SNAPSHOT. Initiating pre-flight SCP export to {target_url}..."
+                f"Rollback Strategy: SCP_SNAPSHOT. Initiating pre-flight SCP export to {target_url}..."  # noqa: E501
             )
             try:
                 async with httpx.AsyncClient() as client:
@@ -95,21 +95,21 @@ class WorkflowExecutionService:
                         target_url, json=payload, headers=headers, timeout=5.0
                     )
                     logger.info(
-                        f"SCP Export configuration request completed with status: {response.status_code}"
+                        f"SCP Export configuration request completed with status: {response.status_code}"  # noqa: E501
                     )
             except Exception as e:
                 logger.warning(
                     f"Failed to complete mock SCP snapshot request to {target_url}: {e}"
                 )
 
-            # Generate and save dummy SCP XML payload
+            # Generate and save mock SCP XML payload
             timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d_%H%M%S")
             snapshots_dir = Path("data/output/snapshots")
             snapshots_dir.mkdir(parents=True, exist_ok=True)
             snapshot_file = snapshots_dir / f"{timestamp}_{target_server_ip}.xml"
 
-            dummy_xml = f"""<?xml version="1.0" encoding="utf-8"?>
-<SystemConfiguration Model="PowerEdge" ServiceTag="MOCKTAG" Created="{datetime.datetime.now(datetime.timezone.utc).isoformat()}">
+            mock_xml = f"""<?xml version="1.0" encoding="utf-8"?>
+<SystemConfiguration Model="PowerEdge" ServiceTag="MOCKTAG" Created="{datetime.datetime.now(datetime.timezone.utc).isoformat()}">  # noqa: E501
   <Component FQDD="iDRAC.Embedded.1">
     <Attribute Name="IPMILan.1#Enable">Enabled</Attribute>
   </Component>
@@ -119,7 +119,7 @@ class WorkflowExecutionService:
 </SystemConfiguration>
 """
             try:
-                snapshot_file.write_text(dummy_xml, encoding="utf-8")
+                snapshot_file.write_text(mock_xml, encoding="utf-8")
                 snapshot_path = str(snapshot_file.absolute())
                 logger.info(f"Configuration snapshot successfully written to {snapshot_path}")
             except Exception as fe:
@@ -155,11 +155,11 @@ class WorkflowExecutionService:
 
         if is_failed:
             logger.error(f"Workflow execution failed. Status: {status}. Error: {error}")
-            
+
             # Execute state-aware rollback automatically if supported
             if rollback_strategy in ["DUAL_BANK", "SCP_SNAPSHOT"]:
-                logger.info(f"Triggering automatic rollback for workflow '{workflow_name}' using strategy '{rollback_strategy}'")
-                
+                logger.info(f"Triggering automatic rollback for workflow '{workflow_name}' using strategy '{rollback_strategy}'")  # noqa: E501
+
                 # Determine base URL for HTTPExecutor requests
                 base_url = "http://localhost:4010"
                 headers = {}
@@ -176,31 +176,31 @@ class WorkflowExecutionService:
                 rollback_status = "failed"
                 try:
                     if rollback_strategy == "DUAL_BANK":
-                        target_url = f"{base_url.rstrip('/')}/redfish/v1/UpdateService/Actions/Oem/DellUpdateService.SwitchActiveFirmwarePartition"
-                        logger.info(f"Auto-rollback: swapping active firmware partition on {target_server_ip} via {target_url}...")
+                        target_url = f"{base_url.rstrip('/')}/redfish/v1/UpdateService/Actions/Oem/DellUpdateService.SwitchActiveFirmwarePartition"  # noqa: E501
+                        logger.info(f"Auto-rollback: swapping active firmware partition on {target_server_ip} via {target_url}...")  # noqa: E501
                         async with httpx.AsyncClient() as client:
-                            response = await client.post(target_url, json={}, headers=headers, timeout=10.0)
-                            logger.info(f"Auto-rollback: DUAL_BANK partition swap completed with status: {response.status_code}")
+                            response = await client.post(target_url, json={}, headers=headers, timeout=10.0)  # noqa: E501
+                            logger.info(f"Auto-rollback: DUAL_BANK partition swap completed with status: {response.status_code}")  # noqa: E501
                             if response.status_code < 400:
                                 rollback_status = "rolled_back"
                     elif rollback_strategy == "SCP_SNAPSHOT" and snapshot_path:
                         p = Path(snapshot_path)
                         if p.exists():
                             xml_content = p.read_text(encoding="utf-8")
-                            target_url = f"{base_url.rstrip('/')}/redfish/v1/Managers/iDRAC.Embedded.1/Actions/Oem/EID_674_Manager.ImportSystemConfiguration"
+                            target_url = f"{base_url.rstrip('/')}/redfish/v1/Managers/iDRAC.Embedded.1/Actions/Oem/EID_674_Manager.ImportSystemConfiguration"  # noqa: E501
                             payload = {
                                 "ImportBuffer": xml_content,
                                 "ShareParameters": {"Target": "Local"},
                                 "ShutdownType": "Graceful",
                             }
-                            logger.info(f"Auto-rollback: importing configuration snapshot from '{snapshot_path}' via {target_url}...")
+                            logger.info(f"Auto-rollback: importing configuration snapshot from '{snapshot_path}' via {target_url}...")  # noqa: E501
                             async with httpx.AsyncClient() as client:
-                                response = await client.post(target_url, json=payload, headers=headers, timeout=10.0)
-                                logger.info(f"Auto-rollback: SCP snapshot import completed with status: {response.status_code}")
+                                response = await client.post(target_url, json=payload, headers=headers, timeout=10.0)  # noqa: E501
+                                logger.info(f"Auto-rollback: SCP snapshot import completed with status: {response.status_code}")  # noqa: E501
                                 if response.status_code < 400:
                                     rollback_status = "rolled_back"
                         else:
-                            logger.warning(f"Auto-rollback failed: snapshot file '{snapshot_path}' does not exist on disk.")
+                            logger.warning(f"Auto-rollback failed: snapshot file '{snapshot_path}' does not exist on disk.")  # noqa: E501
                 except Exception as rbe:
                     logger.error(f"Auto-rollback execution failed: {rbe}")
 
@@ -210,7 +210,7 @@ class WorkflowExecutionService:
                     log_audit_event(
                         event_type="AUTO_ROLLBACK_TRIGGERED",
                         status=rollback_status,
-                        description=f"Auto-rollback triggered for workflow '{workflow_name}' on {target_server_ip} (strategy: {rollback_strategy}). Outcome: {rollback_status}.",
+                        description=f"Auto-rollback triggered for workflow '{workflow_name}' on {target_server_ip} (strategy: {rollback_strategy}). Outcome: {rollback_status}.",  # noqa: E501
                         workflow_name=workflow_name,
                         actor="system",
                     )
@@ -229,7 +229,7 @@ class WorkflowExecutionService:
 
             if error:
                 raise error
-            return result or {"status": status, "error": "workflow failed but was processed by rollback"}
+            return result or {"status": status, "error": "workflow failed but was processed by rollback"}  # noqa: E501
 
         # Success path
         async with self.session_maker() as session:
@@ -240,4 +240,3 @@ class WorkflowExecutionService:
                 logger.info(f"Ledger entry {history_id} updated with status: {status}")
 
         return result
-

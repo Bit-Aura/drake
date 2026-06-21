@@ -6,7 +6,7 @@ from src.core.models import ContractA, EndpointContract
 
 logger = logging.getLogger(__name__)
 
-class AsyncAPIParser:
+class AsyncAPIParser:  # noqa: E302
     def __init__(self, file_path: str | Path):
         self.file_path = Path(file_path)
 
@@ -20,7 +20,7 @@ class AsyncAPIParser:
                     spec = yaml.safe_load(f)
                 else:
                     spec = json.load(f)
-                    
+
             channels = spec.get("channels", {})
             for ch_name, ch_item in channels.items():
                 for op in ["publish", "subscribe"]:
@@ -39,7 +39,7 @@ class AsyncAPIParser:
                         )
         except Exception as e:
             logger.error(f"Failed to parse AsyncAPI: {e}")
-            
+
         if not endpoints:
             endpoints.append(
                 EndpointContract(

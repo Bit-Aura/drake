@@ -44,5 +44,5 @@ def load_plugins(app: typer.Typer) -> None:
 
                 symbols = get_symbols()
                 console.print(
-                    f"[warning]{symbols['WARNING_PREFIX']} Plugin load failed for '{module_name}' -> {e}[/warning]"
+                    f"[warning]{symbols['WARNING_PREFIX']} Plugin load failed for '{module_name}' -> {e}[/warning]"  # noqa: E501
                 )

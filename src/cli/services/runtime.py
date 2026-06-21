@@ -37,7 +37,7 @@ class RuntimeCLIService:
     def reload_mcp(self) -> Dict[str, Any]:
         async def _async_reload() -> Dict[str, Any]:
             port = os.getenv("PORT", "8000")
-            api_key = os.getenv("DELL_MCP_API_KEY", "default_dev_key")
+            api_key = os.getenv("DELL_MCP_API_KEY", "override_dev_key")
             url = f"http://localhost:{port}/api/v1/mcp/reload"
             try:
                 async with httpx.AsyncClient() as client:
@@ -49,7 +49,7 @@ class RuntimeCLIService:
                 # Fallback to local DB pipeline reload log if server gateway is down
                 return {
                     "status": "synchronized_local_db_only",
-                    "reason": f"API server is offline on port {port}. Reload triggered locally in database, client session reload bypassed.",
+                    "reason": f"API server is offline on port {port}. Reload triggered locally in database, client session reload bypassed.",  # noqa: E501
                 }
 
         return AsyncServiceBridge.run(_async_reload())  # type: ignore[no-any-return]

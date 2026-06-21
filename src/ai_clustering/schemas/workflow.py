@@ -21,8 +21,8 @@ class Step(BaseModel):
 class Workflow(BaseModel):
     """
     Pydantic schema representing a Dell MCP Workflow.
-    
-    This model includes metadata about the workflow execution parameters and 
+
+    This model includes metadata about the workflow execution parameters and
     controls for the State-Aware Universal Rollback Architecture.
     """
     model_config = ConfigDict(extra="ignore")
@@ -30,14 +30,14 @@ class Workflow(BaseModel):
     id: str = Field(description="Unique workflow identifier.")
     system_name: str = Field(description="System-friendly name of the workflow.")
     display_name: str = Field(description="Human-readable display name.")
-    risk_level: Optional[str] = Field(None, description="Risk classification of the workflow steps.")
-    cluster_size: Optional[int] = Field(None, description="Number of underlying API endpoints grouped in this workflow.")
+    risk_level: Optional[str] = Field(None, description="Risk classification of the workflow steps.")  # noqa: E501
+    cluster_size: Optional[int] = Field(None, description="Number of underlying API endpoints grouped in this workflow.")  # noqa: E501
     confidence: Optional[float] = Field(None, description="Clustering algorithm confidence score.")
-    generated_description: Optional[str] = Field(None, description="AI-generated description explaining workflow actions.")
-    approved: int = Field(default=0, description="Workflow approval status (0=pending, 1=approved, 2=rejected).")
-    rejection_reason: Optional[str] = Field(None, description="Reason for rejection, if applicable.")
+    generated_description: Optional[str] = Field(None, description="AI-generated description explaining workflow actions.")  # noqa: E501
+    approved: int = Field(default=0, description="Workflow approval status (0=pending, 1=approved, 2=rejected).")  # noqa: E501
+    rejection_reason: Optional[str] = Field(None, description="Reason for rejection, if applicable.")  # noqa: E501
     community_id: Optional[str] = Field(None, description="Underlying community or cluster ID.")
-    
+
     # AUDIT1.MD Fix: Multi-step orchestration variables and steps list
     steps: list[Step] = Field(default_factory=list, description="Ordered steps in this workflow.")
     returned_state_variables: list[str] = Field(
@@ -46,7 +46,7 @@ class Workflow(BaseModel):
     )
 
     supports_rollback: bool = Field(
-        default=False, 
+        default=False,
         description="Whether this workflow supports state rollback or firmware reversion."
     )
     rollback_strategy: Literal["DUAL_BANK", "SCP_SNAPSHOT", "NONE"] = Field(

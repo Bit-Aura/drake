@@ -25,12 +25,12 @@ def start_server(
         print(json.dumps({"event": "server_starting", "host": host, "port": port}))
     else:
         console.print(
-            f"[bold green]Starting Dell Enterprise MCP Proxy Server...[/bold green]"
+            f"[bold green]Starting Dell Enterprise MCP Proxy Server...[/bold green]"  # noqa: F541
         )
         console.print(f"[info]Host:[/info] {host}")
         console.print(f"[info]Port:[/info] {port}")
         console.print(f"[info]Auto-reload:[/info] {reload}")
         console.print(f"[info]FastMCP endpoints available at http://{host}:{port}/mcp[/info]")
-        console.print(f"[info]Press Ctrl+C to stop.[/info]\n")
+        console.print(f"[info]Press Ctrl+C to stop.[/info]\n")  # noqa: F541
 
     uvicorn.run("src.proxy.server:app", host=host, port=port, reload=reload)

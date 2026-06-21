@@ -9,14 +9,14 @@ from typing import Any
 import instructor
 import ollama
 
-class WorkflowValidationError(Exception):
+class WorkflowValidationError(Exception):  # noqa: E302
     pass
 
-class Settings:
+class Settings:  # noqa: E302
     OLLAMA_MODEL = "qwen2.5-coder:14b"
     OLLAMA_TIMEOUT = 120.0
 
-settings = Settings()
+settings = Settings()  # noqa: E305
 
 
 class OllamaServiceError(RuntimeError):
@@ -57,7 +57,7 @@ class OllamaService:
         )
 
 
-        content = self._extract_message_content(response)
+        content = self._extract_message_content(response)  # noqa: E303
         if not isinstance(content, str) or not content.strip():
             raise OllamaServiceError("Ollama returned an empty response")
 

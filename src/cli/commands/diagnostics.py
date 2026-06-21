@@ -19,7 +19,7 @@ def diagnostics_db(ctx: typer.Context) -> None:
             f"[bold white]Database Status    :[/bold white] [{color}]{status}[/{color}]\n"
             f"[bold white]Tables Present     :[/bold white] {res.get('tables_present', 0)}\n"
             f"[bold white]Registered Rules   :[/bold white] {res.get('rules_registered', 0)}\n"
-            f"[bold white]Risk Profiles      :[/bold white] {res.get('risk_profiles_registered', 0)}\n"
+            f"[bold white]Risk Profiles      :[/bold white] {res.get('risk_profiles_registered', 0)}\n"  # noqa: E501
             f"[bold white]Indexes Validated  :[/bold white] {res.get('indexes_present', False)}"
         )
         from src.cli.theme import console
@@ -45,7 +45,7 @@ def diagnostics_api(ctx: typer.Context) -> None:
         content = (
             f"[bold white]API Gateway Status :[/bold white] [{color}]{status}[/{color}]\n"
             f"[bold white]Port Listening     :[/bold white] {res.get('port_listening', 'N/A')}\n"
-            f"[bold white]Metrics Endpoint   :[/bold white] {res.get('metrics_endpoint', 'N/A') if status == 'ONLINE' else 'UNREACHABLE'}\n"
+            f"[bold white]Metrics Endpoint   :[/bold white] {res.get('metrics_endpoint', 'N/A') if status == 'ONLINE' else 'UNREACHABLE'}\n"  # noqa: E501
             f"[bold white]Response Code      :[/bold white] {res.get('response_code', 'N/A')}"
         )
         if "error" in res:
@@ -77,11 +77,11 @@ def diagnostics_compatibility(ctx: typer.Context) -> None:
         content = (
             f"[bold white]Compatibility Layer Status :[/bold white] [{color}]{status}[/{color}]\n"
             f"[bold white]Missing Tables             :[/bold white] {missing_str}\n"
-            f"[bold white]Risk Profiles Count        :[/bold white] {res.get('risk_profiles_count', 0)}\n"
-            f"[bold white]Temporal Index Present     :[/bold white] {res.get('has_temporal_index', False)}\n"
-            f"[bold white]Cached Devices             :[/bold white] {res.get('cached_devices', 0)}\n"
+            f"[bold white]Risk Profiles Count        :[/bold white] {res.get('risk_profiles_count', 0)}\n"  # noqa: E501
+            f"[bold white]Timebased Index Present     :[/bold white] {res.get('has_timebased_index', False)}\n"  # noqa: E501
+            f"[bold white]Cached Devices             :[/bold white] {res.get('cached_devices', 0)}\n"  # noqa: E501
             f"[bold white]Rules Count                :[/bold white] {res.get('rules_count', 0)}\n"
-            f"[bold white]Provider Health            :[/bold white] {res.get('provider_health', 'OFFLINE')}"
+            f"[bold white]Provider Health            :[/bold white] {res.get('provider_health', 'OFFLINE')}"  # noqa: E501
         )
         from src.cli.theme import console
 
@@ -105,9 +105,9 @@ def diagnostics_runtime(ctx: typer.Context) -> None:
         color = "green" if status == "HEALTHY" else "red"
         content = (
             f"[bold white]Runtime Status       :[/bold white] [{color}]{status}[/{color}]\n"
-            f"[bold white]Registered MCP Tools :[/bold white] {res.get('registered_mcp_tools', 0)}\n"
+            f"[bold white]Registered MCP Tools :[/bold white] {res.get('registered_mcp_tools', 0)}\n"  # noqa: E501
             f"[bold white]Total Workflows      :[/bold white] {res.get('total_workflows', 0)}\n"
-            f"[bold white]API Endpoint Status  :[/bold white] {res.get('api_endpoint', 'OFFLINE')}\n"
+            f"[bold white]API Endpoint Status  :[/bold white] {res.get('api_endpoint', 'OFFLINE')}\n"  # noqa: E501
             f"[bold white]Port Listening       :[/bold white] {res.get('port_listening', 'N/A')}"
         )
         from src.cli.theme import console

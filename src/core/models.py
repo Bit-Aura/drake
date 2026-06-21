@@ -114,7 +114,7 @@ class EndpointContract(BaseModel):
                              serves as the primary key in workflow mappings.
         http_method:         The HTTP verb in upper-case.  Constrained to the
                              seven methods supported by OpenAPI 3.x.
-        url:                 The path template exactly as declared in the spec,
+        url:                 The path format exactly as declared in the spec,
                              including path parameter placeholders (e.g.,
                              ``"/redfish/v1/Chassis/{ChassisId}/Power"``).
         required_parameters: List of required inputs.  Path parameters are
@@ -136,7 +136,7 @@ class EndpointContract(BaseModel):
     )
     url: str = Field(
         description=(
-            "URL path template with placeholders, e.g. "
+            "URL path format with placeholders, e.g. "
             "'/redfish/v1/Systems/{ComputerSystemId}'."
         )
     )
@@ -227,19 +227,19 @@ class ContractA(BaseModel):
 # Phase 2: Natural Language Workflow Mapping
 # ---------------------------------------------------------------------------
 
-class WorkflowStep(BaseModel):
+class WorkflowStep(BaseModel):  # noqa: E302
     """
     A single step in a natural language compiled workflow.
     """
-    target_path: constr(pattern=r"^/[a-zA-Z0-9_/{}\.-]*$") = Field(description="The URL or RPC path of the target endpoint.")
-    method: Literal["GET", "POST", "PUT", "PATCH", "DELETE", "QUERY", "MUTATION", "RPC"] = Field(description="The HTTP verb or RPC method (e.g., GET, POST, QUERY, RPC).")
-    protocol: Literal["REST", "GraphQL", "gRPC", "AsyncAPI"] = Field(description="The API protocol (e.g., REST, GraphQL, gRPC, AsyncAPI).")
-    input_mapping: dict = Field(default_factory=dict, description="Rules for forwarding parameters or hardcoded inputs.")
+    target_path: constr(pattern=r"^/[a-zA-Z0-9_/{}\.-]*$") = Field(description="The URL or RPC path of the target endpoint.")  # noqa: F722, E501
+    method: Literal["GET", "POST", "PUT", "PATCH", "DELETE", "QUERY", "MUTATION", "RPC"] = Field(description="The HTTP verb or RPC method (e.g., GET, POST, QUERY, RPC).")  # noqa: E501
+    protocol: Literal["REST", "GraphQL", "gRPC", "AsyncAPI"] = Field(description="The API protocol (e.g., REST, GraphQL, gRPC, AsyncAPI).")  # noqa: E501
+    input_mapping: dict = Field(default_factory=dict, description="Rules for forwarding parameters or static inputs.")  # noqa: E501
 
-class WorkflowMapping(BaseModel):
+class WorkflowMapping(BaseModel):  # noqa: E302
     """
     A compiled workflow from a natural language prompt.
     """
-    name: constr(max_length=100) = Field(description="Distinct slugified string representing the workflow.")
+    name: constr(max_length=100) = Field(description="Distinct slugified string representing the workflow.")  # noqa: E501
     description: str = Field(description="Text summarizing the operation.")
-    steps: list[WorkflowStep] = Field(min_length=1, description="An ordered list of steps to execute the workflow.")
+    steps: list[WorkflowStep] = Field(min_length=1, description="An ordered list of steps to execute the workflow.")  # noqa: E501

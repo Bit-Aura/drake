@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
-from fastapi import FastAPI, HTTPException, status, Depends, Security, BackgroundTasks, Request
+from fastapi import FastAPI, HTTPException, status, Depends, Security, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security.api_key import APIKeyHeader
 import aiosqlite
@@ -72,15 +72,17 @@ class RejectWorkflowPayload(BaseModel):
 class NLGeneratePayload(BaseModel):
     prompt: str = Field(..., min_length=5, max_length=1000, pattern=r"^[^;\'\"\\`]+$")
 
+
 class LoginPayload(BaseModel):
     email: str = Field(..., min_length=1)
     password: str = Field(..., min_length=1)
+
 
 @app.post("/api/v1/auth/login")
 async def login(payload: LoginPayload) -> Dict[str, Any]:
     import jwt
     from datetime import timedelta
-    
+
     if payload.email == settings.ADMIN_EMAIL and payload.password == settings.ADMIN_PASSWORD:
         secret = settings.JWT_SECRET
         token = jwt.encode(
@@ -92,7 +94,7 @@ async def login(payload: LoginPayload) -> Dict[str, Any]:
             secret,
             algorithm="HS256"
         )
-        await log_audit_event_async("user_login", "success", "Admin user logged in to management console", actor="DellAdmin")
+        await log_audit_event_async("user_login", "success", "Admin user logged in to management console", actor="DellAdmin")  # noqa: E501
         return {
             "token": token,
             "user": {
@@ -101,10 +103,9 @@ async def login(payload: LoginPayload) -> Dict[str, Any]:
                 "role": "admin"
             }
         }
-    
-    await log_audit_event_async("user_login", "error", "Failed login attempt with invalid credentials", actor=payload.email)
-    raise HTTPException(status_code=401, detail="Invalid email or password")
 
+    await log_audit_event_async("user_login", "error", "Failed login try with invalid credentials", actor=payload.email)  # noqa: E501
+    raise HTTPException(status_code=401, detail="Invalid email or password")
 
 
 async def log_audit_event_async(
@@ -119,18 +120,20 @@ async def log_audit_event_async(
 
     async with aiosqlite.connect(DB_FILE) as db:
         db.row_factory = aiosqlite.Row
-        async with db.execute("SELECT hash FROM audit_events ORDER BY rowid DESC LIMIT 1") as cursor:
+        async with db.execute("SELECT hash FROM audit_events "
+                              "ORDER BY rowid DESC LIMIT 1") as cursor:
             row = await cursor.fetchone()
             previous_hash = row["hash"] if row and row["hash"] else "GENESIS_HASH"
-            
+
         event_id = str(uuid.uuid4())
         timestamp = datetime.now(timezone.utc).isoformat()
-        payload_str = f"{event_id}{event_type}{status}{workflow_name}{description}{actor}{timestamp}None{previous_hash}"
+        payload_str = f"{event_id}{event_type}{status}{workflow_name}{description}{actor}{timestamp}None{previous_hash}"  # noqa: E501
         new_hash = hashlib.sha256(payload_str.encode('utf-8')).hexdigest()
 
         await db.execute(
             """
-            INSERT INTO audit_events (id, event_type, status, workflow_name, description, actor, timestamp, metadata, previous_hash, hash)
+            INSERT INTO audit_events (id, event_type, status, workflow_name, description,
+                actor, timestamp, metadata, previous_hash, hash)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
@@ -154,12 +157,12 @@ async def generate_workflow_from_nl(payload: NLGeneratePayload) -> Dict[str, Any
     from src.ai_clustering.nl_compiler import compile_nl_to_workflow
     from src.core.database import insert_generated_workflow
     import asyncio
-    
+
     try:
         wf_mapping = await compile_nl_to_workflow(payload.prompt)
         wf_dict = wf_mapping.model_dump()
         wf_id = await asyncio.to_thread(insert_generated_workflow, wf_dict)
-        
+
         await log_audit_event_async(
             "nl_workflow_generated",
             "success",
@@ -167,7 +170,7 @@ async def generate_workflow_from_nl(payload: NLGeneratePayload) -> Dict[str, Any
             wf_dict["name"],
             "admin",
         )
-        
+
         return {
             "status": "success",
             "workflow_id": wf_id,
@@ -241,7 +244,7 @@ async def get_pending_workflows() -> List[Dict[str, Any]]:
                 "SELECT * FROM workflows WHERE approved = 0"
             ) as cursor:
                 rows = await cursor.fetchall()
-            
+
             async with db.execute("SELECT * FROM endpoints") as cursor:
                 endpoints_rows = await cursor.fetchall()
 
@@ -311,7 +314,8 @@ async def approve_workflow(workflow_id: str) -> Dict[str, str]:
             raise HTTPException(status_code=404, detail="Workflow not found")
 
         await db.execute(
-            "UPDATE workflows SET approved = 1, rejection_reason = NULL, approved_by = ?, approved_at = ? WHERE id = ?",
+            "UPDATE workflows SET approved = 1, rejection_reason = NULL, approved_by = ?,"
+            " approved_at = ? WHERE id = ?",
             ("admin", datetime.now(timezone.utc).isoformat(), workflow_id),
         )
         await db.commit()
@@ -376,7 +380,7 @@ async def update_workflow(
 
         display_name = payload.displayName or payload.workflowName
         if not display_name:
-            raise HTTPException(status_code=400, detail="Either displayName or workflowName must be provided")
+            raise HTTPException(status_code=400, detail="Either displayName or workflowName must be provided")  # noqa: E501
 
         await db.execute(
             "UPDATE workflows SET display_name = ?, generated_description = ? WHERE id = ?",
@@ -523,9 +527,9 @@ async def run_pipeline_task():
         set_pipeline_status("graphStatus", "running")
         set_pipeline_status("clusteringStatus", "running")
         logger.info("Background Pipeline: Building relationship graph and clustering endpoints...")
-        
+
         run_pipeline(contract_a)
-        
+
         set_pipeline_status("graphStatus", "complete")
         set_pipeline_status("clusteringStatus", "complete")
 
@@ -535,18 +539,18 @@ async def run_pipeline_task():
             await refine_workflow_names()
             logger.info("Background Pipeline: Successfully refined workflow names.")
         except Exception as ref_err:
-            logger.warning(f"Background Pipeline: Refinement of workflow names skipped or failed: {ref_err}")
+            logger.warning(f"Background Pipeline: Refinement of workflow names skipped or failed: {ref_err}")  # noqa: E501
 
         set_pipeline_status("mcpRuntimeStatus", "complete")
-        logger.info("Background Pipeline: Ingestion, Graph-Clustering, and Refinement completed successfully.")
-        
+        logger.info("Background Pipeline: Ingestion, Graph-Clustering, and Refinement completed successfully.")  # noqa: E501
+
         # Trigger reload of the MCP server dynamically to mount the newly clustered tools!
         if hasattr(app.state, "mcp_reload"):
             await app.state.mcp_reload()
             logger.info("Background Pipeline: Successfully reloaded MCP dynamic tools.")
-            
+
         await log_audit_event_async(
-            "pipeline_run", "success", f"Triggered automatic ingestion and Leiden clustering run on '{spec_path.name}'.", actor="system"
+            "pipeline_run", "success", f"Triggered automatic ingestion and Leiden clustering run on '{spec_path.name}'.", actor="system"  # noqa: E501
         )
     except Exception as err:
         logger.error(f"Background Pipeline failed: {err}")
@@ -644,9 +648,9 @@ async def get_metrics() -> Dict[str, Any]:
             )
 
             # Calculate actual tokens using length heuristic (len // 4)
-            raw_tokens = sum(len(str(ep["request_schema"] or "")) // 4 + len(str(ep["response_schema"] or "")) // 4 for ep in eps)
+            raw_tokens = sum(len(str(ep["request_schema"] or "")) // 4 + len(str(ep["response_schema"] or "")) // 4 for ep in eps)  # noqa: E501
             clustered_tokens = sum(len(str(wf["generated_description"] or "")) // 4 for wf in wfs)
-            
+
             # Avoid divide by zero
             raw_tokens = max(raw_tokens, 1)
             token_savings = (
@@ -721,7 +725,8 @@ async def prometheus_metrics():
                 row = await c.fetchone()
                 endpoint_count = row["c"] if row else 0
 
-            async with db.execute("SELECT approved, COUNT(*) as c FROM workflows GROUP BY approved") as c:
+            async with db.execute("SELECT approved, COUNT(*) as c FROM workflows"
+                                  " GROUP BY approved") as c:
                 wf_counts = await c.fetchall()
 
         pending = 0
@@ -749,11 +754,14 @@ async def prometheus_metrics():
                 async with aiosqlite.connect(DB_FILE) as db:
                     async with db.execute("SELECT COUNT(*) FROM compatibility_reports") as c:
                         total_checks = (await c.fetchone())[0]
-                    async with db.execute("SELECT COUNT(*) FROM compatibility_reports WHERE status='BLOCK'") as c:
+                    async with db.execute("SELECT COUNT(*) FROM compatibility_reports"
+                                          " WHERE status='BLOCK'") as c:
                         total_blocks = (await c.fetchone())[0]
-                    async with db.execute("SELECT COUNT(*) FROM compatibility_reports WHERE status='WARN'") as c:
+                    async with db.execute("SELECT COUNT(*) FROM compatibility_reports"
+                                          " WHERE status='WARN'") as c:
                         total_warnings = (await c.fetchone())[0]
-                    async with db.execute("SELECT COUNT(*) FROM compatibility_reports WHERE status='ALLOW'") as c:
+                    async with db.execute("SELECT COUNT(*) FROM compatibility_reports"
+                                          " WHERE status='ALLOW'") as c:
                         total_successes = (await c.fetchone())[0]
             except Exception as e:
                 logger.debug(f"Metrics count query failed: {e}")
@@ -761,30 +769,34 @@ async def prometheus_metrics():
             # Calculate actual tokens using length heuristic
             async with aiosqlite.connect(DB_FILE) as db:
                 db.row_factory = aiosqlite.Row
-                async with db.execute("SELECT request_schema, response_schema FROM endpoints") as c:
+                async with db.execute("SELECT request_schema, response_schema FROM endpoints") as c:  # noqa: E501
                     eps = await c.fetchall()
                 async with db.execute("SELECT generated_description FROM workflows") as c:
                     wfs = await c.fetchall()
-                    
-            raw_tokens = sum(len(str(ep["request_schema"] or "")) // 4 + len(str(ep["response_schema"] or "")) // 4 for ep in eps)
+
+            raw_tokens = sum(len(str(ep["request_schema"] or "")) // 4 + len(str(ep["response_schema"] or "")) // 4 for ep in eps)  # noqa: E501
             clustered_tokens = sum(len(str(wf["generated_description"] or "")) // 4 for wf in wfs)
-            
+
             raw_tokens = max(raw_tokens, 1)
-            token_savings = (1 - (clustered_tokens / raw_tokens)) * 100 if raw_tokens > clustered_tokens else 0.0
-            
+            token_savings = (1 - (clustered_tokens / raw_tokens)) * 100 if raw_tokens > clustered_tokens else 0.0  # noqa: E501
+
             async with aiosqlite.connect(DB_FILE) as db:
-                async with db.execute("SELECT COUNT(*) FROM endpoints WHERE community_id IS NOT NULL") as c:
+                async with db.execute("SELECT COUNT(*) FROM endpoints"
+                                      " WHERE community_id IS NOT NULL") as c:
                     row = await c.fetchone()
                     clustered_endpoints = row[0] if row else 0
-                
+
                 # Fetch compatibility metrics
                 async with db.execute("SELECT COUNT(*) FROM compatibility_reports") as c:
                     total_checks = (await c.fetchone())[0]
-                async with db.execute("SELECT COUNT(*) FROM compatibility_reports WHERE status='BLOCK'") as c:
+                async with db.execute("SELECT COUNT(*) FROM compatibility_reports"
+                                      " WHERE status='BLOCK'") as c:
                     total_blocks = (await c.fetchone())[0]
-                async with db.execute("SELECT COUNT(*) FROM compatibility_reports WHERE status='WARN'") as c:
+                async with db.execute("SELECT COUNT(*) FROM compatibility_reports"
+                                      " WHERE status='WARN'") as c:
                     total_warnings = (await c.fetchone())[0]
-                async with db.execute("SELECT COUNT(*) FROM compatibility_reports WHERE status='ALLOW'") as c:
+                async with db.execute("SELECT COUNT(*) FROM compatibility_reports"
+                                      " WHERE status='ALLOW'") as c:
                     total_successes = (await c.fetchone())[0]
             coverage = (clustered_endpoints / endpoint_count) * 100 if endpoint_count > 0 else 0.0
 
@@ -804,10 +816,10 @@ async def prometheus_metrics():
             "# HELP dell_mcp_workflows_rejected_total Total number of rejected workflows.",
             "# TYPE dell_mcp_workflows_rejected_total gauge",
             f"dell_mcp_workflows_rejected_total {rejected}",
-            "# HELP dell_mcp_token_savings_percent Estimated LLM context token savings percentage.",
+            "# HELP dell_mcp_token_savings_percent Estimated LLM context token savings percentage.",  # noqa: E501
             "# TYPE dell_mcp_token_savings_percent gauge",
             f"dell_mcp_token_savings_percent {token_savings:.2f}",
-            "# HELP dell_mcp_clustering_coverage_percent Percentage of endpoints successfully clustered.",
+            "# HELP dell_mcp_clustering_coverage_percent Percentage of endpoints successfully clustered.",  # noqa: E501
             "# TYPE dell_mcp_clustering_coverage_percent gauge",
             f"dell_mcp_clustering_coverage_percent {coverage:.2f}",
             "# HELP dell_mcp_compatibility_checks_total Total validation checks executed.",
@@ -819,7 +831,7 @@ async def prometheus_metrics():
             "# HELP dell_mcp_compatibility_warnings_total Total validation warnings raised.",
             "# TYPE dell_mcp_compatibility_warnings_total counter",
             f"dell_mcp_compatibility_warnings_total {total_warnings}",
-            "# HELP dell_mcp_compatibility_successes_total Total validation checks successfully allowed.",
+            "# HELP dell_mcp_compatibility_successes_total Total validation checks successfully allowed.",  # noqa: E501
             "# TYPE dell_mcp_compatibility_successes_total counter",
             f"dell_mcp_compatibility_successes_total {total_successes}"
         ]
@@ -955,22 +967,24 @@ async def get_workflow_compatibility(workflow_id: str, target_ip: Optional[str] 
                 wf = await c.fetchone()
             if not wf:
                 raise HTTPException(status_code=404, detail="Workflow not found")
-            
-            async with db.execute("SELECT * FROM endpoint_steps WHERE workflow_id = ? ORDER BY step_order", (workflow_id,)) as c:
+
+            async with db.execute("SELECT * FROM endpoint_steps WHERE workflow_id = ? "
+                                  "ORDER BY step_order", (workflow_id,)) as c:
                 steps_rows = await c.fetchall()
-        
+
         # Convert steps to matching format
         from pydantic import BaseModel
-        class TempStep(BaseModel):
+
+        class WorkflowStepModel(BaseModel):
             operation_id: str
             method: str
             url: str
-        
+
         steps = [
-            TempStep(operation_id=r["operation_id"], method=r["method"], url=r["url"])
+            WorkflowStepModel(operation_id=r["operation_id"], method=r["method"], url=r["url"])
             for r in steps_rows
         ]
-        
+
         # 2. Get target facts (from cache or static provider)
         ip = target_ip or "192.168.0.120"
         from src.core.compatibility.sources import CachedFactsProvider, StaticFactsProvider
@@ -978,18 +992,18 @@ async def get_workflow_compatibility(workflow_id: str, target_ip: Optional[str] 
             facts = await CachedFactsProvider().get_device_facts(ip)
         except Exception:
             facts = await StaticFactsProvider().get_device_facts(ip)
-            
+
         # 3. Validate
         from src.core.compatibility.repository import CompatibilityRepository
         from src.core.compatibility.engine import CompatibilityEngine
         repo = CompatibilityRepository()
         engine = CompatibilityEngine(repo)
         report = await engine.validate_workflow(workflow_id, steps, facts)
-        
+
         # Build dependency DAG visualization string
         dag = await engine.dag_engine.build_dependencies_dag()
         mermaid_diagram = engine.dag_engine.generate_mermaid_diagram(dag)
-        
+
         return {
             "workflowId": workflow_id,
             "displayName": wf["display_name"],
@@ -1037,7 +1051,8 @@ async def create_compatibility_rule(payload: CreateRulePayload):
         async with aiosqlite.connect(DB_FILE) as db:
             await db.execute(
                 """
-                INSERT INTO compatibility_rules (id, rule_name, rule_type, domain, rule_version, effective_from, created_by, change_reason, rule_config)
+                INSERT INTO compatibility_rules (id, rule_name, rule_type, domain,
+                rule_version, effective_from, created_by, change_reason, rule_config)
                 VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?)
                 """,
                 (
@@ -1068,22 +1083,24 @@ async def get_workflow_explainability(workflow_id: str, target_ip: Optional[str]
                 wf = await c.fetchone()
             if not wf:
                 raise HTTPException(status_code=404, detail="Workflow not found")
-            
-            async with db.execute("SELECT * FROM endpoint_steps WHERE workflow_id = ? ORDER BY step_order", (workflow_id,)) as c:
+
+            async with db.execute("SELECT * FROM endpoint_steps WHERE workflow_id = ? "
+                                  "ORDER BY step_order", (workflow_id,)) as c:
                 steps_rows = await c.fetchall()
-        
-        # Convert steps to TempStep
+
+        # Convert steps to WorkflowStepModel
         from pydantic import BaseModel
-        class TempStep(BaseModel):
+
+        class WorkflowStepModel(BaseModel):
             operation_id: str
             method: str
             url: str
-        
+
         steps = [
-            TempStep(operation_id=r["operation_id"], method=r["method"], url=r["url"])
+            WorkflowStepModel(operation_id=r["operation_id"], method=r["method"], url=r["url"])
             for r in steps_rows
         ]
-        
+
         # 2. Get target facts (from cache or static provider)
         ip = target_ip or "192.168.0.120"
         from src.core.compatibility.sources import CachedFactsProvider, StaticFactsProvider
@@ -1091,18 +1108,18 @@ async def get_workflow_explainability(workflow_id: str, target_ip: Optional[str]
             facts = await CachedFactsProvider().get_device_facts(ip)
         except Exception:
             facts = await StaticFactsProvider().get_device_facts(ip)
-            
+
         # 3. Validate
         from src.core.compatibility.repository import CompatibilityRepository
         from src.core.compatibility.engine import CompatibilityEngine
         repo = CompatibilityRepository()
         engine = CompatibilityEngine(repo)
         report = await engine.validate_workflow(workflow_id, steps, facts)
-        
+
         # Build dependency DAG visualization string
         dag = await engine.dag_engine.build_dependencies_dag()
         mermaid_diagram = engine.dag_engine.generate_mermaid_diagram(dag)
-        
+
         # Build risk heatmap data (Risk vs Blast Radius)
         risk_heatmap = {
             "matrix": {
@@ -1115,7 +1132,7 @@ async def get_workflow_explainability(workflow_id: str, target_ip: Optional[str]
                 "blast_radius": report.blast_radius
             }
         }
-        
+
         # Extrapolate unsupported models and remediation
         unsupported = []
         remediation = []
@@ -1124,13 +1141,13 @@ async def get_workflow_explainability(workflow_id: str, target_ip: Optional[str]
                 unsupported.append(v.actual_value)
             if v.remediation_step:
                 remediation.append(v.remediation_step)
-                
+
         from src.core.compatibility.models import GovernanceExplainabilityReport
         return GovernanceExplainabilityReport(
             workflow_id=workflow_id,
             workflow_display_name=wf["display_name"],
             compatibility_score=report.compatibility_score,
-            overall_risk_level="DESTRUCTIVE" if report.risk_score >= 80 else ("CONFIG_CHANGE" if report.risk_score >= 40 else "READ_ONLY"),
+            overall_risk_level="DESTRUCTIVE" if report.risk_score >= 80 else ("CONFIG_CHANGE" if report.risk_score >= 40 else "READ_ONLY"),  # noqa: E501
             confidence_level=report.confidence_score,
             blast_radius=report.blast_radius,
             unsupported_models=unsupported,

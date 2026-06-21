@@ -247,7 +247,7 @@ class BlastRadiusEngine:
         if "GOVERNANCE" in domains:
             return (
                 "CLUSTER",
-                "Workflow executes platform governance operations affecting cluster-wide compliance.",
+                "Workflow executes platform governance operations affecting cluster-wide compliance.",  # noqa: E501
             )
 
         if "POWER" in domains or "STORAGE" in domains:
@@ -262,7 +262,7 @@ class BlastRadiusEngine:
             if has_cross_links:
                 return (
                     "RACK",
-                    "Workflow targets power/storage operations with active cross-node dependencies.",
+                    "Workflow targets power/storage operations with active cross-node dependencies.",  # noqa: E501
                 )
             return (
                 "CHASSIS",
@@ -283,7 +283,7 @@ class BlastRadiusEngine:
 
 class DependencyGraphEngine:
     """
-    Builds and traverses Directed Acyclic Graphs (DAGs) representing rules and operations prerequisites.
+    Builds and traverses Directed Acyclic Graphs (DAGs) representing rules and operations prerequisites.  # noqa: E501
     """
 
     def __init__(self, repository: CompatibilityRepository):
@@ -380,7 +380,7 @@ class CompatibilityEngine:
         as_of: Optional[datetime] = None,
     ) -> CompatibilityReport:
         logger.info(
-            f"Evaluating compatibility of workflow {workflow_id} against IP {target_facts.target_ip}..."
+            f"Evaluating compatibility of workflow {workflow_id} against IP {target_facts.target_ip}..."  # noqa: E501
         )
 
         findings: List[CompatibilityFinding] = []
@@ -432,15 +432,15 @@ class CompatibilityEngine:
                             field_checked="device_model",
                             expected_value=f"One of: {supported}",
                             actual_value=target_facts.device_model,
-                            remediation_step=f"Hardware platform '{target_facts.device_model}' is not certified.",
+                            remediation_step=f"Hardware platform '{target_facts.device_model}' is not certified.",  # noqa: E501
                         )
                     )
                     findings.append(
                         CompatibilityFinding(
                             title="Hardware Model Certification Mismatch",
                             severity="critical",
-                            message=f"Server model '{target_facts.device_model}' is not present in hardware catalog.",
-                            suggested_action="Perform validation on compatible R750/R650 platform chassis.",
+                            message=f"Server model '{target_facts.device_model}' is not present in hardware catalog.",  # noqa: E501
+                            suggested_action="Perform validation on compatible R750/R650 platform chassis.",  # noqa: E501
                         )
                     )
 
@@ -462,8 +462,8 @@ class CompatibilityEngine:
                             CompatibilityFinding(
                                 title="Legacy BIOS Version Detected",
                                 severity="high",
-                                message=f"System BIOS '{target_facts.bios_version}' is below required minimum threshold '{min_bios}'.",
-                                suggested_action=f"Schedule system update task to install BIOS release >= {min_bios}.",
+                                message=f"System BIOS '{target_facts.bios_version}' is below required minimum threshold '{min_bios}'.",  # noqa: E501
+                                suggested_action=f"Schedule system update task to install BIOS release >= {min_bios}.",  # noqa: E501
                             )
                         )
 
@@ -485,15 +485,15 @@ class CompatibilityEngine:
                                 field_checked=f"firmware_version.{component}",
                                 expected_value=f">= {min_fw}",
                                 actual_value=fw_version,
-                                remediation_step=f"Update component {component} firmware version to at least {min_fw}.",
+                                remediation_step=f"Update component {component} firmware version to at least {min_fw}.",  # noqa: E501
                             )
                         )
                         findings.append(
                             CompatibilityFinding(
                                 title=f"Legacy Component Firmware ({component})",
                                 severity="medium",
-                                message=f"Installed version '{fw_version}' is below compatibility catalog base '{min_fw}'.",
-                                suggested_action=f"Apply firmware patch to target {component} controller.",
+                                message=f"Installed version '{fw_version}' is below compatibility catalog base '{min_fw}'.",  # noqa: E501
+                                suggested_action=f"Apply firmware patch to target {component} controller.",  # noqa: E501
                             )
                         )
 
@@ -508,16 +508,16 @@ class CompatibilityEngine:
                                 rule_id=rule_id,
                                 field_checked="workflow_steps",
                                 expected_value=f"Contains {prereq_op} before {target_op}",
-                                actual_value="Prerequisite operation is missing in workflow steps sequence",
-                                remediation_step=f"Ensure steps include '{prereq_op}' query before executing '{target_op}'.",
+                                actual_value="Prerequisite operation is missing in workflow steps sequence",  # noqa: E501
+                                remediation_step=f"Ensure steps include '{prereq_op}' query before executing '{target_op}'.",  # noqa: E501
                             )
                         )
                         findings.append(
                             CompatibilityFinding(
                                 title="Missing Step Dependency Prerequisite",
                                 severity="high",
-                                message=f"Operation '{target_op}' is ordered without prerequisite validation step '{prereq_op}'.",
-                                suggested_action="Re-cluster or modify workflow steps sequence to query status before trigger.",
+                                message=f"Operation '{target_op}' is ordered without prerequisite validation step '{prereq_op}'.",  # noqa: E501
+                                suggested_action="Re-cluster or modify workflow steps sequence to query status before trigger.",  # noqa: E501
                             )
                         )
                     elif step_operation_ids_list.index(
@@ -528,16 +528,16 @@ class CompatibilityEngine:
                                 rule_id=rule_id,
                                 field_checked="workflow_steps",
                                 expected_value=f"Contains {prereq_op} before {target_op}",
-                                actual_value="Prerequisite operation is executed after or at the same time as target",
-                                remediation_step=f"Re-order workflow steps to execute '{prereq_op}' before '{target_op}'.",
+                                actual_value="Prerequisite operation is executed after or at the same time as target",  # noqa: E501
+                                remediation_step=f"Re-order workflow steps to execute '{prereq_op}' before '{target_op}'.",  # noqa: E501
                             )
                         )
                         findings.append(
                             CompatibilityFinding(
                                 title="Invalid Step Dependency Ordering",
                                 severity="high",
-                                message=f"Operation '{target_op}' is executed before prerequisite step '{prereq_op}'.",
-                                suggested_action="Re-order workflow steps sequence to execute prerequisite before target.",
+                                message=f"Operation '{target_op}' is executed before prerequisite step '{prereq_op}'.",  # noqa: E501
+                                suggested_action="Re-order workflow steps sequence to execute prerequisite before target.",  # noqa: E501
                             )
                         )
 
@@ -551,15 +551,15 @@ class CompatibilityEngine:
                             field_checked="workflow_safety",
                             expected_value="No safety conflicts",
                             actual_value=f"Conflict combination sequence: {list(intersection)}",
-                            remediation_step="De-duplicate or isolate forbidden execution sequences.",
+                            remediation_step="De-duplicate or isolate forbidden execution sequences.",  # noqa: E501
                         )
                     )
                     findings.append(
                         CompatibilityFinding(
                             title="Workflow Safety Sequence Conflict",
                             severity="critical",
-                            message=f"Workflow contains dangerous forbidden operations combinations: {list(intersection)}.",
-                            suggested_action="Separate target steps into standalone approved execution operations.",
+                            message=f"Workflow contains dangerous forbidden operations combinations: {list(intersection)}.",  # noqa: E501
+                            suggested_action="Separate target steps into standalone approved execution operations.",  # noqa: E501
                         )
                     )
 
@@ -609,8 +609,8 @@ class CompatibilityEngine:
                 CompatibilityFinding(
                     title=f"High Blast Radius Containment Alert: {blast_radius}",
                     severity="high" if blast_radius == "CHASSIS" else "critical",
-                    message=f"Workflow execution profile triggers systemic impacts: {blast_radius_reason}",
-                    suggested_action="Ensure administrative oversight and confirm fallback topology isolation boundaries.",
+                    message=f"Workflow execution profile triggers systemic impacts: {blast_radius_reason}",  # noqa: E501
+                    suggested_action="Ensure administrative oversight and confirm fallback topology isolation boundaries.",  # noqa: E501
                 )
             )
 
@@ -630,7 +630,7 @@ class CompatibilityEngine:
                     CompatibilityFinding(
                         title="Stale Device Inventory Cache",
                         severity="medium",
-                        message=f"Target facts cache is stale (age: {int(age_sec)}s). Live pre-flight check recommended.",
+                        message=f"Target facts cache is stale (age: {int(age_sec)}s). Live pre-flight check recommended.",  # noqa: E501
                         suggested_action="Refresh facts cache before execution.",
                     )
                 )

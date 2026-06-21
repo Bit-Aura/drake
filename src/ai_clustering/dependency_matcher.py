@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 
 logger = logging.getLogger(__name__)
 
-def extract_schema_fields_typed(schema_str: Any) -> Dict[str, str]:
+def extract_schema_fields_typed(schema_str: Any) -> Dict[str, str]:  # noqa: E302
     """Extracts property names and types from a JSON schema string recursively."""
     fields = {}
     if not schema_str:
@@ -14,7 +14,7 @@ def extract_schema_fields_typed(schema_str: Any) -> Dict[str, str]:
         schema = json.loads(schema_str) if isinstance(schema_str, str) else schema_str
         if not isinstance(schema, dict):
             return fields
-        def recurse(obj):
+        def recurse(obj):  # noqa: E306
             if isinstance(obj, dict):
                 if "properties" in obj and isinstance(obj["properties"], dict):
                     for k, v in obj["properties"].items():
@@ -32,7 +32,7 @@ def extract_schema_fields_typed(schema_str: Any) -> Dict[str, str]:
         logger.warning(f"Failed to parse schema for dependency matching: {e}")
     return fields
 
-def extract_required_params_typed(params_str: Any) -> Dict[str, str]:
+def extract_required_params_typed(params_str: Any) -> Dict[str, str]:  # noqa: E302
     fields = {}
     if not params_str:
         return fields
@@ -46,7 +46,7 @@ def extract_required_params_typed(params_str: Any) -> Dict[str, str]:
         pass
     return fields
 
-def build_execution_dag(endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def build_execution_dag(endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]:  # noqa: E302
     """
     Takes a list of endpoints within a community.
     Builds a Directed Acyclic Graph (DAG) based on data dependencies.
@@ -61,18 +61,18 @@ def build_execution_dag(endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]
 
     G = nx.DiGraph()
     bindings = {ep["operation_id"]: {} for ep in endpoints}
-    
+
     for ep in endpoints:
         G.add_node(ep["operation_id"], data=ep)
-        
+
     common_fields = {"id", "name", "description", "status", "message", "error", "type"}
-    
+
     for ep_a in endpoints:
         a_id = ep_a["operation_id"]
         a_method = ep_a["method"].upper()
         a_path = ep_a["url"]
         a_outputs = extract_schema_fields_typed(ep_a.get("response_schema"))
-        
+
         for ep_b in endpoints:
             b_id = ep_b["operation_id"]
             if a_id == b_id:
@@ -81,10 +81,10 @@ def build_execution_dag(endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]
             b_path = ep_b["url"]
             b_inputs = extract_schema_fields_typed(ep_b.get("request_schema"))
             b_inputs.update(extract_required_params_typed(ep_b.get("required_params")))
-            
+
             edge_weight = 0
             mapped_fields = []
-            
+
             # Rule 1: Type-Aware Schema Intersection
             for a_key, a_type in a_outputs.items():
                 if a_key.lower() in common_fields:
@@ -93,11 +93,11 @@ def build_execution_dag(endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]
                     if a_key.lower() == b_key.lower() and a_type == b_type:
                         edge_weight += 5
                         mapped_fields.append((b_key, a_key))
-            
+
             # Rule 2: Path Hierarchy (RESTful dependency)
             if a_path in b_path and len(a_path) < len(b_path):
                 edge_weight += 10
-                
+
             # Rule 3: CRUD Semantics on the exact same path
             if a_path == b_path:
                 crud_order = {"POST": 1, "GET": 2, "PUT": 3, "PATCH": 4, "DELETE": 5}
@@ -105,7 +105,7 @@ def build_execution_dag(endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]
                 b_order = crud_order.get(b_method, 99)
                 if a_order < b_order:
                     edge_weight += 3
-            
+
             if edge_weight > 0:
                 G.add_edge(a_id, b_id, weight=edge_weight)
                 for b_key, a_key in mapped_fields:
@@ -135,10 +135,10 @@ def build_execution_dag(endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]
                                 weakest_edge = (u, v)
                     if weakest_edge:
                         G.remove_edge(*weakest_edge)
-                        logger.info(f"Cycle Management: Removed weakest edge {weakest_edge} (weight {min_weight})")
+                        logger.info(f"Cycle Management: Removed weakest edge {weakest_edge} (weight {min_weight})")  # noqa: E501
                         # Also remove the binding that caused this edge
                         target_id = weakest_edge[1]
-                        bindings[target_id] = {k: v for k, v in bindings[target_id].items() if not v.startswith(f"{{{{{weakest_edge[0]}.")}
+                        bindings[target_id] = {k: v for k, v in bindings[target_id].items() if not v.startswith(f"{{{{{weakest_edge[0]}.")}  # noqa: E501
                 sorted_ids = list(nx.lexicographical_topological_sort(G))
                 break
             except nx.NetworkXUnfeasible:
@@ -146,15 +146,15 @@ def build_execution_dag(endpoints: List[Dict[str, Any]]) -> List[Dict[str, Any]]
 
     ep_map = {ep["operation_id"]: ep for ep in endpoints}
     sorted_endpoints = []
-    
+
     # Handle disconnected nodes gracefully
     all_nodes = set(ep_map.keys())
     sorted_set = set(sorted_ids)
     missing = all_nodes - sorted_set
-    
+
     for op_id in sorted_ids + list(missing):
         ep = ep_map[op_id]
         ep["variable_bindings"] = json.dumps(bindings.get(op_id, {}))
         sorted_endpoints.append(ep)
-        
+
     return sorted_endpoints

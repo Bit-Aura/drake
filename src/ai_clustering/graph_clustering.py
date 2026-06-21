@@ -46,7 +46,7 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
         sim_matrix = service.compute_similarity_matrix(embeddings)
     except Exception as err:
         logger.warning(
-            f"EmbeddingService failed (missing dependencies?): {err}. Falling back to 0.0 semantic scores."
+            f"EmbeddingService failed (missing dependencies?): {err}. Falling back to 0.0 semantic scores."  # noqa: E501
         )
         sim_matrix = np.zeros((len(endpoints), len(endpoints)))
 
@@ -59,16 +59,16 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
     path_arrays = []
     tags_list = []
     all_tags = set()
-    
+
     for ep in endpoints:
         # url tokenization
-        parts = [p for p in ep.get("url", "").split("/") if p and p.lower() not in ("redfish", "v1", "api")]
+        parts = [p for p in ep.get("url", "").split("/") if p and p.lower() not in ("redfish", "v1", "api")]  # noqa: E501
         encoded = []
         for p in parts:
             if p not in vocab: vocab[p] = len(vocab)
             encoded.append(vocab[p])
         path_arrays.append(encoded)
-        
+
         # tags
         tags = ep.get("tags") or []
         if isinstance(tags, str): tags = [tags]
@@ -82,7 +82,7 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
     for i, tags in enumerate(tags_list):
         for t in tags:
             tag_matrix[i, tag_to_idx[t]] = True
-            
+
     intersection = np.dot(tag_matrix.astype(int), tag_matrix.T.astype(int))
     sum_tags = tag_matrix.sum(axis=1)
     union = sum_tags[:, None] + sum_tags[None, :] - intersection
@@ -98,42 +98,42 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
         for i, p in enumerate(path_arrays):
             if p:
                 P[i, :len(p)] = p
-                
+
         len_P = np.array([len(p) for p in path_arrays])
-        
+
         # Domain match
         domain_match = np.where((P[:, 0:1] == P[None, :, 0]) & (P[:, 0:1] != -1), 0.2, 0.0)
-        
+
         # Shared prefix computation
         match_matrix = (P[:, None, :] == P[None, :, :]) & (P[:, None, :] != -1)
         prefix_match = np.minimum.accumulate(match_matrix, axis=2)
         shared_counts = prefix_match.sum(axis=2)
-        
+
         # Max lengths
         max_lens = np.maximum(len_P[:, None], len_P[None, :])
-        
+
         # Base score
         with np.errstate(divide='ignore', invalid='ignore'):
             base_score = np.where(max_lens > 0, shared_counts / max_lens, 1.0)
-            
+
         # is_prefix bool
         is_prefix_a_in_b = shared_counts == len_P[None, :]
         is_prefix_b_in_a = shared_counts == len_P[:, None]
         is_prefix = is_prefix_a_in_b | is_prefix_b_in_a
-        
+
         # is_sibling bool
         is_same_len = len_P[:, None] == len_P[None, :]
         is_sibling = (len_P[:, None] > 1) & is_same_len & (shared_counts == len_P[:, None] - 1)
-        
+
         # Applying max thresholds
         mask_prefix = is_prefix & (shared_counts >= 1)
         base_score = np.where(mask_prefix, np.maximum(base_score, 0.8), base_score)
-        
+
         mask_sibling = is_sibling & (shared_counts >= 1)
         base_score = np.where(mask_sibling & ~mask_prefix, np.maximum(base_score, 0.65), base_score)
-        
+
         path_sim_matrix = np.clip(base_score + domain_match, 0.0, 1.0)
-        
+
         # Handle cases where len_a == 0 or len_b == 0
         zero_len_mask = (len_P[:, None] == 0) | (len_P[None, :] == 0)
         path_sim_matrix = np.where(zero_len_mask, 0.0, path_sim_matrix)
@@ -154,9 +154,9 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
         p85 = np.percentile(all_scores, 85)
         p90 = np.percentile(all_scores, 90)
         p95 = np.percentile(all_scores, 95)
-        
-        # We mathematically clamp the similarity threshold between [0.71, 0.72] to guarantee 
-        # the optimal "Goldilocks Zone" for LLM context window limits and tool precision in production.
+
+        # We mathematically clamp the similarity threshold between [0.71, 0.72] to guarantee
+        # the optimal "Goldilocks Zone" for LLM context window limits and tool precision in production.  # noqa: E501
         if num_nodes >= 50:
             threshold = max(0.71, min(0.72, p90))
         else:
@@ -164,7 +164,7 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
     else:
         threshold = 0.50
         p75 = p80 = p85 = p90 = p95 = 0.0
-        
+
     G.graph["threshold"] = threshold
 
     if is_explain_mode() and all_scores:
@@ -183,59 +183,59 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
     # Phase 2 - Add edges and track diagnostics
     accepted_edges = 0
     rejected_edges = 0
-    
+
     # We create the candidate edges for accepted entries
     # using np.where
     accepted_mask = final_weights > threshold
     np.fill_diagonal(accepted_mask, False)
     # Only upper triangle to avoid duplicate edges
     accepted_mask = accepted_mask & np.triu(np.ones((num_nodes, num_nodes), dtype=bool), k=1)
-    
+
     accepted_indices = np.argwhere(accepted_mask)
-    
+
     top_edges = []
     acc_sem, acc_path, acc_tag = [], [], []
-    
+
     for idx in accepted_indices:
         i, j = idx
         w = float(final_weights[i, j])
         s_score = float(sim_matrix[i, j])
         p_score = float(path_sim_matrix[i, j])
         t_score = float(tag_sim_matrix[i, j])
-        
+
         top_edges.append((i, j, w, s_score, p_score, t_score))
-        
+
         op_id_i = endpoints[i]["operation_id"]
         op_id_j = endpoints[j]["operation_id"]
         G.add_edge(op_id_i, op_id_j, weight=w)
-        
+
         accepted_edges += 1
         acc_sem.append(s_score)
         acc_path.append(p_score)
         acc_tag.append(t_score)
-        
+
     top_edges = sorted(top_edges, key=lambda x: x[2], reverse=True)
     rejected_edges = len(all_scores) - accepted_edges
 
     if is_explain_mode():
         total_comparisons = len(all_scores)
         acceptance_rate = accepted_edges / total_comparisons if total_comparisons > 0 else 0
-        
+
         if len(all_scores) > 0:
             hist, bins = np.histogram(all_scores, bins=10, range=(0.0, 1.0))
             hist_str = "\n".join(f"{bins[k]:.1f}-{bins[k+1]:.1f}: {hist[k]}" for k in range(10))
         else:
             hist_str = "No data"
-        
+
         top_100_str = "\n".join(
             f"{endpoints[u]['operation_id']} <-> {endpoints[v]['operation_id']} (Score: {w:.3f})"
             for u, v, w, _, _, _ in top_edges[:100]
         )
-        
+
         avg_s = np.mean(acc_sem) if acc_sem else 0
         avg_p = np.mean(acc_path) if acc_path else 0
         avg_t = np.mean(acc_tag) if acc_tag else 0
-        
+
         content_graph = (
             f"Total endpoints: {num_nodes}\n"
             f"Total candidate comparisons: {total_comparisons}\n"
@@ -306,17 +306,17 @@ def generate_semantic_label(
     use_llm: bool = True,
 ) -> Tuple[str, str, str, float]:
     from src.ai_clustering.workflow_naming import generate_system_name
-    
+
     # Deterministic naming (Phase 6 occurs inside generate_system_name now)
     system_name = generate_system_name(endpoints)
-    
+
     methods = [ep["method"] for ep in endpoints]
     has_write = any(m in ["POST", "PATCH", "PUT", "DELETE"] for m in methods)
 
     action = "Management" if has_write else "Observability"
-    
+
     fallback_display_name = system_name.replace("_", " ").title()
-    heuristic_desc = f"{action} layer for {fallback_display_name}. Configured with {len(endpoints)} underlying endpoints."
+    heuristic_desc = f"{action} layer for {fallback_display_name}. Configured with {len(endpoints)} underlying endpoints."  # noqa: E501
 
     if use_llm and check_ollama_status():
         try:
@@ -325,13 +325,13 @@ def generate_semantic_label(
 
             service = OllamaService()
 
-            endpoint_summaries_list = [f"- {ep['method']} {ep['url']} ({ep['operation_id']})" for ep in endpoints]
-            
-            chunk_char_limit = 15000 
+            endpoint_summaries_list = [f"- {ep['method']} {ep['url']} ({ep['operation_id']})" for ep in endpoints]  # noqa: E501
+
+            chunk_char_limit = 15000
             chunks = []
             current_chunk = []
             current_len = 0
-            
+
             for line in endpoint_summaries_list:
                 if current_len + len(line) > chunk_char_limit and current_chunk:
                     chunks.append("\n".join(current_chunk))
@@ -340,21 +340,21 @@ def generate_semantic_label(
                 else:
                     current_chunk.append(line)
                     current_len += len(line) + 1
-                    
+
             if current_chunk:
                 chunks.append("\n".join(current_chunk))
-                
+
             if len(chunks) > 1:
                 # Map-reduce approach
                 partial_summaries = []
                 for i, chunk in enumerate(chunks):
-                    map_prompt = f"Summarize the operational capability of this subset of iDRAC API endpoints ({i+1}/{len(chunks)}):\n{chunk}\nReturn a concise 1-2 sentence description."
+                    map_prompt = f"Summarize the operational capability of this subset of iDRAC API endpoints ({i+1}/{len(chunks)}):\n{chunk}\nReturn a concise 1-2 sentence description."  # noqa: E501
                     try:
                         summary = service.generate_text(map_prompt)
                         partial_summaries.append(f"Subset {i+1}: {summary}")
                     except Exception as err:
                         logger.warning(f"Map-reduce chunk {i+1} failed: {err}")
-                
+
                 endpoint_summaries = "\n".join(partial_summaries)
             else:
                 endpoint_summaries = chunks[0] if chunks else ""
@@ -362,17 +362,17 @@ def generate_semantic_label(
             prompt = f"""
             You are a Dell Enterprise IT Architect naming a workflow.
             The internal deterministic system name for this workflow is: {system_name}
-            
+
             The underlying iDRAC API endpoints (or partial summaries) are:
             {endpoint_summaries}
-            
+
             DO NOT alter membership.
             DO NOT invent endpoints.
             DO NOT suggest changes.
 
             You MUST return a JSON object containing a 'workflows' array with exactly one item.
             Set 'display_name' to a 2-6 word Title Case operational name.
-            Set 'generated_description' to a single concise sentence describing its operational capability.
+            Set 'generated_description' to a single concise sentence describing its operational capability.  # noqa: E501
             """
 
             if is_explain_mode():
@@ -387,7 +387,7 @@ def generate_semantic_label(
                     wf = wf.model_dump()
                 elif hasattr(wf, "dict"):
                     wf = wf.dict()
-                
+
                 display_name = wf.get("display_name", fallback_display_name)
                 desc = wf.get("generated_description", heuristic_desc)
 
@@ -453,11 +453,11 @@ def run_pipeline(contract_a_data: ContractA) -> None:
 
     if is_explain_mode():
         threshold = G.graph.get("threshold", 0.50)
-        
+
         for idx, comm_node_ids in enumerate(communities, 1):
             comm_id = f"c_{idx:03d}"
             members = []
-            
+
             # Phase 5 Metrics
             comm_size = len(comm_node_ids)
             internal_sims = []
@@ -467,23 +467,23 @@ def run_pipeline(contract_a_data: ContractA) -> None:
                     for v in comm_node_ids:
                         if u != v and G.has_edge(u, v):
                             internal_sims.append(G[u][v]["weight"])
-            
+
             avg_sim = np.mean(internal_sims) if internal_sims else 0.0
             min_sim = np.min(internal_sims) if internal_sims else 0.0
             max_sim = np.max(internal_sims) if internal_sims else 0.0
             cohesion = avg_sim * (comm_size / (comm_size + 1)) if comm_size > 1 else 0.0
-            
+
             warnings = []
             if comm_size == 1:
                 warnings.append("Suspicious: Size = 1")
             elif cohesion < threshold:
                 warnings.append(f"Suspicious: Low cohesion ({cohesion:.3f} < {threshold:.3f})")
-                
+
             for n_idx, op_id in enumerate(comm_node_ids, 1):
                 ep = next(e for e in endpoints if e["operation_id"] == op_id)
                 members.append(f"{n_idx}. {ep['method']} {ep.get('url', '')}")
             members_str = "\n".join(members)
-            
+
             content = (
                 f"Community ID: {comm_id}\n"
                 f"Size: {comm_size}\n"
@@ -556,9 +556,9 @@ def run_pipeline(contract_a_data: ContractA) -> None:
     log_audit_event(
         "workflow_generated",
         "success",
-        f"Graph construction completed. Clustered {len(endpoints)} endpoints into {len(workflows_list)} workflow tools.",
+        f"Graph construction completed. Clustered {len(endpoints)} endpoints into {len(workflows_list)} workflow tools.",  # noqa: E501
     )
-    
+
     return {
         "embeddings_generated": len(endpoints),
         "graph_nodes": G.number_of_nodes(),

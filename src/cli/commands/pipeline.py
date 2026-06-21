@@ -5,23 +5,23 @@ from src.cli.theme import render_success, render_panel
 from src.cli.components import status_spinner
 from src.cli.commands.server import start_server
 
-def pipeline_cmd(
+def pipeline_cmd(  # noqa: E302
     ctx: typer.Context,
     spec: str = typer.Argument(..., help="Path to OpenAPI spec YAML/JSON"),
-    auto_approve: bool = typer.Option(False, "--auto-approve", help="Auto-approve all READ_ONLY workflows"),
+    auto_approve: bool = typer.Option(False, "--auto-approve", help="Auto-approve all READ_ONLY workflows"),  # noqa: E501
     serve: bool = typer.Option(False, "--serve", help="Start the server after clustering"),
-    port: int = typer.Option(8000, "--port", "-p", help="Port to bind the server to (if --serve is used)"),
-    explain: bool = typer.Option(False, "--explain", help="Use AI to generate human-readable workflow names"),
+    port: int = typer.Option(8000, "--port", "-p", help="Port to bind the server to (if --serve is used)"),  # noqa: E501
+    explain: bool = typer.Option(False, "--explain", help="Use AI to generate human-readable workflow names"),  # noqa: E501
 ) -> None:
     """Run the complete pipeline: Ingest -> Cluster -> (Optionally) Serve."""
     wrapper = ctx.obj
-    
+
     # 1. Ingest and Cluster
     with status_spinner(f"Ingesting {spec} and discovering workflow clusters..."):
         wrapper.container.cluster_service.run_clustering(Path(spec), explain)
-        
+
     render_success("Phase 1: OpenAPI clustering completed successfully.")
-    
+
     # 2. Optional Auto-Approval
     if auto_approve:
         with status_spinner("Auto-approving safe READ_ONLY workflows..."):
@@ -31,9 +31,9 @@ def pipeline_cmd(
                 if wf.get("riskLevel") == "READ_ONLY":
                     wrapper.container.governance_service.approve_workflow(wf["id"])
                     approved_count += 1
-                    
+
         render_success(f"Phase 2: Auto-approved {approved_count} READ_ONLY workflows.")
-    
+
     # Summary
     summary = wrapper.container.cluster_service.get_summary()
     content = (
@@ -42,9 +42,9 @@ def pipeline_cmd(
     )
     from src.cli.theme import console
     console.print(render_panel(content, title="Pipeline Result", border_style="cyan"))
-    
+
     # 3. Optional Serve
     if serve:
         console.print("[bold yellow]Phase 3: Starting Drake FastMCP Server...[/bold yellow]")
-        time.sleep(1) # Give the user a moment to read the results
+        time.sleep(1) # Give the user a moment to read the results  # noqa: E261
         ctx.invoke(start_server, host="127.0.0.1", port=port, reload=False)

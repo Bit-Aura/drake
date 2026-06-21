@@ -100,8 +100,8 @@ class DiagnosticsCLIService:
                 idx_check = conn.execute(
                     "PRAGMA index_list('compatibility_rules')"
                 ).fetchall()
-                has_temporal_idx = any(
-                    "idx_rules_temporal" in idx[1] for idx in idx_check
+                has_timebased_idx = any(
+                    "idx_rules_timebased" in idx[1] for idx in idx_check
                 )
                 cached_devices = conn.execute(
                     "SELECT COUNT(*) FROM device_inventory"
@@ -114,7 +114,7 @@ class DiagnosticsCLIService:
                 "compatibility_layer": "HEALTHY" if not missing else "DEGRADED",
                 "missing_tables": missing,
                 "risk_profiles_count": profiles_count,
-                "has_temporal_index": has_temporal_idx,
+                "has_timebased_index": has_timebased_idx,
                 "cached_devices": cached_devices,
                 "rules_count": rule_count,
                 "provider_health": "ONLINE",

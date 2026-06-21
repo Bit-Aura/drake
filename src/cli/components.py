@@ -18,7 +18,7 @@ def status_spinner(msg: str) -> Any:
 def render_platform_overview_dashboard(metrics: Dict[str, Any]) -> None:
     """Render a comprehensive, full-screen style executive dashboard."""
     console.print(get_banner())
-    
+
     grid = Table.grid(expand=True)
     grid.add_column(ratio=1)
     grid.add_column(ratio=1)
@@ -67,7 +67,7 @@ def render_platform_overview_dashboard(metrics: Dict[str, Any]) -> None:
     console.print(
         Panel(
             Columns([status_table, wf_table, metrics_table], padding=4),
-            title="[bold cyan]Dell Enterprise MCP Proxy Control Plane Executive Overview[/bold cyan]",
+            title="[bold cyan]Dell Enterprise MCP Proxy Control Plane Executive Overview[/bold cyan]",  # noqa: E501
             border_style="cyan",
         )
     )
@@ -230,7 +230,7 @@ def render_compatibility_cockpit(
         v_lines = []
         for idx, v in enumerate(violations_list, 1):
             v_lines.append(
-                f"{idx}. {v.get('field_checked')}: expected {v.get('expected_value')}, found {v.get('actual_value')}\n   Remediation: {v.get('remediation_step')}"
+                f"{idx}. {v.get('field_checked')}: expected {v.get('expected_value')}, found {v.get('actual_value')}\n   Remediation: {v.get('remediation_step')}"  # noqa: E501
             )
         violations_str = "\n".join(v_lines)
 
