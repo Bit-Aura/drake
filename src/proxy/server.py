@@ -224,7 +224,7 @@ async def get_proxy_status() -> Dict[str, Any]:
     wf_names = [
         t.name
         for t in tools
-        if t.name not in {"get_proxy_status", "preview_workflow_steps", "check_workflow_compatibility", "preview_compatibility_report", "revert_previous_action"}
+        if t.name not in {"get_proxy_status", "expand_workflow", "collapse_workflow", "check_workflow_compatibility", "preview_compatibility_report", "revert_previous_action"}
     ]
     return {
         "status": "online",
@@ -232,44 +232,167 @@ async def get_proxy_status() -> Dict[str, Any]:
         "executor_configured": os.getenv("DELL_EXECUTOR_TYPE", "httpx"),
     }
 
+# Registry to track expanded granular tools for cleanup
+expanded_tools_registry: Dict[str, list[str]] = {}
+
 
 @mcp.tool()
-async def preview_workflow_steps(workflow_id: str) -> Dict[str, Any]:
+async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
     """
-    Acts as a 'Blast Radius Audit' tool.
-
-    Satisfies strict enterprise compliance by allowing human admins to review
-    API execution paths and simulate the exact granular API calls it is about
-    to make before any potentially destructive actions occur.
-
+    Expands a high-level workflow into its fine-grained individual API steps and 
+    registers them dynamically as executable tools on the MCP server.
+    
     Args:
-        workflow_id (str): The unique identifier of the workflow to preview.
-
-    Returns:
-        Dict[str, Any]: A simulated list of granular API calls for the requested workflow.
+        workflow_id (str): The unique identifier of the workflow to expand.
     """
-    async with async_session() as session:
-        result = await session.execute(
-            select(Workflow)
-            .where(Workflow.id == workflow_id)
-            .options(selectinload(Workflow.steps))
-        )
-        wf = result.scalar_one_or_none()
-        if not wf:
-            return {"error": f"Workflow '{workflow_id}' not found."}
+    if workflow_id in expanded_tools_registry:
+        return {"status": "success", "message": "Already expanded", "registered_tools": expanded_tools_registry[workflow_id]}
 
-        return {
-            "workflow_id": workflow_id,
-            "name": wf.display_name,
-            "simulated_api_calls": [
-                {
-                    "step_id": idx + 1,
-                    "method": step.method,
-                    "url": step.url,
-                }
-                for idx, step in enumerate(wf.steps)
-            ],
-        }
+    import inspect
+    import json
+    import hashlib
+    
+    try:
+        async with async_session() as session:
+            result = await session.execute(
+                select(Workflow)
+                .where(Workflow.id == workflow_id)
+                .options(selectinload(Workflow.steps))
+            )
+            wf = result.scalar_one_or_none()
+            if not wf:
+                return {"error": f"Workflow '{workflow_id}' not found."}
+            if len(wf.steps) > 50:
+                return {"error": "Workflow exceeds maximum allowed expansion size of 50 steps."}
+    except Exception as e:
+        return {"error": "Database retrieval failed", "details": str(e)}
+            
+    registered_tools = []
+    
+    from src.proxy.executors.httpx_executor import PrismExecutor, MockExecutor
+    from src.proxy.executors.dell_omsdk_executor import DellOMSDKExecutor
+    
+    executor_type = os.getenv("DELL_EXECUTOR_TYPE", "prism").lower()
+    if executor_type == "omsdk":
+        executor = PrismExecutor(base_url=os.getenv("PRISM_URL", "http://localhost:4010"))
+    elif executor_type == "prism":
+        executor = PrismExecutor(base_url=os.getenv("PRISM_URL", "http://localhost:4010"))
+    else:
+        executor = MockExecutor(base_url=os.getenv("MOCK_SERVER_URL", "http://localhost:8000"))
+
+    safe_hash = hashlib.md5(workflow_id.encode()).hexdigest()[:8]
+    
+    for step in wf.steps:
+        # Strict naming convention
+        raw_name = f"exec_step_{safe_hash}_{step.step_order}_{step.operation_id}"
+        tool_name = re.sub(r'[^a-zA-Z0-9_-]', '_', raw_name)[:64]
+        
+        # Build parameter signature
+        params_dict = {}
+        try:
+            req_params = json.loads(step.required_params) if step.required_params else []
+            for p in req_params:
+                if isinstance(p, str) and p != "body":
+                    params_dict[p] = (str, ...)
+                elif isinstance(p, dict):
+                    p_name = p.get("name")
+                    if p_name and p_name != "body":
+                        p_type = str
+                        if p.get("param_type") == "integer": p_type = int
+                        elif p.get("param_type") == "boolean": p_type = bool
+                        params_dict[p_name] = (p_type, ... if p.get("required", True) else None)
+        except Exception:
+            pass
+
+        try:
+            if step.request_schema:
+                schema = json.loads(step.request_schema)
+                if schema.get("type") == "object" and "properties" in schema:
+                    for prop in schema["properties"].keys():
+                        if prop not in params_dict:
+                            params_dict[prop] = (Any, None)
+        except Exception:
+            pass
+            
+        desc = f"Execute step {step.step_order}: {step.method} {step.url} for workflow {workflow_id}."
+        
+        def make_step_tool(t_name, t_desc, t_params, t_step, t_executor):
+            async def dynamic_step_tool(**kwargs) -> dict:
+                await t_executor.authenticate()
+                context = {"workflow": {"input": kwargs}}
+                return await t_executor.execute_step(t_step, kwargs, context)
+
+            dynamic_step_tool.__name__ = t_name
+            dynamic_step_tool.__doc__ = t_desc
+
+            sig_params = []
+            for k, (t, default) in t_params.items():
+                sig_params.append(
+                    inspect.Parameter(
+                        name=k,
+                        kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                        default=inspect.Parameter.empty if default is ... else default,
+                        annotation=t,
+                    )
+                )
+            dynamic_step_tool.__signature__ = inspect.Signature(parameters=sig_params)
+            dynamic_step_tool.__annotations__ = {k: t for k, (t, d) in t_params.items()}
+            dynamic_step_tool.__annotations__["return"] = dict
+            return dynamic_step_tool
+            
+        step_tool = make_step_tool(tool_name, desc, params_dict, step, executor)
+        
+        mcp.add_tool(step_tool)
+        registered_tools.append(tool_name)
+        
+    expanded_tools_registry[workflow_id] = registered_tools
+    
+    # Notify clients
+    for session in list(active_sessions):
+        try:
+            await session.send_tool_list_changed()
+        except Exception:
+            pass
+            
+    return {
+        "status": "success",
+        "workflow_id": workflow_id,
+        "message": f"Successfully expanded {len(registered_tools)} granular tools.",
+        "registered_tools": registered_tools
+    }
+
+@mcp.tool()
+async def collapse_workflow(workflow_id: str) -> Dict[str, Any]:
+    """
+    Collapses a previously expanded workflow, removing its fine-grained steps
+    from the tool registry to keep the context window clean.
+    """
+    if workflow_id not in expanded_tools_registry:
+        return {"status": "ignored", "message": f"Workflow '{workflow_id}' is not currently expanded."}
+        
+    removed_tools = []
+    for tool_name in expanded_tools_registry[workflow_id]:
+        try:
+            mcp.local_provider.remove_tool(tool_name)
+            removed_tools.append(tool_name)
+        except Exception as e:
+            logger.warning(f"Failed to remove tool {tool_name}: {e}")
+            
+    del expanded_tools_registry[workflow_id]
+    
+    # Notify clients
+    for session in list(active_sessions):
+        try:
+            await session.send_tool_list_changed()
+        except Exception:
+            pass
+            
+    return {
+        "status": "success",
+        "workflow_id": workflow_id,
+        "message": f"Successfully collapsed {len(removed_tools)} granular tools.",
+        "removed_tools": removed_tools
+    }
 
 
 @mcp.tool()
@@ -623,7 +746,8 @@ async def reload_mcp_tools():
         for tool in tools:
             if tool.name not in {
                 "get_proxy_status",
-                "preview_workflow_steps",
+                "expand_workflow",
+                "collapse_workflow",
                 "check_workflow_compatibility",
                 "preview_compatibility_report",
                 "revert_previous_action",

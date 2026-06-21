@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 
 
@@ -94,6 +94,44 @@ class RejectWorkflowPayload(BaseModel):
     reason: str
 
 
+class NLGeneratePayload(BaseModel):
+    prompt: constr(min_length=5, max_length=1000)
+
+class LoginPayload(BaseModel):
+    email: str
+    password: str
+
+@app.post("/api/v1/auth/login")
+async def login(payload: LoginPayload) -> Dict[str, Any]:
+    import jwt
+    from datetime import timedelta
+    
+    if payload.email == "DellAdmin@gmail.com" and payload.password == "dell@123":
+        secret = os.getenv("JWT_SECRET", "dell-enterprise-mcp-secret-key-2026")
+        token = jwt.encode(
+            {
+                "sub": payload.email,
+                "role": "admin",
+                "exp": datetime.now(timezone.utc) + timedelta(hours=24)
+            },
+            secret,
+            algorithm="HS256"
+        )
+        await log_audit_event_async("user_login", "success", "Admin user logged in to management console", actor="DellAdmin")
+        return {
+            "token": token,
+            "user": {
+                "email": payload.email,
+                "name": "System Admin",
+                "role": "admin"
+            }
+        }
+    
+    await log_audit_event_async("user_login", "error", "Failed login attempt with invalid credentials", actor=payload.email)
+    raise HTTPException(status_code=401, detail="Invalid email or password")
+
+
+
 async def log_audit_event_async(
     event_type: str,
     status: str,
@@ -134,6 +172,42 @@ async def log_audit_event_async(
             ),
         )
         await db.commit()
+
+
+@app.post("/api/v1/workflows/generate-from-nl", dependencies=[Depends(get_api_key)])
+async def generate_workflow_from_nl(payload: NLGeneratePayload) -> Dict[str, Any]:
+    from src.ai_clustering.nl_compiler import compile_nl_to_workflow
+    from src.core.database import insert_generated_workflow
+    import asyncio
+    
+    try:
+        wf_mapping = await compile_nl_to_workflow(payload.prompt)
+        wf_dict = wf_mapping.model_dump()
+        wf_id = await asyncio.to_thread(insert_generated_workflow, wf_dict)
+        
+        await log_audit_event_async(
+            "nl_workflow_generated",
+            "success",
+            f"Generated workflow from NL: '{wf_dict['name']}'",
+            wf_dict["name"],
+            "admin",
+        )
+        
+        return {
+            "status": "success",
+            "workflow_id": wf_id,
+            "workflow": wf_dict
+        }
+    except Exception as err:
+        logger.error(f"NL workflow generation failed: {err}")
+        await log_audit_event_async(
+            "nl_workflow_generated",
+            "error",
+            f"Failed to generate NL workflow: {err}",
+            None,
+            "admin",
+        )
+        raise HTTPException(status_code=500, detail=str(err))
 
 
 @app.get("/api/v1/overview")

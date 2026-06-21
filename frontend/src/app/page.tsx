@@ -45,7 +45,7 @@ export default function OverviewPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto relative">
+    <div className="space-y-8 relative w-full">
       <section className="flex justify-between items-end relative">
         <div>
           <h2 className="text-3xl font-bold text-[rgb(var(--foreground))]">Overview</h2>
@@ -59,16 +59,17 @@ export default function OverviewPage() {
         {cards.map((card) => {
           const CardContentComponent = (
             <>
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[rgb(var(--primary))] opacity-10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-              <CardContent className="flex flex-col pt-6 relative z-10">
-                <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center border border-[rgb(var(--border))] mb-4">
-                  <card.icon className="h-5 w-5 text-[rgb(var(--muted-foreground))]" />
+              <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 opacity-[0.03] rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+              <CardContent className="flex flex-col pt-6 relative z-10 p-6">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100 mb-4 transition-colors group-hover:bg-emerald-100">
+                  <card.icon className="h-6 w-6 text-emerald-600" />
                 </div>
-                <p className="text-sm font-medium text-[rgb(var(--muted-foreground))]">{card.label}</p>
+                <p className="text-sm font-medium tracking-tight text-slate-500">{card.label}</p>
                 {isLoading ? (
                   <Skeleton className="mt-2 h-10 w-20 rounded-lg" />
                 ) : (
-                  <p className="mt-1 text-4xl font-bold text-[rgb(var(--foreground))]">
+                  <p className="mt-2 font-mono text-4xl font-bold tracking-tight text-slate-900">
                     {data?.[card.key] ?? 0}
                   </p>
                 )}
@@ -79,24 +80,15 @@ export default function OverviewPage() {
           if (card.key === "registeredWorkflowCount") {
             return (
               <div key={card.key} className="relative">
-                <Card className="relative overflow-hidden group">
+                <Card className="relative overflow-hidden group border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50">
                   {CardContentComponent}
                 </Card>
-                {/* Looks Great Annotation */}
-                {!isLoading && (
-                  <div className="absolute -top-14 -right-2 hidden md:flex flex-col items-center pointer-events-none select-none z-20">
-                    <span className="font-['Caveat'] text-2xl text-[rgb(var(--primary))] tracking-wide rotate-[4deg]">Looks great!</span>
-                    <svg width="45" height="30" viewBox="0 0 45 30" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[rgb(var(--primary))] opacity-80 mt-1 -rotate-[10deg]">
-                      <path d="M35 5C27 10 18 18 13 24M13 24L21 25M13 24L15 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                )}
               </div>
             );
           }
 
           return (
-            <Card key={card.key} className="relative overflow-hidden group">
+            <Card key={card.key} className="relative overflow-hidden group border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50">
               {CardContentComponent}
             </Card>
           );

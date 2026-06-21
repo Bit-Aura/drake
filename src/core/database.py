@@ -706,6 +706,74 @@ def get_workflows(
             )
         return results
 
+def insert_generated_workflow(wf_mapping: Dict[str, Any]) -> str:
+    """Insert a single NL generated workflow into the database with PENDING status."""
+    import uuid
+    from datetime import datetime, timezone
+    
+    wf_id = f"gen_wf_{uuid.uuid4().hex[:8]}"
+    system_name = wf_mapping.get("name", "generated_workflow")
+    display_name = system_name
+    wf_desc = wf_mapping.get("description", "")
+    cluster_size = len(wf_mapping.get("steps", []))
+    
+    with get_db_connection() as conn:
+        conn.execute(
+            """
+            INSERT INTO workflows (
+                id, system_name, display_name, risk_level, cluster_size, confidence, 
+                generated_description, approved, rejection_reason, community_id,
+                workflow_version, risk_score, governance_score,
+                policy_version, execution_count, supports_rollback, rollback_strategy
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                wf_id, system_name, display_name, "MODERATE", cluster_size, 0.95,
+                wf_desc, 0, None, wf_id,
+                1, 0.0, 0.0,
+                "1.0", 0, 0, "NONE"
+            )
+        )
+        
+        for i, step in enumerate(wf_mapping.get("steps", [])):
+            target_path = step.get("target_path", "/")
+            method = step.get("method", "GET")
+            
+            # CRITICAL: Verify the LLM-generated endpoint actually exists in our local catalog
+            cursor = conn.execute("SELECT operation_id FROM endpoints WHERE url = ? AND method = ?", (target_path, method))
+            row = cursor.fetchone()
+            if not row:
+                # If the LLM halluincated an endpoint, we reject the entire workflow transaction
+                raise ValueError(f"Generated endpoint '{method} {target_path}' does not exist in the ingested OpenAPI catalog.")
+            
+            real_operation_id = row[0]
+            
+            conn.execute(
+                """
+                INSERT INTO endpoint_steps (
+                    workflow_id, step_order, operation_id, method, url, 
+                    required_params, request_schema, response_schema, 
+                    variable_bindings, created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    wf_id,
+                    i + 1,
+                    real_operation_id,
+                    method,
+                    target_path,
+                    "[]",
+                    None,
+                    None,
+                    json.dumps(step.get("input_mapping", {})),
+                    datetime.now(timezone.utc).isoformat()
+                )
+            )
+        conn.commit()
+        return wf_id
+
 
 # ===========================================================================
 # Asynchronous Database & ORM Management (SQLAlchemy)

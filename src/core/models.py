@@ -44,7 +44,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, constr
 
 # ---------------------------------------------------------------------------
 # Parameter model
@@ -131,8 +131,8 @@ class EndpointContract(BaseModel):
             "Used as the primary key in workflow_mapping.json."
         )
     )
-    method: Literal["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"] = Field(
-        description="HTTP verb in upper-case."
+    method: str = Field(
+        description="HTTP verb, or GraphQL/gRPC method (e.g., GET, POST, QUERY, MUTATION, RPC)."
     )
     url: str = Field(
         description=(
@@ -161,6 +161,12 @@ class EndpointContract(BaseModel):
     )
     response_schema: dict | None = Field(
         default=None, description="Response schema for graph similarity."
+    )
+    protocol: str = Field(
+        default="REST", description="API Protocol (e.g., REST, GraphQL, gRPC, AsyncAPI)."
+    )
+    source_file: str = Field(
+        default="", description="The originating specification file name."
     )
 
 
@@ -216,3 +222,24 @@ class ContractA(BaseModel):
             "deterministic diffs."
         )
     )
+
+# ---------------------------------------------------------------------------
+# Phase 2: Natural Language Workflow Mapping
+# ---------------------------------------------------------------------------
+
+class WorkflowStep(BaseModel):
+    """
+    A single step in a natural language compiled workflow.
+    """
+    target_path: constr(pattern=r"^/[a-zA-Z0-9_/{}\.-]*$") = Field(description="The URL or RPC path of the target endpoint.")
+    method: Literal["GET", "POST", "PUT", "PATCH", "DELETE", "QUERY", "MUTATION", "RPC"] = Field(description="The HTTP verb or RPC method (e.g., GET, POST, QUERY, RPC).")
+    protocol: Literal["REST", "GraphQL", "gRPC", "AsyncAPI"] = Field(description="The API protocol (e.g., REST, GraphQL, gRPC, AsyncAPI).")
+    input_mapping: dict = Field(default_factory=dict, description="Rules for forwarding parameters or hardcoded inputs.")
+
+class WorkflowMapping(BaseModel):
+    """
+    A compiled workflow from a natural language prompt.
+    """
+    name: constr(max_length=100) = Field(description="Distinct slugified string representing the workflow.")
+    description: str = Field(description="Text summarizing the operation.")
+    steps: list[WorkflowStep] = Field(min_length=1, description="An ordered list of steps to execute the workflow.")
