@@ -18,7 +18,7 @@ def pipeline_cmd(  # noqa: E302
 
     # 1. Ingest and Cluster
     with status_spinner(f"Ingesting {spec} and discovering workflow clusters..."):
-        wrapper.container.cluster_service.run_clustering(Path(spec), explain)
+        wrapper.container.cluster_service.run_clustering([Path(spec)], explain)
 
     render_success("Phase 1: OpenAPI clustering completed successfully.")
 
