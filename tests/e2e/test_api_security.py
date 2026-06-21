@@ -7,6 +7,9 @@ init_db_sync()
 client = TestClient(app)
 
 
+from unittest.mock import patch
+
+@patch.dict(os.environ, {"DELL_MCP_API_KEY": "secure_key"})
 def test_api_security_missing_key():
     response = client.post("/api/v1/workflows/fake-id/approve")
     assert response.status_code == 403
