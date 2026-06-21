@@ -37,12 +37,11 @@ class DeviceFactsProvider(ABC):
 
     @abstractmethod
     async def get_device_facts(
-        self, target_ip: str, credentials: Optional[Dict[str, Any]] = None
+        self, target_ip: str
     ) -> DeviceFacts:
         """
         Fetch and return target device configuration facts.
         """
-        pass
 
 
 class RedfishFactsProvider(DeviceFactsProvider):
@@ -54,7 +53,7 @@ class RedfishFactsProvider(DeviceFactsProvider):
         self.base_url = base_url or "http://localhost:4010"
 
     async def get_device_facts(
-        self, target_ip: str, credentials: Optional[Dict[str, Any]] = None
+        self, target_ip: str
     ) -> DeviceFacts:
         logger.info(f"Querying live hardware facts via Redfish for IP: {target_ip}...")
         url = self.base_url.rstrip("/")
@@ -130,7 +129,7 @@ class CachedFactsProvider(DeviceFactsProvider):
     """
 
     async def get_device_facts(
-        self, target_ip: str, credentials: Optional[Dict[str, Any]] = None
+        self, target_ip: str
     ) -> DeviceFacts:
         logger.info(f"Querying SQLite device cache for IP: {target_ip}...")
         async with async_session() as session:
@@ -147,14 +146,14 @@ class CachedFactsProvider(DeviceFactsProvider):
             try:
                 if device.firmware_inventory:
                     fw_inventory = json.loads(device.firmware_inventory)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning("Failed to parse firmware_inventory JSON: %s", e)
 
             scanned_time = None
             try:
                 scanned_time = datetime.fromisoformat(device.last_scanned)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning("Failed to parse last_scanned datetime: %s", e)
 
             return DeviceFacts(
                 target_ip=device.target_ip,
@@ -184,7 +183,7 @@ class StaticFactsProvider(DeviceFactsProvider):
         )
 
     async def get_device_facts(
-        self, target_ip: str, credentials: Optional[Dict[str, Any]] = None
+        self, target_ip: str
     ) -> DeviceFacts:
         logger.info(f"Using Static mock facts for IP: {target_ip}")
         facts = self.mock_facts.model_copy()
@@ -199,7 +198,7 @@ class OMSDKFactsProvider(DeviceFactsProvider):
     """
 
     async def get_device_facts(
-        self, target_ip: str, credentials: Optional[Dict[str, Any]] = None
+        self, target_ip: str
     ) -> DeviceFacts:
         logger.info(
             f"Querying hardware config dynamically via Dell OMSDK driver for IP: {target_ip}..."
@@ -216,13 +215,5 @@ class OMSDKFactsProvider(DeviceFactsProvider):
         )
 
 
-class DellCatalogCompatibilitySource(ABC):
-    """Future extensible driver for parsing Dell Catalog.xml files."""
-
-    pass
 
 
-class OMECompatibilitySource(ABC):
-    """Future extensible driver for connecting to Dell OpenManage Enterprise groups."""
-
-    pass

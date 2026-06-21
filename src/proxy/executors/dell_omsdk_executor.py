@@ -25,7 +25,8 @@ class DellOMSDKExecutor(BaseExecutor):
         or establish a secure session.
         """
         logger.info(f"Authenticating with Dell hardware at {self.target_ip}...")
-        self.session_token = "mock_production_idrac_token"
+        import os
+        self.session_token = os.getenv("OMSDK_SESSION_TOKEN", "mock_production_idrac_token")
         return True
 
     async def healthcheck(self) -> bool:

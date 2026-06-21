@@ -5,7 +5,6 @@ from unittest.mock import patch, MagicMock, AsyncMock
 
 from src.proxy.server import mcp, load_approved_tools_from_db
 from src.core.database import init_db_sync, get_db_connection
-from src.core.compatibility.orchestrator import CompatibilityPolicyViolation
 from fastmcp.exceptions import ToolError
 
 @pytest.fixture(autouse=True)

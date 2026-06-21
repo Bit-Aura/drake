@@ -1,7 +1,6 @@
 import os
 import sqlite3
 import logging
-from typing import List, Dict
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)

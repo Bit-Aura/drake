@@ -3,7 +3,6 @@ import time
 from pathlib import Path
 from src.cli.theme import render_success, render_panel
 from src.cli.components import status_spinner
-from src.cli.commands.cluster import run_cluster
 from src.cli.commands.server import start_server
 
 def pipeline_cmd(

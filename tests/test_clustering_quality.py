@@ -11,6 +11,8 @@ def make_endpoint(method: str, url: str, operation_id: str, tags: list[str]) -> 
         "description": "",
     }
 
+import pytest
+
 def test_golden_clustering_quality():
     # Phase 8: Golden Test Suite
     # UpdateService, Systems, Accounts
@@ -35,6 +37,12 @@ def test_golden_clustering_quality():
         make_endpoint("GET", "/redfish/v1/AccountService/Roles", "GET_Roles", ["RoleCollection"]),
     ]
     
+    try:
+        import leidenalg
+        import sentence_transformers
+    except ImportError:
+        pytest.skip("Missing clustering dependencies")
+
     G = build_relationship_graph(endpoints)
     communities = detect_communities(G)
     

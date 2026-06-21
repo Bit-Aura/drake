@@ -4,8 +4,11 @@ import re
 import sys
 import asyncio
 import weakref
+import traceback
 from contextlib import asynccontextmanager
 from typing import Any, Dict, Set
+from fastapi.responses import JSONResponse
+from fastapi import Request
 
 # Ensure project root is in the python path for execution via CLI tools
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
@@ -16,6 +19,7 @@ from fastmcp import FastMCP
 from mcp.server.session import ServerSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
+from src.core.env_config import settings
 
 from src.core.database import (
     async_session,
@@ -63,7 +67,7 @@ async def execute_workflow_route(
     try:
         override_policy = params.pop("override_policy", None)
         if override_policy is None:
-            override_policy = os.getenv("DELL_COMPATIBILITY_POLICY", "STRICT").upper()
+            override_policy = settings.DELL_COMPATIBILITY_POLICY.upper()
         masked_params = GovernanceMiddleware.get_instance().intercept_execution(workflow_name, params)
         log_audit_event("EXECUTION_START", "SUCCESS", f"Started {workflow_name}", workflow_name=workflow_name, metadata={"inputs": masked_params})
         
@@ -153,8 +157,8 @@ async def load_approved_tools_from_db() -> None:
                                 if p.get("param_type") == "integer": p_type = int
                                 elif p.get("param_type") == "boolean": p_type = bool
                                 all_params[p_name] = (p_type, ... if p.get("required", True) else None)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.debug(f"Failed to parse required_params: {e}")
 
                 try:
                     if step.request_schema:
@@ -168,8 +172,8 @@ async def load_approved_tools_from_db() -> None:
                             for prop, details in schema["properties"].items():
                                 if prop not in all_params:
                                     all_params[prop] = (Any, None) # Allow passing any JSON structure for body params
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.debug(f"Failed to parse request_schema: {e}")
 
             # AUDIT1.MD Fix: Multi-step orchestration instructions and causal chain documentation for LLM
             orchestration_doc = ""
@@ -232,7 +236,7 @@ async def get_proxy_status() -> Dict[str, Any]:
     return {
         "status": "online",
         "registered_workflows": wf_names,
-        "executor_configured": os.getenv("DELL_EXECUTOR_TYPE", "httpx"),
+        "executor_configured": settings.DELL_EXECUTOR_TYPE,
     }
 
 # Registry to track expanded granular tools for cleanup
@@ -274,17 +278,14 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
         registered_tools = []
         
         from src.proxy.executors.httpx_executor import PrismExecutor, MockExecutor
-        from src.proxy.executors.dell_omsdk_executor import DellOMSDKExecutor
         
-        executor_type = os.getenv("DELL_EXECUTOR_TYPE", "prism").lower()
-        if executor_type == "omsdk":
-            executor = PrismExecutor(base_url=os.getenv("PRISM_URL", "http://localhost:4010"))
-        elif executor_type == "prism":
-            executor = PrismExecutor(base_url=os.getenv("PRISM_URL", "http://localhost:4010"))
+        executor_type = settings.DELL_EXECUTOR_TYPE.lower()
+        if executor_type in ("prism", "httpx"):
+            executor = PrismExecutor(base_url=settings.PRISM_URL)
         else:
-            executor = MockExecutor(base_url=os.getenv("MOCK_SERVER_URL", "http://localhost:8000"))
+            executor = MockExecutor(base_url=settings.MOCK_SERVER_URL)
     
-        safe_hash = hashlib.md5(workflow_id.encode()).hexdigest()[:8]
+        safe_hash = hashlib.sha256(workflow_id.encode()).hexdigest()[:8]
         
         for step in wf.steps:
             # Strict naming convention
@@ -305,8 +306,8 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
                             if p.get("param_type") == "integer": p_type = int
                             elif p.get("param_type") == "boolean": p_type = bool
                             params_dict[p_name] = (p_type, ... if p.get("required", True) else None)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Failed to parse required_params: {e}")
 
             try:
                 if step.request_schema:
@@ -315,8 +316,8 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
                         for prop in schema["properties"].keys():
                             if prop not in params_dict:
                                 params_dict[prop] = (Any, None)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Failed to parse request_schema: {e}")
                 
             desc = f"Execute step {step.step_order}: {step.method} {step.url} for workflow {workflow_id}."
             
@@ -355,8 +356,8 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
         for session in list(active_sessions):
             try:
                 await session.send_tool_list_changed()
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Failed to notify session: {e}")
                 
         return {
             "status": "success",
@@ -388,8 +389,8 @@ async def collapse_workflow(workflow_id: str) -> Dict[str, Any]:
     for session in list(active_sessions):
         try:
             await session.send_tool_list_changed()
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to notify session: {e}")
             
     return {
         "status": "success",
@@ -600,16 +601,14 @@ async def revert_previous_action(server_ip: str) -> str:
         strategy = wf.rollback_strategy or "NONE"
 
     # Instantiate the executor based on the environment configuration
-    executor_type = os.getenv("DELL_EXECUTOR_TYPE", "prism").lower()
-    executor = None
-    if executor_type == "omsdk":
+    executor_type = settings.DELL_EXECUTOR_TYPE.lower()
+
+    if executor_type in ("prism", "httpx"):
+        executor = PrismExecutor(base_url=settings.PRISM_URL)
+    elif executor_type == "omsdk":
         executor = DellOMSDKExecutor(target_ip=server_ip)
-    elif executor_type == "prism":
-        prism_url = os.getenv("PRISM_URL", "http://localhost:4010")
-        executor = PrismExecutor(base_url=prism_url)
     else:
-        mock_server_url = os.getenv("MOCK_SERVER_URL", "http://localhost:8000")
-        executor = MockExecutor(base_url=mock_server_url)
+        executor = MockExecutor(base_url=settings.MOCK_SERVER_URL)
 
     # Determine base url and headers
     base_url = "http://localhost:4010"

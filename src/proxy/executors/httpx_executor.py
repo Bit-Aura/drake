@@ -5,7 +5,7 @@ import hashlib
 import time
 import asyncio
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 import json
 import httpx
 from urllib.parse import urljoin, quote
@@ -91,11 +91,11 @@ class HTTPXExecutorBase(BaseExecutor):
         path_matches = re.findall(r"\{([a-zA-Z0-9_]+)\}", path)
         for match in path_matches:
             if match in resolved_params:
-                # Use proper url encoding
-                encoded_val = quote(str(resolved_params[match]))
+                # Use proper url encoding and prevent path traversal
+                encoded_val = quote(str(resolved_params[match]), safe="")
                 path = re.sub(rf"\{{{match}\}}", encoded_val, path)
             elif f"workflow.input.{match}" in context.get("workflow", {}).get("input", {}):
-                encoded_val = quote(str(context["workflow"]["input"][f"workflow.input.{match}"]))
+                encoded_val = quote(str(context["workflow"]["input"][f"workflow.input.{match}"]), safe="")
                 path = re.sub(rf"\{{{match}\}}", encoded_val, path)
 
         target_url = urljoin(self.base_url + "/", path.lstrip("/"))
@@ -112,8 +112,8 @@ class HTTPXExecutorBase(BaseExecutor):
                     if isinstance(p, dict) and "name" in p:
                         supported_names.add(p["name"])
                 body_params = {k: v for k, v in body_params.items() if k in supported_names}
-            except Exception:
-                pass
+            except Exception as e:
+                logger.exception(f"Failed to parse body: {e}")
 
         req_kwargs = {"timeout": 10.0, "headers": self.session_headers.copy()}
         if step.method.lower() in ["post", "put", "patch"]:
@@ -195,16 +195,17 @@ class HTTPXExecutorBase(BaseExecutor):
                                 
                         return res_dict
             except Exception as e:
+                logger.exception(f"Error during step '{step.url}' execution: {e}")
+                raise DellProxyExecutionError(
+                    f"Workflow step execution failed for '{target_url}' after exhausting retries.",
+                    original_exception=e,
+                )
+            finally:
                 if is_get:
                     async with _cache_lock:
                         if cache_key in _pending_requests:
                             _pending_requests[cache_key].set()
                             del _pending_requests[cache_key]
-                logger.error(f"Error during step '{step.url}' execution: {e}")
-                raise DellProxyExecutionError(
-                    f"Workflow step execution failed for '{target_url}' after exhausting retries.",
-                    original_exception=e,
-                )
 
     async def execute_workflow(self, workflow_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
         logger.info(f"Executing workflow '{workflow_name}' via {self.__class__.__name__}")
@@ -241,6 +242,7 @@ class HTTPXExecutorBase(BaseExecutor):
                 # Store output in context for future steps
                 context[step_name] = res["data"]
             except Exception as e:
+                logger.exception(f"Workflow '{workflow_name}' failed at step '{step_name}': {e}")
                 return {
                     "workflow_id": wf.id,
                     "status": "partial_failure",

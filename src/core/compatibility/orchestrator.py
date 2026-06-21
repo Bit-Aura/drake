@@ -10,6 +10,7 @@ from src.core.database import async_session, Workflow, log_audit_event
 from src.core.compatibility.models import CompatibilityStatus
 from src.core.compatibility.repository import CompatibilityRepository
 from src.core.compatibility.engine import CompatibilityEngine
+from src.core.env_config import settings
 from src.core.compatibility.sources import (
     RedfishFactsProvider,
     CachedFactsProvider,
@@ -58,8 +59,8 @@ class WorkflowExecutionManager:
         if policy is True or str(policy).lower() in ("true", "1", "yes"):
             policy = "WARN_ONLY"
 
-        if not policy:
-            policy = os.getenv("DELL_COMPATIBILITY_POLICY", "STRICT").upper()
+        if policy is None:
+            policy = settings.DELL_COMPATIBILITY_POLICY.upper()
 
         if policy not in ("STRICT", "WARN_ONLY", "DISABLED"):
             policy = "STRICT"
@@ -88,7 +89,7 @@ class WorkflowExecutionManager:
         if policy != "DISABLED":
             facts_cache = CachedFactsProvider()
             redfish_provider = RedfishFactsProvider(
-                base_url=os.getenv("PRISM_URL", "http://localhost:4010")
+                base_url=settings.PRISM_URL
             )
             static_provider = StaticFactsProvider()
 
@@ -106,8 +107,8 @@ class WorkflowExecutionManager:
                         target_facts.is_live = False
                         increment_cache_hits()
                         logger.info(f"Using fresh cached device facts for target {ip}.")
-            except Exception:
-                pass  # Cache miss
+            except Exception as e:
+                logger.warning("Cache miss or retrieval error for target %s: %s", ip, e)
 
             if use_live:
                 increment_cache_misses()
@@ -208,18 +209,18 @@ class WorkflowExecutionManager:
                     actor="system",
                 )
 
-        from src.proxy.executors.httpx_executor import PrismExecutor, MockExecutor
-        from src.proxy.executors.dell_omsdk_executor import DellOMSDKExecutor
-
-        executor_type = os.getenv("DELL_EXECUTOR_TYPE", "prism").lower()
-        if executor_type == "omsdk":
-            executor = DellOMSDKExecutor()
-        elif executor_type == "prism":
-            prism_url = os.getenv("PRISM_URL", "http://localhost:4010")
-            executor = PrismExecutor(base_url=prism_url)
+        executor_type = settings.DELL_EXECUTOR_TYPE.lower()
+        if executor_type in ("prism", "httpx"):
+            from src.proxy.executors.httpx_executor import PrismExecutor
+            executor = PrismExecutor(base_url=settings.PRISM_URL)
+        elif executor_type == "omsdk":
+            from src.proxy.executors.dell_omsdk_executor import DellOMSDKExecutor
+            
+            target_ip = params.get("target_server_ip") or params.get("server_ip") or "127.0.0.1"
+            executor = DellOMSDKExecutor(target_ip=target_ip)
         else:
-            mock_server_url = os.getenv("MOCK_SERVER_URL", "http://localhost:8000")
-            executor = MockExecutor(base_url=mock_server_url)
+            from src.proxy.executors.httpx_executor import MockExecutor
+            executor = MockExecutor(base_url=settings.MOCK_SERVER_URL)
 
         from src.proxy.executors.workflow_execution_service import (
             WorkflowExecutionService,

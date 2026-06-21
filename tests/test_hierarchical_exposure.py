@@ -1,8 +1,7 @@
 import pytest
 from unittest.mock import patch, AsyncMock
-import json
 
-from src.proxy.server import app, mcp, expanded_tools_registry
+from src.proxy.server import mcp, expanded_tools_registry
 from src.core.database import init_db_sync, get_db_connection
 
 @pytest.fixture(autouse=True)
@@ -55,7 +54,7 @@ async def test_hierarchical_expansion_execution_and_cleanup():
     assert "collapse_workflow" in tool_names
     
     import hashlib
-    safe_hash = hashlib.md5("test_wf_123".encode()).hexdigest()[:8]
+    safe_hash = hashlib.sha256("test_wf_123".encode()).hexdigest()[:8]
     dynamic_tool_name = f"exec_step_{safe_hash}_1_MockStep"
     # Wait, the tool name is sliced to 64 chars, and sub replaces non-alphanumeric.
     import re

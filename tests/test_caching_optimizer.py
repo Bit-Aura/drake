@@ -1,5 +1,4 @@
 import pytest
-import asyncio
 import httpx
 import time
 import os

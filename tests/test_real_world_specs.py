@@ -1,4 +1,3 @@
-import pytest
 from pathlib import Path
 from src.cli.services.cluster import ClusterCLIService
 from src.core.models import ContractA

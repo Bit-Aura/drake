@@ -22,14 +22,12 @@ class BaseExecutor(ABC):
         Authenticate the executor session. Should support Bearer, Basic, API Key, etc.,
         based on provider implementation.
         """
-        pass
 
     @abstractmethod
     async def healthcheck(self) -> bool:
         """
         Perform a healthcheck against the target provider.
         """
-        pass
 
     @abstractmethod
     async def execute_step(self, step: Any, params: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
@@ -37,7 +35,6 @@ class BaseExecutor(ABC):
         Executes a single step. 
         Context contains outputs of previous steps mapped for variable substitution.
         """
-        pass
 
     @abstractmethod
     async def execute_workflow(
@@ -53,4 +50,3 @@ class BaseExecutor(ABC):
         Returns:
             Dict[str, Any]: Execution result details, statuses, or payloads.
         """
-        pass

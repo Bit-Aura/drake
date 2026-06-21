@@ -171,54 +171,62 @@ class CompatibilityRepository:
     async def save_report(self, report: CompatibilityReport) -> None:
         """Archive a validation report details row."""
         async with self.session_factory() as session:
-            db_report = DBReport(
-                id=report.id,
-                workflow_id=report.workflow_id,
-                target_ip=report.target_ip,
-                status=report.status.value,
-                compatibility_score=report.compatibility_score,
-                risk_score=report.risk_score,
-                report_json=report.model_dump_json(),
-                timestamp=report.timestamp.isoformat(),
-            )
-            session.add(db_report)
-            await session.commit()
+            try:
+                db_report = DBReport(
+                    id=report.id,
+                    workflow_id=report.workflow_id,
+                    target_ip=report.target_ip,
+                    status=report.status.value,
+                    compatibility_score=report.compatibility_score,
+                    risk_score=report.risk_score,
+                    report_json=report.model_dump_json(),
+                    timestamp=report.timestamp.isoformat(),
+                )
+                session.add(db_report)
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                raise
 
     async def save_device_facts(self, facts: DeviceFacts) -> None:
         """Update hardware facts in device_inventory (stateful facts cache)."""
         async with self.session_factory() as session:
-            # Check if exists
-            result = await session.execute(
-                select(DBDevice).where(DBDevice.target_ip == facts.target_ip)
-            )
-            device = result.scalar_one_or_none()
-
-            last_scanned_str = (
-                facts.last_scanned.isoformat()
-                if facts.last_scanned
-                else datetime.now(timezone.utc).isoformat()
-            )
-            firmware_json = json.dumps(facts.firmware_inventory)
-
-            if not device:
-                device = DBDevice(
-                    id=f"dev_{int(datetime.now(timezone.utc).timestamp())}",
-                    target_ip=facts.target_ip,
-                    device_model=facts.device_model,
-                    bios_version=facts.bios_version,
-                    lifecycle_controller_version=facts.lifecycle_controller_version,
-                    firmware_inventory=firmware_json,
-                    last_scanned=last_scanned_str,
+            try:
+                # Check if exists
+                result = await session.execute(
+                    select(DBDevice).where(DBDevice.target_ip == facts.target_ip)
                 )
-                session.add(device)
-            else:
-                device.device_model = facts.device_model
-                device.bios_version = facts.bios_version
-                device.lifecycle_controller_version = facts.lifecycle_controller_version
-                device.firmware_inventory = firmware_json
-                device.last_scanned = last_scanned_str
+                device = result.scalar_one_or_none()
 
-            await session.commit()
+                last_scanned_str = (
+                    facts.last_scanned.isoformat()
+                    if facts.last_scanned
+                    else datetime.now(timezone.utc).isoformat()
+                )
+                firmware_json = json.dumps(facts.firmware_inventory)
+
+                if not device:
+                    device = DBDevice(
+                        id=f"dev_{int(datetime.now(timezone.utc).timestamp())}",
+                        target_ip=facts.target_ip,
+                        device_model=facts.device_model,
+                        bios_version=facts.bios_version,
+                        lifecycle_controller_version=facts.lifecycle_controller_version,
+                        firmware_inventory=firmware_json,
+                        last_scanned=last_scanned_str,
+                    )
+                    session.add(device)
+                else:
+                    device.device_model = facts.device_model
+                    device.bios_version = facts.bios_version
+                    device.lifecycle_controller_version = facts.lifecycle_controller_version
+                    device.firmware_inventory = firmware_json
+                    device.last_scanned = last_scanned_str
+
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                raise
 
     async def get_reports_for_workflow(
         self, workflow_id: str
@@ -235,8 +243,8 @@ class CompatibilityRepository:
                 try:
                     data = json.loads(r.report_json)
                     reports.append(CompatibilityReport.model_validate(data))
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning("Failed to deserialize compatibility report %s: %s", r.id, e)
             return reports
 
     async def supersede_rule(
@@ -252,34 +260,38 @@ class CompatibilityRepository:
         )
 
         async with self.session_factory() as session:
-            result = await session.execute(
-                select(DBRule).where(DBRule.id == old_rule_id)
-            )
-            old_rule = result.scalar_one_or_none()
-            if old_rule:
-                old_rule.effective_to = now_str
-                old_rule.superseded_by = new_rule_id
+            try:
+                result = await session.execute(
+                    select(DBRule).where(DBRule.id == old_rule_id)
+                )
+                old_rule = result.scalar_one_or_none()
+                if old_rule:
+                    old_rule.effective_to = now_str
+                    old_rule.superseded_by = new_rule_id
 
-            new_version = (old_rule.rule_version + 1) if old_rule else 1
-            db_new_rule = DBRule(
-                id=new_rule_id,
-                rule_name=new_rule_data["rule_name"],
-                rule_type=new_rule_data["rule_type"],
-                domain=new_rule_data["domain"],
-                rule_version=new_version,
-                effective_from=now_str,
-                effective_to=None,
-                created_by=new_rule_data.get("created_by", "system"),
-                superseded_by=None,
-                change_reason=new_rule_data.get(
-                    "change_reason", "Superseded older version"
-                ),
-                rule_config=json.dumps(new_rule_data["rule_config"])
-                if isinstance(new_rule_data["rule_config"], dict)
-                else new_rule_data["rule_config"],
-            )
-            session.add(db_new_rule)
-            await session.commit()
+                new_version = (old_rule.rule_version + 1) if old_rule else 1
+                db_new_rule = DBRule(
+                    id=new_rule_id,
+                    rule_name=new_rule_data["rule_name"],
+                    rule_type=new_rule_data["rule_type"],
+                    domain=new_rule_data["domain"],
+                    rule_version=new_version,
+                    effective_from=now_str,
+                    effective_to=None,
+                    created_by=new_rule_data.get("created_by", "system"),
+                    superseded_by=None,
+                    change_reason=new_rule_data.get(
+                        "change_reason", "Superseded older version"
+                    ),
+                    rule_config=json.dumps(new_rule_data["rule_config"])
+                    if isinstance(new_rule_data["rule_config"], dict)
+                    else new_rule_data["rule_config"],
+                )
+                session.add(db_new_rule)
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                raise
 
         return new_rule_id
 

@@ -1,11 +1,12 @@
 import yaml
 from pathlib import Path
 from typing import Dict, Any
+import ast
 
 class PolicyEngine:
     """Evaluates workflows against governance policies defined in policy.yaml."""
 
-    def __init__(self, policy_path: str = None):
+    def __init__(self, policy_path: str | None = None):
         if not policy_path:
             policy_path = str(Path(__file__).resolve().parent.parent / "config" / "policy.yaml")
         
@@ -44,8 +45,35 @@ class PolicyEngine:
             action = rule.get("action")
             
             try:
-                # Evaluate the condition safely
-                is_match = eval(condition_expr, {"__builtins__": {}}, eval_locals)
+                def _eval(node, context):
+                    if isinstance(node, ast.Constant): return node.value
+                    elif isinstance(node, ast.Name): return context.get(node.id)
+                    elif isinstance(node, ast.Attribute):
+                        val = _eval(node.value, context)
+                        if isinstance(val, dict): return val.get(node.attr)
+                        return getattr(val, node.attr, None)
+                    elif isinstance(node, ast.Compare):
+                        left = _eval(node.left, context)
+                        for op, right_node in zip(node.ops, node.comparators):
+                            right = _eval(right_node, context)
+                            if isinstance(op, ast.Eq):
+                                if left != right: return False
+                            elif isinstance(op, ast.NotEq):
+                                if left == right: return False
+                            elif isinstance(op, ast.In):
+                                if not right or left not in right: return False
+                            elif isinstance(op, ast.NotIn):
+                                if right and left in right: return False
+                            left = right
+                        return True
+                    elif isinstance(node, ast.BoolOp):
+                        if isinstance(node.op, ast.And): return all(_eval(v, context) for v in node.values)
+                        elif isinstance(node.op, ast.Or): return any(_eval(v, context) for v in node.values)
+                    raise ValueError("Unsupported AST node")
+
+                tree = ast.parse(condition_expr, mode='eval').body
+                is_match = _eval(tree, eval_locals)
+                
                 if is_match:
                     if action == "DENY":
                         return {"status": 2, "reason": rule.get("reason", "Denied by policy rule: " + rule.get("name", ""))}
@@ -53,8 +81,9 @@ class PolicyEngine:
                         result_status = 1
                     elif action == "REQUIRE_APPROVAL":
                         result_status = 0
-            except Exception:
+            except Exception as e:
                 # Log or handle eval errors
-                pass
+                import logging
+                logging.debug(f"Policy eval failed: {e}")
 
         return {"status": result_status, "reason": rejection_reason}

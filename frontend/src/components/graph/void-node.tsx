@@ -3,7 +3,7 @@ import * as React from "react";
 import {
   Database,
   TerminalWindow,
-  Graph,
+  
   Network,
   Lightning,
   DotsThreeCircle,
@@ -11,7 +11,7 @@ import {
   FolderOpen
 } from "@phosphor-icons/react";
 
-export function VoidNode({ data, selected }: any) {
+export function VoidNode({ data, selected }: unknown) {
   const { label, method, isCommunityNode, communitySize } = data;
 
   let Icon = TerminalWindow;

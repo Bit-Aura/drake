@@ -1,6 +1,5 @@
 import pytest
 import asyncio
-import os
 import datetime
 from unittest.mock import patch, MagicMock, AsyncMock
 
@@ -80,7 +79,7 @@ async def test_3_infinite_workflow_loop_detection():
     from src.proxy.executors.httpx_executor import MockExecutor
     from src.core.exceptions import DellProxyExecutionError
     
-    executor = MockExecutor()
+    MockExecutor()
     
     visited = set()
     

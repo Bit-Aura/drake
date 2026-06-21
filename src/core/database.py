@@ -23,6 +23,9 @@ from typing import Any, Dict, List, Optional
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, String, Integer, ForeignKey, Float, Boolean, DateTime
+import logging
+
+logger = logging.getLogger(__name__)
 
 # ===========================================================================
 # Synchronous Database Persistence (Legacy & Admin Dashboards)
@@ -60,8 +63,8 @@ def get_db_connection():
             if f.exists():
                 try:
                     os.remove(f)
-                except Exception:
-                    pass
+                except Exception as clean_e:
+                    logger.warning(f"Failed to remove {f}: {clean_e}")
 
     try:
         conn = sync_engine.raw_connection()
@@ -85,8 +88,8 @@ def get_db_connection():
                 if DB_FILE.exists():
                     try:
                         os.remove(DB_FILE)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.warning(f"Failed to remove db file: {e}")
                 conn = sync_engine.raw_connection()
                 conn.row_factory = sqlite3.Row
                 return conn
@@ -96,6 +99,20 @@ def get_db_connection():
 
 def init_db_sync() -> None:
     """Initialize SQLite tables for governance and audit trails if they don't exist."""
+    import time
+    max_retries = 5
+    for attempt in range(max_retries):
+        try:
+            _init_db_sync_impl()
+            break
+        except sqlite3.OperationalError as e:
+            if "database is locked" in str(e).lower() and attempt < max_retries - 1:
+                logger.warning(f"Database locked during init_db_sync, retrying... ({attempt+1}/{max_retries})")
+                time.sleep(0.5 * (2 ** attempt))
+            else:
+                raise
+
+def _init_db_sync_impl() -> None:
     with get_db_connection() as conn:
         # 1. Pipeline status tracking
         conn.execute("""
@@ -176,8 +193,8 @@ def init_db_sync() -> None:
                 if "supports_rollback" not in columns:
                     conn.execute("ALTER TABLE workflows ADD COLUMN supports_rollback INTEGER DEFAULT 0")
                     conn.execute("ALTER TABLE workflows ADD COLUMN rollback_strategy TEXT DEFAULT 'NONE'")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to alter table workflows: {e}")
 
         try:
             cursor = conn.execute("PRAGMA table_info(endpoints)")
@@ -185,8 +202,8 @@ def init_db_sync() -> None:
             if columns and "request_schema" not in columns:
                 conn.execute("ALTER TABLE endpoints ADD COLUMN request_schema TEXT")
                 conn.execute("ALTER TABLE endpoints ADD COLUMN response_schema TEXT")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to alter table endpoints: {e}")
 
         # 4. Audit trail events
         conn.execute("""
@@ -212,8 +229,8 @@ def init_db_sync() -> None:
                     conn.execute("ALTER TABLE audit_events ADD COLUMN previous_hash TEXT")
                 if "hash" not in columns:
                     conn.execute("ALTER TABLE audit_events ADD COLUMN hash TEXT")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to alter table audit_events: {e}")
 
         # 5. Endpoint steps
         conn.execute("""
@@ -238,8 +255,8 @@ def init_db_sync() -> None:
             columns = [row["name"] for row in cursor.fetchall()]
             if columns and "variable_bindings" not in columns:
                 conn.execute("ALTER TABLE endpoint_steps ADD COLUMN variable_bindings TEXT")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to alter table endpoint_steps: {e}")
 
         # 6. Capability registry
         conn.execute("""
@@ -991,7 +1008,6 @@ async def sync_governance_to_mcp_proxy() -> None:
 
             # Map status
             status_map = {0: "pending", 1: "approved", 2: "rejected"}
-            status_str = status_map.get(gwf["approved"], "pending")
 
             # Check if this workflow already exists in mcp_proxy.db
             result = await session.execute(

@@ -49,7 +49,7 @@ class ClusterCLIService:
                             parser_obj = AsyncAPIParser(path)
                         else:
                             parser_obj = OpenAPIParser(path)
-                    except:
+                    except Exception:
                         parser_obj = OpenAPIParser(path)
                 else:
                     continue

@@ -6,6 +6,7 @@ Validates database operations, graph-based community detection, and FastAPI rout
 """
 
 from __future__ import annotations
+import os
 
 from typing import Generator
 
@@ -99,6 +100,13 @@ def test_endpoint_and_workflow_persistence() -> None:
 
 
 def test_relationship_graph_and_communities() -> None:
+    try:
+        import leidenalg
+        import sentence_transformers
+    except ImportError:
+        import pytest
+        pytest.skip("Missing clustering dependencies")
+
     """Validate NetworkX graph construction and community detection."""
     endpoints = [
         {
@@ -186,7 +194,7 @@ def test_fastapi_endpoints() -> None:
             "workflowName": "edited_systems_workflow",
             "generatedDescription": "Edited description",
         },
-        headers={"X-API-Key": "default_dev_key"},
+        headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
     )
     assert response.status_code == 200
     updated_wf = response.json()
@@ -197,7 +205,7 @@ def test_fastapi_endpoints() -> None:
     # 4. Test Approve Workflow POST
     response = client.post(
         "/api/v1/workflows/wf_1/approve",
-        headers={"X-API-Key": "default_dev_key"},
+        headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")},
     )
     assert response.status_code == 200
     assert response.json()["status"] == "approved"

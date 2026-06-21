@@ -3,7 +3,6 @@ import pytest
 import asyncio
 import httpx
 from unittest.mock import patch
-from pathlib import Path
 from src.parser.openapi_parser import OpenAPIParser
 from src.parser.graphql_parser import GraphQLParser
 from src.parser.grpc_parser import gRPCParser

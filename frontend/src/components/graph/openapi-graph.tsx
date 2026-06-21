@@ -13,7 +13,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import dagre from "dagre";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect,  useState } from "react";
 import { TreeStructure, Desktop, TerminalWindow, Coins, Graph, CaretRight, CaretLeft, ListDashes, SidebarSimple } from "@phosphor-icons/react";
 
 import { EmptyState } from "@/components/feedback/empty-state";
@@ -101,7 +101,7 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 
 export function OpenApiGraph() {
   const { data, isLoading, error } = useGraph();
-  const { graphClusterFilter, selectedWorkflowId, setGraphClusterFilter } = useReviewStore();
+  const { graphClusterFilter,  setGraphClusterFilter } = useReviewStore();
   const [selectedNodeData, setSelectedNodeData] = useState<GraphNode | GraphCommunity | null>(null);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
@@ -179,7 +179,7 @@ export function OpenApiGraph() {
               source: e.source,
               target: e.target,
               type: "void",
-              label: (e as any).type || "Calls",
+              label: ((e as unknown as Record<string, unknown>).type as string) || "Calls",
               markerEnd: {
                 type: MarkerType.ArrowClosed,
                 width: 15,
@@ -189,7 +189,7 @@ export function OpenApiGraph() {
             });
           } else {
              const existing = edgeMap.get(edgeId)!;
-             const newLabel = (e as any).type || "Calls";
+             const newLabel = ((e as unknown as Record<string, unknown>).type as string) || "Calls";
              if (existing.label && !String(existing.label).includes(newLabel)) {
                 existing.label = `${existing.label}, ${newLabel}`;
              }
@@ -208,7 +208,7 @@ export function OpenApiGraph() {
         rfInstance.fitView({ padding: 0.4, duration: 800, maxZoom: 1, minZoom: 0.65 });
       }, 50);
     }
-  }, [data, graphClusterFilter, rfInstance]);
+  }, [data, graphClusterFilter, rfInstance, setEdges, setNodes]);
 
   const onNodeClick = (_: React.MouseEvent, node: Node) => {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === node.id })));

@@ -13,41 +13,16 @@ import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from pydantic import BaseModel, Field
 
-from fastapi import FastAPI, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, constr
-
-
-
-logger = logging.getLogger("dell_mcp_api")
-
-app = FastAPI(
-    title="Dell Enterprise MCP Proxy Governance API",
-    version="1.0.0",
-    docs_url="/docs",
-)
-
-# Enable CORS for the Next.js frontend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-import logging
-import os
-from datetime import datetime, timezone
-
-from fastapi import FastAPI, HTTPException, status, Depends, Security, BackgroundTasks
+from fastapi import FastAPI, HTTPException, status, Depends, Security, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security.api_key import APIKeyHeader
 import aiosqlite
+from datetime import datetime, timezone
 
 from src.core.database import DB_FILE
+from src.core.env_config import settings
 
 logger = logging.getLogger("dell_mcp_api")
 
@@ -58,7 +33,7 @@ app = FastAPI(
 )
 
 # Phase 5: API Security - Restrict CORS
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+cors_origins = settings.CORS_ORIGINS.split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
@@ -73,9 +48,9 @@ api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
 
 async def get_api_key(api_key_header: str = Security(api_key_header)):
-    expected_api_key = os.getenv("DELL_MCP_API_KEY", "default_dev_key")
-    if expected_api_key == "default_dev_key" and not api_key_header:
-        return "default_dev_key"
+    expected_api_key = settings.DELL_MCP_API_KEY
+    if not expected_api_key:
+        raise ValueError("Production DELL_MCP_API_KEY missing")
     if api_key_header == expected_api_key:
         return api_key_header
     else:
@@ -85,29 +60,29 @@ async def get_api_key(api_key_header: str = Security(api_key_header)):
 
 
 class UpdateWorkflowPayload(BaseModel):
-    displayName: Optional[str] = None
-    workflowName: Optional[str] = None
-    generatedDescription: str
+    displayName: Optional[str] = Field(None, min_length=1)
+    workflowName: Optional[str] = Field(None, min_length=1)
+    generatedDescription: str = Field(..., min_length=1)
 
 
 class RejectWorkflowPayload(BaseModel):
-    reason: str
+    reason: str = Field(..., min_length=1)
 
 
 class NLGeneratePayload(BaseModel):
-    prompt: constr(min_length=5, max_length=1000)
+    prompt: str = Field(..., min_length=5, max_length=1000, pattern=r"^[^;\'\"\\`]+$")
 
 class LoginPayload(BaseModel):
-    email: str
-    password: str
+    email: str = Field(..., min_length=1)
+    password: str = Field(..., min_length=1)
 
 @app.post("/api/v1/auth/login")
 async def login(payload: LoginPayload) -> Dict[str, Any]:
     import jwt
     from datetime import timedelta
     
-    if payload.email == "DellAdmin@gmail.com" and payload.password == "dell@123":
-        secret = os.getenv("JWT_SECRET", "dell-enterprise-mcp-secret-key-2026")
+    if payload.email == settings.ADMIN_EMAIL and payload.password == settings.ADMIN_PASSWORD:
+        secret = settings.JWT_SECRET
         token = jwt.encode(
             {
                 "sub": payload.email,
@@ -525,7 +500,6 @@ async def run_pipeline_task():
         from src.ai_clustering.graph_clustering import run_pipeline
         from src.parser.openapi_parser import OpenAPIParser
         from src.core.database import init_db_sync, set_pipeline_status
-        import time
 
         logger.info("Background Pipeline: Initializing SQLite database...")
         init_db_sync()
@@ -781,8 +755,8 @@ async def prometheus_metrics():
                         total_warnings = (await c.fetchone())[0]
                     async with db.execute("SELECT COUNT(*) FROM compatibility_reports WHERE status='ALLOW'") as c:
                         total_successes = (await c.fetchone())[0]
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Metrics count query failed: {e}")
         else:
             # Calculate actual tokens using length heuristic
             async with aiosqlite.connect(DB_FILE) as db:
@@ -899,9 +873,10 @@ async def export_workflow_ansible(workflow_id: str):
                 "hosts": "idrac_servers",
                 "gather_facts": False,
                 "vars": {
-                    "idrac_ip": "192.168.1.100",
-                    "idrac_user": "root",
-                    "idrac_password": "calvin"
+                    "credentials": {
+                        "idrac_user": settings.IDRAC_USER,
+                        "idrac_password": settings.IDRAC_PASSWORD
+                    }
                 },
                 "tasks": tasks
             }

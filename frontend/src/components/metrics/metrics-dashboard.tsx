@@ -51,7 +51,7 @@ const TREEMAP_COLORS = [
 ];
 
 // Custom Treemap Content to render beautiful boxes with text
-const CustomTreemapContent = (props: any) => {
+const CustomTreemapContent = (props: unknown) => {
   const { depth, x, y, width, height, name, value, onMouseEnter, onMouseLeave, onMouseMove, index } = props;
   
   if (depth === 1) {

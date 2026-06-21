@@ -52,7 +52,6 @@ class RuntimeGovernance:
         Raises an exception if execution should be blocked.
         """
         # Rate limit and circuit breaker stubs would go here
-        pass
 
     def intercept(self, workflow_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """

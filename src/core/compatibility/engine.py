@@ -256,8 +256,8 @@ class BlastRadiusEngine:
                 edges = await self.repository.get_dependencies()
                 if len(edges) > 5:
                     has_cross_links = True
-            except Exception:
-                pass
+            except Exception as e:
+                logger.exception("Failed to evaluate network graph complexity: %s", e)
 
             if has_cross_links:
                 return (

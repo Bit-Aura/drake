@@ -14,6 +14,72 @@ Fixture design principles:
 
 from __future__ import annotations
 
+# ---------- Load .env and fill test defaults BEFORE anything else ----------
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # picks up .env from project root if present
+
+import tempfile
+import uuid
+
+# ---------------------------------------------------------------------------
+# Per-worker database isolation for pytest-xdist
+# ---------------------------------------------------------------------------
+# Each xdist worker MUST get its own SQLite file to avoid locking/race
+# conditions.  However, when a test *explicitly* sets DELL_TEST_DB_PATH
+# (e.g. test_generator_bootstrap spawning a subprocess with a pre-seeded
+# dummy DB), we must NOT overwrite it.
+#
+# Strategy:
+#   * We set a sentinel "_DELL_TEST_DB_FROM_CONFTEST=1" whenever *we*
+#     create the path.  If a subprocess passes its own DELL_TEST_DB_PATH
+#     without the sentinel, we leave it alone.
+# ---------------------------------------------------------------------------
+
+def _conftest_should_set_db_path() -> bool:
+    """Return True if conftest should generate a fresh DB path."""
+    if "DELL_TEST_DB_PATH" not in os.environ:
+        return True  # nothing set yet
+    # If WE set it in a parent conftest invocation, we can override it for
+    # this specific worker.
+    if os.environ.get("_DELL_TEST_DB_FROM_CONFTEST") == "1":
+        return True
+    # An external caller (e.g. subprocess test) explicitly set the path.
+    return False
+
+worker_id = os.environ.get("PYTEST_XDIST_WORKER")
+if worker_id is not None and _conftest_should_set_db_path():
+    db_name = f"test_db_{worker_id}_{uuid.uuid4().hex[:8]}.db"
+    os.environ["DELL_TEST_DB_PATH"] = os.path.join(tempfile.gettempdir(), db_name)
+    os.environ["_DELL_TEST_DB_FROM_CONFTEST"] = "1"
+elif _conftest_should_set_db_path():
+    os.environ["DELL_TEST_DB_PATH"] = os.path.join(
+        tempfile.gettempdir(), f"test_db_master_{uuid.uuid4().hex[:8]}.db"
+    )
+    os.environ["_DELL_TEST_DB_FROM_CONFTEST"] = "1"
+
+_TEST_DEFAULTS = {
+    "DELL_MCP_API_KEY": "default_dev_key",
+    "JWT_SECRET": "test_jwt_secret_for_pytest",
+    "CORS_ORIGINS": "http://localhost:3000",
+    "DELL_EXECUTOR_TYPE": "mock",
+    "PRISM_URL": "http://localhost:4010",
+    "MOCK_SERVER_URL": "http://localhost:8000",
+    "DELL_COMPATIBILITY_POLICY": "DISABLED",
+    "ADMIN_EMAIL": "test@test.com",
+    "ADMIN_PASSWORD": "testpass",
+    "IDRAC_USER": "root",
+    "IDRAC_PASSWORD": "calvin",
+    "OMSDK_SESSION_TOKEN": "test_token",
+    "OPENAI_API_KEY": "sk-test-key",
+    "LLM_BASE_URL": "http://localhost:11434",
+    "LLM_MODEL": "test-model",
+}
+for key, val in _TEST_DEFAULTS.items():
+    os.environ.setdefault(key, val)
+# --------------------------------------------------------------------------
+
 from pathlib import Path
 from typing import Any, AsyncGenerator
 

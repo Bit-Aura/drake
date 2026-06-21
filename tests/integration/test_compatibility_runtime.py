@@ -115,7 +115,7 @@ async def test_compatibility_governance_endpoints():
             "risk_score": 90,
             "rule_config": '{"supported_models": ["PowerEdge R750"]}'
         },
-        headers={"X-API-Key": "default_dev_key"}
+        headers={"X-API-Key": os.getenv("DELL_MCP_API_KEY", "default_dev_key")}
     )
     assert response.status_code == 200
     assert response.json()["status"] == "created"

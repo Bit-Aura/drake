@@ -1,4 +1,3 @@
-import json
 import logging
 from pathlib import Path
 from src.core.models import ContractA, EndpointContract

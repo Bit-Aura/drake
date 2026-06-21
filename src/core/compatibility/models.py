@@ -93,7 +93,6 @@ class CapabilityInfo(BaseModel):
 class BaseRuleConfig(BaseModel):
     """Base empty schema for rule configs."""
 
-    pass
 
 
 class HardwareRuleConfig(BaseRuleConfig):
