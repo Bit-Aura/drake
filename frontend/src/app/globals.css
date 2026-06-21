@@ -59,3 +59,13 @@ body {
   background-color: rgb(var(--muted)) !important;
 }
 
+/* Recharts Focus Override */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-responsive-container {
+  outline: none !important;
+}
+
+.recharts-wrapper *:focus {
+  outline: none !important;
+}
