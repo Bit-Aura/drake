@@ -123,6 +123,7 @@ async def test_get_dependencies():
 @pytest.mark.asyncio
 async def test_save_report_and_get_reports():
     mock_session = AsyncMock()
+    mock_session.add = MagicMock()
     session_factory = MagicMock()
     session_factory.return_value.__aenter__.return_value = mock_session
 
@@ -168,6 +169,7 @@ async def test_save_report_and_get_reports():
 @pytest.mark.asyncio
 async def test_save_device_facts_insert_and_update():
     mock_session = AsyncMock()
+    mock_session.add = MagicMock()
     session_factory = MagicMock()
     session_factory.return_value.__aenter__.return_value = mock_session
 
@@ -206,6 +208,7 @@ async def test_save_device_facts_insert_and_update():
 @pytest.mark.asyncio
 async def test_supersede_rule():
     mock_session = AsyncMock()
+    mock_session.add = MagicMock()
     session_factory = MagicMock()
     session_factory.return_value.__aenter__.return_value = mock_session
 

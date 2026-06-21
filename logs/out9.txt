@@ -1,0 +1,936 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP
+configfile: pyproject.toml
+plugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/test_generator_bootstrap.py::test_dynamic_test_generator_bootstrap FAILED [100%]
+
+=================================== FAILURES ===================================
+____________________ test_dynamic_test_generator_bootstrap _____________________
+
+dummy_db = '/tmp/tmpnwbuqkns'
+
+    def test_dynamic_test_generator_bootstrap(dummy_db):
+        os.environ["DELL_TEST_DB_PATH"] = dummy_db
+        # 1. Run generator
+        generate_tests_from_db(dummy_db)
+    
+        # 2. Assert generated file exists
+        expected_file = os.path.join(GENERATED_DIR, "test_wf_wf_bootstrap_999.py")
+        assert os.path.exists(expected_file), f"Generated file {expected_file} does not exist"
+    
+        # 3. Read content and verify assertions structure
+        with open(expected_file, "r") as f:
+            content = f.read()
+    
+        assert "async def test_generated_workflow_wf_bootstrap_999_execution" in content
+        assert "assert len(calls) == 2" in content  # 3 steps, but 1 is cached
+        assert "assert calls[0].args[0] == 'GET'" in content
+        assert "assert calls[1].args[0] == 'POST'" in content
+        assert "No new network call expected" in content
+    
+        # 4. Programmatically run pytest on the generated file to ensure it is valid
+        # Must use the same environment's python/pytest
+        import sys
+        env = os.environ.copy()
+        env["DELL_TEST_DB_PATH"] = dummy_db
+    
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", expected_file, "-v"],
+            capture_output=True,
+            text=True,
+            env=env,
+            cwd=os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        )
+    
+>       assert result.returncode == 0, f"Generated test failed!\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
+E       AssertionError: Generated test failed!
+E         STDOUT:
+E         ============================= test session starts ==============================
+E         platform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python
+E         cachedir: .pytest_cache
+E         rootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP
+E         configfile: pyproject.toml
+E         plugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0
+E         asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+E         collecting ... collected 1 item
+E         
+E         DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py::test_generated_workflow_wf_bootstrap_999_execution FAILED [100%]
+E         
+E         =================================== FAILURES ===================================
+E         ______________ test_generated_workflow_wf_bootstrap_999_execution ______________
+E         
+E         self = <sqlalchemy.engine.base.Connection object at 0x7b9cc95d2d20>
+E         dialect = <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteDialect_aiosqlite object at 0x7b9cccf6ed20>
+E         context = <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteExecutionContext_aiosqlite object at 0x7b9cc975fef0>
+E         statement = <sqlalchemy.dialects.sqlite.base.SQLiteCompiler object at 0x7b9cc95d2f00>
+E         parameters = [('get_chassis',)]
+E         
+E             def _exec_single_context(
+E                 self,
+E                 dialect: Dialect,
+E                 context: ExecutionContext,
+E                 statement: Union[str, Compiled],
+E                 parameters: Optional[_AnyMultiExecuteParams],
+E             ) -> CursorResult[Any]:
+E                 """continue the _execute_context() method for a single DBAPI
+E                 cursor.execute() or cursor.executemany() call.
+E             
+E                 """
+E                 if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+E                     generic_setinputsizes = context._prepare_set_input_sizes()
+E             
+E                     if generic_setinputsizes:
+E                         try:
+E                             dialect.do_set_input_sizes(
+E                                 context.cursor, generic_setinputsizes, context
+E                             )
+E                         except BaseException as e:
+E                             self._handle_dbapi_exception(
+E                                 e, str(statement), parameters, None, context
+E                             )
+E             
+E                 cursor, str_statement, parameters = (
+E                     context.cursor,
+E                     context.statement,
+E                     context.parameters,
+E                 )
+E             
+E                 effective_parameters: Optional[_AnyExecuteParams]
+E             
+E                 if not context.executemany:
+E                     effective_parameters = parameters[0]
+E                 else:
+E                     effective_parameters = parameters
+E             
+E                 if self._has_events or self.engine._has_events:
+E                     for fn in self.dispatch.before_cursor_execute:
+E                         str_statement, effective_parameters = fn(
+E                             self,
+E                             cursor,
+E                             str_statement,
+E                             effective_parameters,
+E                             context,
+E                             context.executemany,
+E                         )
+E             
+E                 if self._echo:
+E                     self._log_info(str_statement)
+E             
+E                     stats = context._get_cache_stats()
+E             
+E                     if not self.engine.hide_parameters:
+E                         self._log_info(
+E                             "[%s] %r",
+E                             stats,
+E                             sql_util._repr_params(
+E                                 effective_parameters,
+E                                 batches=10,
+E                                 ismulti=context.executemany,
+E                             ),
+E                         )
+E                     else:
+E                         self._log_info(
+E                             "[%s] [SQL parameters hidden due to hide_parameters=True]",
+E                             stats,
+E                         )
+E             
+E                 evt_handled: bool = False
+E                 try:
+E                     if context.execute_style is ExecuteStyle.EXECUTEMANY:
+E                         effective_parameters = cast(
+E                             "_CoreMultiExecuteParams", effective_parameters
+E                         )
+E                         if self.dialect._has_events:
+E                             for fn in self.dialect.dispatch.do_executemany:
+E                                 if fn(
+E                                     cursor,
+E                                     str_statement,
+E                                     effective_parameters,
+E                                     context,
+E                                 ):
+E                                     evt_handled = True
+E                                     break
+E                         if not evt_handled:
+E                             self.dialect.do_executemany(
+E                                 cursor,
+E                                 str_statement,
+E                                 effective_parameters,
+E                                 context,
+E                             )
+E                     elif not effective_parameters and context.no_parameters:
+E                         if self.dialect._has_events:
+E                             for fn in self.dialect.dispatch.do_execute_no_params:
+E                                 if fn(cursor, str_statement, context):
+E                                     evt_handled = True
+E                                     break
+E                         if not evt_handled:
+E                             self.dialect.do_execute_no_params(
+E                                 cursor, str_statement, context
+E                             )
+E                     else:
+E                         effective_parameters = cast(
+E                             "_CoreSingleExecuteParams", effective_parameters
+E                         )
+E                         if self.dialect._has_events:
+E                             for fn in self.dialect.dispatch.do_execute:
+E                                 if fn(
+E                                     cursor,
+E                                     str_statement,
+E                                     effective_parameters,
+E                                     context,
+E                                 ):
+E                                     evt_handled = True
+E                                     break
+E                         if not evt_handled:
+E         >                   self.dialect.do_execute(
+E                                 cursor, str_statement, effective_parameters, context
+E                             )
+E         
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: 
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+E             cursor.execute(statement, parameters)
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:183: in execute
+E             self._adapt_connection._handle_exception(error)
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:343: in _handle_exception
+E             raise error
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:165: in execute
+E             self.await_(_cursor.execute(operation, parameters))
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+E             return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+E             value = await result
+E                     ^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py:40: in execute
+E             await self._execute(self._cursor.execute, sql, parameters)
+E         DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py:32: in _execute
+E             return await self._conn._execute(fn, *args, **kwargs)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py:160: in _execute
+E             return await future
+E                    ^^^^^^^^^^^^
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         
+E         tx = <_queue.SimpleQueue object at 0x7b9cceab83b0>
+E         
+E             def _connection_worker_thread(tx: _TxQueue):
+E                 """
+E                 Execute function calls on a separate thread.
+E             
+E                 :meta private:
+E                 """
+E                 while True:
+E                     # Continues running until all queue items are processed,
+E                     # even after connection is closed (so we can finalize all
+E                     # futures)
+E             
+E                     future, function = tx.get()
+E             
+E                     try:
+E                         LOG.debug("executing %s", function)
+E         >               result = function()
+E                                  ^^^^^^^^^^
+E         E               sqlite3.OperationalError: no such table: capability_registry
+E         
+E         DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py:63: OperationalError
+E         
+E         The above exception was the direct cause of the following exception:
+E         
+E         self = FastMCP('Dell Enterprise Proxy'), name = 'check_server_health_update'
+E         arguments = {}, version = None, run_middleware = False, task_meta = None
+E         
+E             async def call_tool(
+E                 self,
+E                 name: str,
+E                 arguments: dict[str, Any] | None = None,
+E                 *,
+E                 version: VersionSpec | None = None,
+E                 run_middleware: bool = True,
+E                 task_meta: TaskMeta | None = None,
+E             ) -> ToolResult | mcp.types.CreateTaskResult:
+E                 """Call a tool by name.
+E             
+E                 This is the public API for executing tools. By default, middleware is applied.
+E             
+E                 Args:
+E                     name: The tool name
+E                     arguments: Tool arguments (optional)
+E                     version: Specific version to call. If None, calls highest version.
+E                     run_middleware: If True (default), apply the middleware chain.
+E                         Set to False when called from middleware to avoid re-applying.
+E                     task_meta: If provided, execute as a background task and return
+E                         CreateTaskResult. If None (default), execute synchronously and
+E                         return ToolResult.
+E             
+E                 Returns:
+E                     ToolResult when task_meta is None.
+E                     CreateTaskResult when task_meta is provided.
+E             
+E                 Raises:
+E                     NotFoundError: If tool not found or disabled
+E                     ToolError: If tool execution fails
+E                     ValidationError: If arguments fail validation
+E                 """
+E                 # Note: fn_key enrichment happens here after finding the tool.
+E                 # For mounted servers, the parent's provider sets fn_key to the
+E                 # namespaced key before delegating, ensuring correct Docket routing.
+E             
+E                 from fastmcp.server.providers.addressing import (
+E                     parse_hashed_backend_name,
+E                 )
+E             
+E                 # Two routing paths:
+E                 #   1. Hashed-name path — backend tools that opted into
+E                 #      app-callable visibility. Recognized by their
+E                 #      `<hash>_<local_name>` format and resolved via the
+E                 #      reverse-hash map. Address is known eagerly.
+E                 #   2. Display-name path — everything else. Goes through normal
+E                 #      `get_tool` aggregation/transforms. Address is determined
+E                 #      after resolution by walking the registry.
+E                 async with fastmcp.server.context.Context(fastmcp=self) as ctx:
+E                     if run_middleware:
+E                         mw_context = MiddlewareContext[CallToolRequestParams](
+E                             message=mcp.types.CallToolRequestParams(
+E                                 name=name, arguments=arguments or {}
+E                             ),
+E                             source="client",
+E                             type="request",
+E                             method="tools/call",
+E                             fastmcp_context=ctx,
+E                         )
+E                         return await self._run_middleware(
+E                             context=mw_context,
+E                             call_next=lambda context: self.call_tool(
+E                                 context.message.name,
+E                                 context.message.arguments or {},
+E                                 version=version,
+E                                 run_middleware=False,
+E                                 task_meta=task_meta,
+E                             ),
+E                         )
+E             
+E                     # Core logic: find and execute tool
+E                     with server_span(
+E                         f"tools/call {name}",
+E                         "tools/call",
+E                         self.name,
+E                         "tool",
+E                         name,
+E                         tool_name=name,
+E                     ) as span:
+E                         # Try normal display-name resolution first.
+E                         tool: Tool | None = await self.get_tool(name, version=version)
+E             
+E                         # If that fails, try hashed-name dispatch. This walks
+E                         # the provider tree recursively (same pattern as the old
+E                         # get_app_tool) looking for a tool whose stored hash
+E                         # matches the parsed prefix.
+E                         if tool is None:
+E                             hashed = parse_hashed_backend_name(name)
+E                             if hashed is not None:
+E                                 digest, local_name = hashed
+E                                 tool = await self.get_tool_by_hash(digest, local_name)
+E                                 if tool is not None:
+E                                     # Auth still applies on the bypass path.
+E                                     skip_auth, token = _get_auth_context()
+E                                     if not skip_auth and tool.auth is not None:
+E                                         try:
+E                                             auth_ctx = AuthContext(token=token, component=tool)
+E                                             if not await run_auth_checks(tool.auth, auth_ctx):
+E                                                 raise NotFoundError(f"Unknown tool: {name!r}")
+E                                         except AuthorizationError:
+E                                             raise NotFoundError(
+E                                                 f"Unknown tool: {name!r}"
+E                                             ) from None
+E             
+E                         if tool is None:
+E                             raise NotFoundError(f"Unknown tool: {name!r}")
+E                         span.set_attributes(tool.get_span_attributes())
+E                         if task_meta is not None and task_meta.fn_key is None:
+E                             task_meta = replace(task_meta, fn_key=tool.key)
+E                         try:
+E         >                   return await tool._run(arguments or {}, task_meta=task_meta)
+E                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1282: 
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/base.py:392: in _run
+E             return await self.run(arguments)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/function_tool.py:331: in run
+E             result = await type_adapter.validate_python(arguments)
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/src/proxy/server.py:190: in dynamic_tool
+E             return await execute_workflow_route(wf_name, kwargs)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/src/proxy/server.py:69: in execute_workflow_route
+E             result = await manager.execute_workflow_with_validation(workflow_name, params)
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/src/core/compatibility/orchestrator.py:129: in execute_workflow_with_validation
+E             report = await self.engine.validate_workflow(wf.id, steps, target_facts)
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/src/core/compatibility/engine.py:399: in validate_workflow
+E             cap = await self.resolver.resolve_operation_capability(op_id)
+E                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/src/core/compatibility/engine.py:74: in resolve_operation_capability
+E             return await self.repository.get_capability_by_operation(operation_id)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/src/core/compatibility/repository.py:63: in get_capability_by_operation
+E             result = await session.execute(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py:448: in execute
+E             result = await greenlet_spawn(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+E             result = context.throw(*sys.exc_info())
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2373: in execute
+E             return self._execute_internal(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2271: in _execute_internal
+E             result: Result[Any] = compile_state_cls.orm_execute_statement(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py:306: in orm_execute_statement
+E             result = conn.execute(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+E             return meth(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+E             return connection._execute_clauseelement(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+E             ret = self._execute_context(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+E             return self._exec_single_context(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+E             self._handle_dbapi_exception(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+E             raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+E             self.dialect.do_execute(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+E             cursor.execute(statement, parameters)
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:183: in execute
+E             self._adapt_connection._handle_exception(error)
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:343: in _handle_exception
+E             raise error
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py:165: in execute
+E             self.await_(_cursor.execute(operation, parameters))
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+E             return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+E             value = await result
+E                     ^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py:40: in execute
+E             await self._execute(self._cursor.execute, sql, parameters)
+E         DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py:32: in _execute
+E             return await self._conn._execute(fn, *args, **kwargs)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py:160: in _execute
+E             return await future
+E                    ^^^^^^^^^^^^
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         
+E         tx = <_queue.SimpleQueue object at 0x7b9cceab83b0>
+E         
+E             def _connection_worker_thread(tx: _TxQueue):
+E                 """
+E                 Execute function calls on a separate thread.
+E             
+E                 :meta private:
+E                 """
+E                 while True:
+E                     # Continues running until all queue items are processed,
+E                     # even after connection is closed (so we can finalize all
+E                     # futures)
+E             
+E                     future, function = tx.get()
+E             
+E                     try:
+E                         LOG.debug("executing %s", function)
+E         >               result = function()
+E                                  ^^^^^^^^^^
+E         E               sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: capability_registry
+E         E               [SQL: SELECT capability_registry.operation_id, capability_registry.capability_name, capability_registry.compatibility_domain, capability_registry.default_risk_level, capability_registry.parameters_schema, capability_registry.risk_profile_id, capability_registry.is_manual_override, capability_registry.discovery_confidence 
+E         E               FROM capability_registry 
+E         E               WHERE capability_registry.operation_id = ?]
+E         E               [parameters: ('get_chassis',)]
+E         E               (Background on this error at: https://sqlalche.me/e/20/e3q8)
+E         
+E         DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py:63: OperationalError
+E         
+E         The above exception was the direct cause of the following exception:
+E         
+E             @pytest.mark.asyncio
+E             async def test_generated_workflow_wf_bootstrap_999_execution():
+E                 from src.proxy.server import load_approved_tools_from_db
+E                 await load_approved_tools_from_db()
+E                 with patch("httpx.AsyncClient.request") as mock_request:
+E                     # Mock Response
+E                     mock_response = MagicMock()
+E                     mock_response.status_code = 200
+E                     mock_response.json.return_value = {"mocked": "success"}
+E                     mock_response.raise_for_status = MagicMock()
+E                     mock_request.return_value = mock_response
+E             
+E                     # Use mock executor and clear cache
+E                     with patch.dict(os.environ, {"DELL_EXECUTOR_TYPE": "mock", "DELL_CACHE_TTL": "60"}):
+E                         async with _cache_lock:
+E                             _execution_cache.clear()
+E             
+E                         # Execute tool
+E         >               res = await mcp.call_tool("check_server_health_update", arguments={})
+E                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         
+E         DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py:27: 
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1231: in call_tool
+E             return await self._run_middleware(
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:497: in _run_middleware
+E             return await chain(context)
+E                    ^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:494: in wrapped
+E             return await mw(ctx, call_next)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:101: in __call__
+E             return await handler_chain(context)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+E             return await handler(context, call_next=call_next)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:145: in on_message
+E             return await call_next(context)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+E             return await handler(context, call_next=call_next)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:152: in on_request
+E             return await call_next(context)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:83: in wrapper
+E             return await handler(context, call_next=call_next)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py:173: in on_call_tool
+E             return await call_next(context)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^
+E         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+E         
+E         self = FastMCP('Dell Enterprise Proxy'), name = 'check_server_health_update'
+E         arguments = {}, version = None, run_middleware = False, task_meta = None
+E         
+E             async def call_tool(
+E                 self,
+E                 name: str,
+E                 arguments: dict[str, Any] | None = None,
+E                 *,
+E                 version: VersionSpec | None = None,
+E                 run_middleware: bool = True,
+E                 task_meta: TaskMeta | None = None,
+E             ) -> ToolResult | mcp.types.CreateTaskResult:
+E                 """Call a tool by name.
+E             
+E                 This is the public API for executing tools. By default, middleware is applied.
+E             
+E                 Args:
+E                     name: The tool name
+E                     arguments: Tool arguments (optional)
+E                     version: Specific version to call. If None, calls highest version.
+E                     run_middleware: If True (default), apply the middleware chain.
+E                         Set to False when called from middleware to avoid re-applying.
+E                     task_meta: If provided, execute as a background task and return
+E                         CreateTaskResult. If None (default), execute synchronously and
+E                         return ToolResult.
+E             
+E                 Returns:
+E                     ToolResult when task_meta is None.
+E                     CreateTaskResult when task_meta is provided.
+E             
+E                 Raises:
+E                     NotFoundError: If tool not found or disabled
+E                     ToolError: If tool execution fails
+E                     ValidationError: If arguments fail validation
+E                 """
+E                 # Note: fn_key enrichment happens here after finding the tool.
+E                 # For mounted servers, the parent's provider sets fn_key to the
+E                 # namespaced key before delegating, ensuring correct Docket routing.
+E             
+E                 from fastmcp.server.providers.addressing import (
+E                     parse_hashed_backend_name,
+E                 )
+E             
+E                 # Two routing paths:
+E                 #   1. Hashed-name path — backend tools that opted into
+E                 #      app-callable visibility. Recognized by their
+E                 #      `<hash>_<local_name>` format and resolved via the
+E                 #      reverse-hash map. Address is known eagerly.
+E                 #   2. Display-name path — everything else. Goes through normal
+E                 #      `get_tool` aggregation/transforms. Address is determined
+E                 #      after resolution by walking the registry.
+E                 async with fastmcp.server.context.Context(fastmcp=self) as ctx:
+E                     if run_middleware:
+E                         mw_context = MiddlewareContext[CallToolRequestParams](
+E                             message=mcp.types.CallToolRequestParams(
+E                                 name=name, arguments=arguments or {}
+E                             ),
+E                             source="client",
+E                             type="request",
+E                             method="tools/call",
+E                             fastmcp_context=ctx,
+E                         )
+E                         return await self._run_middleware(
+E                             context=mw_context,
+E                             call_next=lambda context: self.call_tool(
+E                                 context.message.name,
+E                                 context.message.arguments or {},
+E                                 version=version,
+E                                 run_middleware=False,
+E                                 task_meta=task_meta,
+E                             ),
+E                         )
+E             
+E                     # Core logic: find and execute tool
+E                     with server_span(
+E                         f"tools/call {name}",
+E                         "tools/call",
+E                         self.name,
+E                         "tool",
+E                         name,
+E                         tool_name=name,
+E                     ) as span:
+E                         # Try normal display-name resolution first.
+E                         tool: Tool | None = await self.get_tool(name, version=version)
+E             
+E                         # If that fails, try hashed-name dispatch. This walks
+E                         # the provider tree recursively (same pattern as the old
+E                         # get_app_tool) looking for a tool whose stored hash
+E                         # matches the parsed prefix.
+E                         if tool is None:
+E                             hashed = parse_hashed_backend_name(name)
+E                             if hashed is not None:
+E                                 digest, local_name = hashed
+E                                 tool = await self.get_tool_by_hash(digest, local_name)
+E                                 if tool is not None:
+E                                     # Auth still applies on the bypass path.
+E                                     skip_auth, token = _get_auth_context()
+E                                     if not skip_auth and tool.auth is not None:
+E                                         try:
+E                                             auth_ctx = AuthContext(token=token, component=tool)
+E                                             if not await run_auth_checks(tool.auth, auth_ctx):
+E                                                 raise NotFoundError(f"Unknown tool: {name!r}")
+E                                         except AuthorizationError:
+E                                             raise NotFoundError(
+E                                                 f"Unknown tool: {name!r}"
+E                                             ) from None
+E             
+E                         if tool is None:
+E                             raise NotFoundError(f"Unknown tool: {name!r}")
+E                         span.set_attributes(tool.get_span_attributes())
+E                         if task_meta is not None and task_meta.fn_key is None:
+E                             task_meta = replace(task_meta, fn_key=tool.key)
+E                         try:
+E                             return await tool._run(arguments or {}, task_meta=task_meta)
+E                         except FastMCPError as e:
+E                             logger.log(
+E                                 e.log_level, f"Error calling tool {name!r}", exc_info=False
+E                             )
+E                             raise
+E                         except PydanticValidationError as e:
+E                             # fastmcp's own ValidationError is a FastMCPError, already handled above.
+E                             logger.warning(
+E                                 "Invalid arguments for tool %r: %s",
+E                                 name,
+E                                 e.errors(include_url=False),
+E                             )
+E                             raise
+E                         except Exception as e:
+E                             logger.exception(f"Error calling tool {name!r}")
+E                             # Handle actionable errors that should reach the LLM
+E                             # even when masking is enabled
+E                             if isinstance(e, httpx.HTTPStatusError):
+E                                 if e.response.status_code == 429:
+E                                     raise ToolError(
+E                                         "Rate limited by upstream API, please retry later"
+E                                     ) from e
+E                             if isinstance(e, httpx.TimeoutException):
+E                                 raise ToolError(
+E                                     "Upstream request timed out, please retry"
+E                                 ) from e
+E                             # Standard masking logic
+E                             if self._mask_error_details:
+E                                 raise ToolError(f"Error calling tool {name!r}") from e
+E         >                   raise ToolError(f"Error calling tool {name!r}: {e}") from e
+E         E                   fastmcp.exceptions.ToolError: Error calling tool 'check_server_health_update': (sqlite3.OperationalError) no such table: capability_registry
+E         E                   [SQL: SELECT capability_registry.operation_id, capability_registry.capability_name, capability_registry.compatibility_domain, capability_registry.default_risk_level, capability_registry.parameters_schema, capability_registry.risk_profile_id, capability_registry.is_manual_override, capability_registry.discovery_confidence 
+E         E                   FROM capability_registry 
+E         E                   WHERE capability_registry.operation_id = ?]
+E         E                   [parameters: ('get_chassis',)]
+E         E                   (Background on this error at: https://sqlalche.me/e/20/e3q8)
+E         
+E         DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py:1312: ToolError
+E         ----------------------------- Captured stderr call -----------------------------
+E         [06/21/26 15:24:35] Error calling tool 'check_server_health_update'             
+E                             ╭─────────── Traceback (most recent call last) ────────────╮
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sql │
+E                             │ alchemy/engine/base.py:1969 in _exec_single_context      │
+E                             │                                                          │
+E                             │   1966 │   │   │   │   │   │   │   evt_handled = True    │
+E                             │   1967 │   │   │   │   │   │   │   break                 │
+E                             │   1968 │   │   │   │   if not evt_handled:               │
+E                             │ ❱ 1969 │   │   │   │   │   self.dialect.do_execute(      │
+E                             │   1970 │   │   │   │   │   │   cursor, str_statement, ef │
+E                             │   1971 │   │   │   │   │   )                             │
+E                             │   1972                                                   │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sql │
+E                             │ alchemy/engine/default.py:952 in do_execute              │
+E                             │                                                          │
+E                             │    949 │   │   cursor.executemany(statement, parameters) │
+E                             │    950 │                                                 │
+E                             │    951 │   def do_execute(self, cursor, statement, param │
+E                             │ ❱  952 │   │   cursor.execute(statement, parameters)     │
+E                             │    953 │                                                 │
+E                             │    954 │   def do_execute_no_params(self, cursor, statem │
+E                             │    955 │   │   cursor.execute(statement)                 │
+E                             │                                                          │
+E                             │                 ... 7 frames hidden ...                  │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aio │
+E                             │ sqlite/core.py:160 in _execute                           │
+E                             │                                                          │
+E                             │   157 │   │                                              │
+E                             │   158 │   │   self._tx.put_nowait((future, function))    │
+E                             │   159 │   │                                              │
+E                             │ ❱ 160 │   │   return await future                        │
+E                             │   161 │                                                  │
+E                             │   162 │   async def _connect(self) -> "Connection":      │
+E                             │   163 │   │   """Connect to the actual sqlite database." │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aio │
+E                             │ sqlite/core.py:63 in _connection_worker_thread           │
+E                             │                                                          │
+E                             │    60 │   │                                              │
+E                             │    61 │   │   try:                                       │
+E                             │    62 │   │   │   LOG.debug("executing %s", function)    │
+E                             │ ❱  63 │   │   │   result = function()                    │
+E                             │    64 │   │   │                                          │
+E                             │    65 │   │   │   if future:                             │
+E                             │    66 │   │   │   │   future.get_loop().call_soon_thread │
+E                             ╰──────────────────────────────────────────────────────────╯
+E                             OperationalError: no such table: capability_registry        
+E                                                                                         
+E                             The above exception was the direct cause of the following   
+E                             exception:                                                  
+E                                                                                         
+E                             ╭─────────── Traceback (most recent call last) ────────────╮
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+E                             │ tmcp/server/server.py:1282 in call_tool                  │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fas │
+E                             │ tmcp/tools/base.py:392 in _run                           │
+E                             │                                                          │
+E                             │                 ... 27 frames hidden ...                 │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aio │
+E                             │ sqlite/core.py:160 in _execute                           │
+E                             │                                                          │
+E                             │   157 │   │                                              │
+E                             │   158 │   │   self._tx.put_nowait((future, function))    │
+E                             │   159 │   │                                              │
+E                             │ ❱ 160 │   │   return await future                        │
+E                             │   161 │                                                  │
+E                             │   162 │   async def _connect(self) -> "Connection":      │
+E                             │   163 │   │   """Connect to the actual sqlite database." │
+E                             │                                                          │
+E                             │ /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF  │
+E                             │ ENGINEERING/SECE 3RD YEAR/5TH                            │
+E                             │ SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aio │
+E                             │ sqlite/core.py:63 in _connection_worker_thread           │
+E                             │                                                          │
+E                             │    60 │   │                                              │
+E                             │    61 │   │   try:                                       │
+E                             │    62 │   │   │   LOG.debug("executing %s", function)    │
+E                             │ ❱  63 │   │   │   result = function()                    │
+E                             │    64 │   │   │                                          │
+E                             │    65 │   │   │   if future:                             │
+E                             │    66 │   │   │   │   future.get_loop().call_soon_thread │
+E                             ╰──────────────────────────────────────────────────────────╯
+E                             OperationalError: (sqlite3.OperationalError) no such table: 
+E                             capability_registry                                         
+E                             [SQL: SELECT capability_registry.operation_id,              
+E                             capability_registry.capability_name,                        
+E                             capability_registry.compatibility_domain,                   
+E                             capability_registry.default_risk_level,                     
+E                             capability_registry.parameters_schema,                      
+E                             capability_registry.risk_profile_id,                        
+E                             capability_registry.is_manual_override,                     
+E                             capability_registry.discovery_confidence                    
+E                             FROM capability_registry                                    
+E                             WHERE capability_registry.operation_id = ?]                 
+E                             [parameters: ('get_chassis',)]                              
+E                             (Background on this error at: https://sqlalche.me/e/20/e3q8)
+E         ------------------------------ Captured log call -------------------------------
+E         WARNING  src.core.compatibility.orchestrator:orchestrator.py:116 Live Redfish query failed for 192.168.0.120: (sqlite3.OperationalError) no such table: device_inventory
+E         [SQL: SELECT device_inventory.id, device_inventory.target_ip, device_inventory.device_model, device_inventory.bios_version, device_inventory.lifecycle_controller_version, device_inventory.firmware_inventory, device_inventory.last_scanned 
+E         FROM device_inventory 
+E         WHERE device_inventory.target_ip = ?]
+E         [parameters: ('192.168.0.120',)]
+E         (Background on this error at: https://sqlalche.me/e/20/e3q8). Falling back to cache...
+E         WARNING  src.core.compatibility.orchestrator:orchestrator.py:123 Cache lookup failed for 192.168.0.120: (sqlite3.OperationalError) no such table: device_inventory
+E         [SQL: SELECT device_inventory.id, device_inventory.target_ip, device_inventory.device_model, device_inventory.bios_version, device_inventory.lifecycle_controller_version, device_inventory.firmware_inventory, device_inventory.last_scanned 
+E         FROM device_inventory 
+E         WHERE device_inventory.target_ip = ?]
+E         [parameters: ('192.168.0.120',)]
+E         (Background on this error at: https://sqlalche.me/e/20/e3q8). Falling back to static mock.
+E         ERROR    fastmcp.server.server:server.py:1297 Error calling tool 'check_server_health_update'
+E         Traceback (most recent call last):
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+E             self.dialect.do_execute(
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+E             cursor.execute(statement, parameters)
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 183, in execute
+E             self._adapt_connection._handle_exception(error)
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 343, in _handle_exception
+E             raise error
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 165, in execute
+E             self.await_(_cursor.execute(operation, parameters))
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+E             return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+E             value = await result
+E                     ^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 40, in execute
+E             await self._execute(self._cursor.execute, sql, parameters)
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 32, in _execute
+E             return await self._conn._execute(fn, *args, **kwargs)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 160, in _execute
+E             return await future
+E                    ^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 63, in _connection_worker_thread
+E             result = function()
+E                      ^^^^^^^^^^
+E         sqlite3.OperationalError: no such table: capability_registry
+E         
+E         The above exception was the direct cause of the following exception:
+E         
+E         Traceback (most recent call last):
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/server/server.py", line 1282, in call_tool
+E             return await tool._run(arguments or {}, task_meta=task_meta)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/base.py", line 392, in _run
+E             return await self.run(arguments)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/fastmcp/tools/function_tool.py", line 331, in run
+E             result = await type_adapter.validate_python(arguments)
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 190, in dynamic_tool
+E             return await execute_workflow_route(wf_name, kwargs)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/proxy/server.py", line 69, in execute_workflow_route
+E             result = await manager.execute_workflow_with_validation(workflow_name, params)
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/compatibility/orchestrator.py", line 129, in execute_workflow_with_validation
+E             report = await self.engine.validate_workflow(wf.id, steps, target_facts)
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/compatibility/engine.py", line 399, in validate_workflow
+E             cap = await self.resolver.resolve_operation_capability(op_id)
+E                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/compatibility/engine.py", line 74, in resolve_operation_capability
+E             return await self.repository.get_capability_by_operation(operation_id)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/src/core/compatibility/repository.py", line 63, in get_capability_by_operation
+E             result = await session.execute(
+E                      ^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 448, in execute
+E             result = await greenlet_spawn(
+E                      ^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+E             result = context.throw(*sys.exc_info())
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2373, in execute
+E             return self._execute_internal(
+E                    ^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2271, in _execute_internal
+E             result: Result[Any] = compile_state_cls.orm_execute_statement(
+E                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+E             result = conn.execute(
+E                      ^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1421, in execute
+E             return meth(
+E                    ^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+E             return connection._execute_clauseelement(
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1643, in _execute_clauseelement
+E             ret = self._execute_context(
+E                   ^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+E             return self._exec_single_context(
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+E             self._handle_dbapi_exception(
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2365, in _handle_dbapi_exception
+E             raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+E             self.dialect.do_execute(
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+E             cursor.execute(statement, parameters)
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 183, in execute
+E             self._adapt_connection._handle_exception(error)
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 343, in _handle_exception
+E             raise error
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 165, in execute
+E             self.await_(_cursor.execute(operation, parameters))
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+E             return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+E             value = await result
+E                     ^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 40, in execute
+E             await self._execute(self._cursor.execute, sql, parameters)
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/cursor.py", line 32, in _execute
+E             return await self._conn._execute(fn, *args, **kwargs)
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 160, in _execute
+E             return await future
+E                    ^^^^^^^^^^^^
+E           File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 63, in _connection_worker_thread
+E             result = function()
+E                      ^^^^^^^^^^
+E         sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: capability_registry
+E         [SQL: SELECT capability_registry.operation_id, capability_registry.capability_name, capability_registry.compatibility_domain, capability_registry.default_risk_level, capability_registry.parameters_schema, capability_registry.risk_profile_id, capability_registry.is_manual_override, capability_registry.discovery_confidence 
+E         FROM capability_registry 
+E         WHERE capability_registry.operation_id = ?]
+E         [parameters: ('get_chassis',)]
+E         (Background on this error at: https://sqlalche.me/e/20/e3q8)
+E         =========================== short test summary info ============================
+E         FAILED DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py::test_generated_workflow_wf_bootstrap_999_execution
+E         ============================== 1 failed in 4.86s ===============================
+E         
+E         STDERR:
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python', '-m', 'pytest', '/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py', '-v'], returncode=1, stdout='============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-9.1.0, pluggy-1.6.0 -- /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP\nconfigfile: pyproject.toml\nplugins: anyio-4.14.0, asyncio-1.4.0, cov-7.1.0\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function\ncollecting ... collected 1 item\n\nDELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py::test_generated_workflow_wf_bootstrap_999_execution FAILED [100%]\n\n=================================== FAILURES ===================================\n____________... in _execute\n    return await future\n           ^^^^^^^^^^^^\n  File "/media/tharun-varshan-s/passport/SRI ESHWAR COLLEGE  OF ENGINEERING/SECE 3RD YEAR/5TH SEM/DELL/DELL_MCP/.venv/lib/python3.12/site-packages/aiosqlite/core.py", line 63, in _connection_worker_thread\n    result = function()\n             ^^^^^^^^^^\nsqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: capability_registry\n[SQL: SELECT capability_registry.operation_id, capability_registry.capability_name, capability_registry.compatibility_domain, capability_registry.default_risk_level, capability_registry.parameters_schema, capability_registry.risk_profile_id, capability_registry.is_manual_override, capability_registry.discovery_confidence \nFROM capability_registry \nWHERE capability_registry.operation_id = ?]\n[parameters: (\'get_chassis\',)]\n(Background on this error at: https://sqlalche.me/e/20/e3q8)\n=========================== short test summary info ============================\nFAILED DELL_MCP/tests/generated/test_wf_wf_bootstrap_999.py::test_generated_workflow_wf_bootstrap_999_execution\n============================== 1 failed in 4.86s ===============================\n', stderr='').returncode
+
+tests/test_generator_bootstrap.py:141: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_generator_bootstrap.py::test_dynamic_test_generator_bootstrap
+============================== 1 failed in 6.58s ===============================
