@@ -484,7 +484,7 @@ def run_pipeline(contract_a_data: ContractA) -> None:
 
         workflow_id = f"wf_{comm_id}"
         system_name, display_name, wf_desc, confidence = generate_semantic_label(
-            workflow_id, comm_endpoints, use_llm=False
+            workflow_id, comm_endpoints, use_llm=True
         )
 
         methods = [ep["method"] for ep in comm_endpoints]
