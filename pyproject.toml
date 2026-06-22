@@ -59,7 +59,7 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 norecursedirs = ["generated"]
 asyncio_mode = "auto"
-addopts = "-n 2 --ignore=tests/generated"
+addopts = "--ignore=tests/generated"
 
 [build-system]
 requires = ["setuptools>=61.0.0", "wheel"]
