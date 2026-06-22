@@ -277,11 +277,11 @@ Write-Host ""
 Write-Host "[6.5/7] Starting Web Agent API Server..." -ForegroundColor Yellow
 
 if (Test-PortOpen 8002) {
-    Write-Host "  `$warn Port 8002 is already in use! Web Agent API may already be running." -ForegroundColor Yellow
+    Write-Host "  $warn Port 8002 is already in use! Web Agent API may already be running." -ForegroundColor Yellow
 } else {
     Write-Host "  -> Launching Web Agent API Server in a separate window..." -ForegroundColor Gray
     
-    `$agentCmd = @"
+    $agentCmd = @"
 `$env:PYTHONIOENCODING='utf-8';
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8;
 Write-Host '=====================================================' -ForegroundColor Cyan;
@@ -295,19 +295,19 @@ if (Test-Path ".venv\Scripts\python.exe") {
 Read-Host 'Press Enter to exit'
 "@
     
-    Start-Process powershell -ArgumentList "-NoExit", "-Command", `$agentCmd -WindowStyle Normal
+    Start-Process powershell -ArgumentList "-NoExit", "-Command", $agentCmd -WindowStyle Normal
     
     # Wait for the agent api to start accepting connections
     Write-Host "  -> Waiting for Web Agent API to initialize..." -ForegroundColor Gray
-    for (`$i=1; `$i -le 10; `$i++) {
+    for ($i=1; $i -le 10; $i++) {
         if (Test-PortOpen 8002) { break }
         Start-Sleep -Seconds 1
     }
     
     if (Test-PortOpen 8002) {
-        Write-Host "  `$tick Web Agent API successfully started on port 8002." -ForegroundColor Green
+        Write-Host "  $tick Web Agent API successfully started on port 8002." -ForegroundColor Green
     } else {
-        Write-Host "  `$warn Web Agent API process started, but not yet responding on port 8002." -ForegroundColor Yellow
+        Write-Host "  $warn Web Agent API process started, but not yet responding on port 8002." -ForegroundColor Yellow
     }
 }
 Write-Host ""
