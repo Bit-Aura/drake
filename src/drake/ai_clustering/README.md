@@ -8,9 +8,12 @@ Our mission is to maximize Discovery Accuracy, Execution Correctness, Explainabi
 
 ## 1. The Flaw in Legacy Architectures
 
-Most orchestration platforms fall into one of two traps:
-- **Semantic-Only Engines** group endpoints beautifully using LLMs or embeddings but fail at runtime because they cannot pass dynamic variables (Output A → Input B) deterministically.
-- **DAG-Only Engines** map data correctly but create rigid, fragmented, tiny micro-workflows that lack human-readable intent.
+Most orchestration platforms fall into structural traps when grouping API endpoints for LLMs. Below is a comparison of how our architecture overcomes these industry-standard flaws:
+
+| Legacy Architecture Flaw | The Drake Solution |
+| :--- | :--- |
+| **Semantic-Only Engines:** Group endpoints beautifully using LLMs or embeddings, but fail at runtime because they cannot pass dynamic variables (Output A → Input B) deterministically. | **Schema-Aware DAGs:** We extract exact producer-consumer relationships using field types and references, building a strict Directed Acyclic Graph inside the cluster. |
+| **DAG-Only Engines:** Map data correctly but create rigid, fragmented, tiny micro-workflows that lack human-readable intent, confusing the LLM. | **Hybrid Semantic Clustering:** We use the Leiden Algorithm to mathematically group nodes into "Goldilocks" clusters (5-6 endpoints), giving the LLM a perfect, human-readable boundary. |
 
 Our architecture abandons these silos. We employ a **4-Stage Hybrid Pipeline** that utilizes Semantic clustering for operational boundary discovery and Strict DAGs for internal execution mapping.
 
