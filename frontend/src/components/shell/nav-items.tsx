@@ -8,6 +8,7 @@ export const navItems = [
   { href: "/graph", label: "Graph Visualization" },
   { href: "/metrics", label: "Metrics" },
   { href: "/audit", label: "Audit Trail" },
+  { href: "/agent", label: "AI Agent" },
 ] as const;
 
 export function isActiveRoute(pathname: string, href: string) {
