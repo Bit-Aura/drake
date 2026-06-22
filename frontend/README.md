@@ -41,7 +41,7 @@ This is the core of our deterministic human-in-the-loop governance.
 ## 3. Execution Resilience & Stateful Orchestration
 
 At the UI layer, our architecture guarantees enterprise reliability:
-- **Deterministic Loading States:** No mock data is hardcoded. Loading, empty, and error states are treated as first-class citizens using React Suspense boundaries, ensuring integration failures are immediately visible.
+- **Deterministic Loading States:** No simulated data is hardcoded. Loading, empty, and error states are treated as first-class citizens using React Suspense boundaries, ensuring integration failures are immediately visible.
 - **Client State Management:** Zustand securely manages client-side UI filters, graph node selections, and sorting preferences without polluting the global scope or relying on fragile prop-drilling.
 
 ---

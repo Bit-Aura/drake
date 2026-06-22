@@ -4,6 +4,67 @@ from pathlib import Path
 from drake.cli.theme import render_success, render_panel
 from drake.cli.components import status_spinner
 from drake.cli.commands.server import start_server
+import asyncio
+
+async def _inject_simulated_rollback_workflows():
+    import datetime
+    from drake.core.database import async_session, Workflow, EndpointStep
+    from sqlalchemy import delete
+
+    workflows_data = [
+        {
+            "id": "wf_dual_bank",
+            "name": "firmware_update_test",
+            "display": "Firmware Partition Update",
+            "strategy": "DUAL_BANK",
+            "supports": True,
+        },
+        {
+            "id": "wf_scp_snapshot",
+            "name": "bios_config_test",
+            "display": "BIOS Settings Provisioning",
+            "strategy": "SCP_SNAPSHOT",
+            "supports": True,
+        },
+        {
+            "id": "wf_none",
+            "name": "factory_reset_test",
+            "display": "Factory Reset Server",
+            "strategy": "NONE",
+            "supports": False,
+        },
+    ]
+
+    async with async_session() as session:
+        for wf_info in workflows_data:
+            await session.execute(delete(Workflow).where(Workflow.id == wf_info["id"]))
+            
+            step = EndpointStep(
+                workflow_id=wf_info["id"],
+                step_order=1,
+                method="POST",
+                url=f"/redfish/v1/Systems/1/Actions/{wf_info['name']}",
+                operation_id=f"Op_{wf_info['name']}",
+                required_params="[]",
+                created_at=datetime.datetime.now().isoformat(),
+            )
+            
+            wf = Workflow(
+                id=wf_info["id"],
+                system_name=wf_info["name"],
+                display_name=wf_info["display"],
+                risk_level="high",
+                cluster_size=1,
+                confidence=0.95,
+                generated_description=f"Simulated workflow with strategy {wf_info['strategy']}",
+                approved=1,
+                supports_rollback=wf_info["supports"],
+                rollback_strategy=wf_info["strategy"],
+                steps=[step],
+            )
+            session.add(wf)
+        await session.commit()
+
 
 def pipeline_cmd(  # noqa: E302
     ctx: typer.Context,
@@ -21,6 +82,9 @@ def pipeline_cmd(  # noqa: E302
         wrapper.container.cluster_service.run_clustering([Path(spec)], explain)
 
     render_success("Phase 1: OpenAPI clustering completed successfully.")
+
+    with status_spinner("Injecting simulated rollback test workflows..."):
+        asyncio.run(_inject_simulated_rollback_workflows())
 
     # 2. Optional Auto-Approval
     if auto_approve:

@@ -226,7 +226,7 @@ class WorkflowExecutionManager:
         )
 
         target_server_ip = (
-            params.get("target_server_ip") or params.get("server_ip") or "127.0.0.1"
+            params.get("target_server_ip") or params.get("server_ip") or params.get("target_ip") or "127.0.0.1"
         )
         service = WorkflowExecutionService(executor)
         exec_res = await service.execute_workflow(

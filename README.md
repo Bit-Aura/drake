@@ -71,7 +71,7 @@ To prevent the LLM from making accidental or malicious infrastructure changes, D
 drake/
 ├── data/                      # Local SQLite databases (governance.db, mcp_proxy.db)
 ├── frontend/                  # Next.js Web Governance Dashboard
-├── tests/fixtures/            # OpenAPI specifications and mock payloads
+├── tests/fixtures/            # OpenAPI specifications and simulated payloads
 ├── windows_scripts/           # Windows Launcher Scripts (start.ps1, start.bat)
 ├── linux_scripts/             # Linux/macOS Launcher Scripts (start.sh, test_all.sh)
 └── src/drake/                 # Core Python Backend
@@ -188,7 +188,16 @@ These test prompts are designed to be intentionally vague and omit required IDs.
 * **Expected Tool:** `dell_f_c_management`
 * **What to expect:** The agent will map "Fibre Channel" to the tool, realize it is missing many nested IDs, and prompt you to provide them.
 
-> **Testing Tip:** When the agent replies asking for missing IDs, simply invent dummy IDs (e.g., `System.Embedded.1` or `CPU.1`) and give them back to it to watch it successfully execute the mock tool!
+**Test 6: Rollback and Reversion Execution**
+* **Prompt:** *"I need to rollback the last configuration change we made on server 192.168.1.150."*
+* **Expected Tool:** `revert_previous_action`
+* **What to expect:** The agent should call the revert tool, specifying `server_ip`. Depending on the last action logged in the execution ledger for that server, the proxy executes the appropriate simulated rollback strategy:
+  * **NONE**: If the last workflow has no rollback capability (e.g. `factory_reset_test`), the operation is rejected indicating that rollback is not supported for this action.
+  * **SCP_SNAPSHOT**: If the last workflow modified configuration (e.g. `bios_config_test`), the proxy restores system configuration using the previously exported SCP XML snapshot.
+  * **DUAL_BANK**: If the last workflow updated firmware (e.g. `firmware_update_test`), the proxy switches active firmware partitions via simulated warm reboot.
+* **What to type:** Provide `192.168.1.150` if prompted for the server IP.
+
+> **Testing Tip:** When the agent replies asking for missing IDs, simply invent dummy IDs (e.g., `System.Embedded.1` or `CPU.1`) and give them back to it to watch it successfully execute the simulated tool!
 
 ---
 

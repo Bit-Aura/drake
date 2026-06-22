@@ -112,10 +112,10 @@ Lead with these during your presentation. They prove you went beyond a basic API
 
 ### 6. Dynamic OpenAPI Simulator Generation (Auto-Simulator)
 * **How it beats baseline:** Provides a 100% stable, offline testing environment that mirrors the exact clustered workflow outputs.
-* **Why it matters:** Testing LLM execution against live datacenter hardware during development is dangerous. Relying on static OpenAPI mocks breaks when the clustering algorithm changes.
-* **The Mechanism:** `generate_simulator.py` & `docker-compose.yml`. The system reads the live SQLite `governance.db`, extracts the exact endpoints and required path parameters (e.g., `{ChassisId}`) mapped by the current policy, and auto-generates a lightweight `auto_simulator.json`. Docker Compose immediately spins up `prism-mock` using this dynamic spec.
+* **Why it matters:** Testing LLM execution against live datacenter hardware during development is dangerous. Relying on static OpenAPI simulations breaks when the clustering algorithm changes.
+* **The Mechanism:** `generate_simulator.py` & `docker-compose.yml`. The system reads the live SQLite `governance.db`, extracts the exact endpoints and required path parameters (e.g., `{ChassisId}`) mapped by the current policy, and auto-generates a lightweight `auto_simulator.json`. Docker Compose immediately spins up `prism-simulator` using this dynamic spec.
 * **If asked in Q&A:** *"How did you safely test the LLM without modifying real Dell hardware?"*
-  * **Answer:** *"I built an Auto-Simulator pipeline. Instead of hitting live servers, a script reads the exact workflows approved in the Governance Database, generates a perfectly mirrored OpenAPI mock specification, and serves it locally via Prism. The LLM interacts with this mock server, allowing for aggressive, zero-risk integration testing."*
+  * **Answer:** *"I built an Auto-Simulator pipeline. Instead of hitting live servers, a script reads the exact workflows approved in the Governance Database, generates a perfectly mirrored OpenAPI simulated specification, and serves it locally via Prism. The LLM interacts with this simulated server, allowing for aggressive, zero-risk integration testing."*
 
 ---
 
@@ -129,8 +129,8 @@ If judges probe for weaknesses, acknowledge these confidently. It shows maturity
 * **In-Memory Tool Expansion State:**
   * **The Weakness:** `expanded_tools_registry` in `server.py` is a Python dictionary. If the proxy is horizontally scaled (multiple pods), pod B won't know that pod A expanded a workflow.
   * **The Defense:** *"State is currently held in memory. For enterprise deployment, this registry needs to be moved to a distributed cache like Redis to unlock horizontal scaling."*
-* **Mocked Authentication:**
-  * **The Weakness:** The proxy currently uses bypassed/mocked auth headers or simple API keys.
+* **Simulated Authentication:**
+  * **The Weakness:** The proxy currently uses bypassed/simulated auth headers or simple API keys.
   * **The Defense:** *"As permitted by the problem statement scope, end-to-end OAuth/SAML was stubbed. The `BaseExecutor` interface has an `authenticate()` method specifically designed to integrate with an enterprise Secrets Manager or Dell OME token exchange in the future."*
 
 ---

@@ -207,6 +207,7 @@ async def load_approved_tools_from_db() -> None:
             
             # Allow policy overrides for low confidence executions
             all_params["override_policy"] = (str, None)
+            all_params["target_ip"] = (str, None)
 
             # Sanitize parameter names for inspect.Signature (e.g. $filter -> filter)
             safe_params = {}
@@ -564,7 +565,7 @@ async def preview_compatibility_report(workflow_id: str) -> Dict[str, Any]:
 @mcp.tool()
 async def revert_previous_action(server_ip: str) -> str:
     """
-    Reverts the last configuration or firmware change applied to the specified server 
+    Reverts (or rolls back) the last configuration or firmware change applied to the specified server 
     using Dell native dual-bank or SCP snapshot recovery.
 
     DELL ENTERPRISE ARCHITECTURE INTEGRATION:
