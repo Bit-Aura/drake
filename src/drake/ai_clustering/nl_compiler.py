@@ -3,6 +3,7 @@ import logging
 import instructor
 from openai import AsyncOpenAI
 from drake.core.models import WorkflowMapping
+from drake.core.env_config import settings
 
 logger = logging.getLogger("dell_mcp_nl_compiler")
 
@@ -11,9 +12,9 @@ async def compile_nl_to_workflow(prompt: str) -> WorkflowMapping:  # noqa: E302
     Ingest a natural language prompt and use the local LLM engine via the instructor
     library to ensure a structured, strongly-typed WorkflowMapping JSON output.
     """
-    api_key = os.getenv("OPENAI_API_KEY", "mock_key_for_local")
-    base_url = os.getenv("LLM_BASE_URL", "http://localhost:11434/v1")
-    model_name = os.getenv("LLM_MODEL", "llama3")
+    api_key = settings.OPENAI_API_KEY
+    base_url = settings.LLM_BASE_URL
+    model_name = settings.LLM_MODEL
 
     try:
         client = instructor.from_openai(AsyncOpenAI(base_url=base_url, api_key=api_key, timeout=30.0))  # noqa: E501

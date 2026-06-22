@@ -81,9 +81,10 @@ class LoginPayload(BaseModel):
 @app.post("/api/v1/auth/login")
 async def login(payload: LoginPayload) -> Dict[str, Any]:
     import jwt
+    import secrets
     from datetime import timedelta
 
-    if payload.email == settings.ADMIN_EMAIL and payload.password == settings.ADMIN_PASSWORD:
+    if secrets.compare_digest(payload.email, settings.ADMIN_EMAIL) and secrets.compare_digest(payload.password, settings.ADMIN_PASSWORD):
         secret = settings.JWT_SECRET
         token = jwt.encode(
             {
@@ -990,7 +991,8 @@ async def get_workflow_compatibility(workflow_id: str, target_ip: Optional[str] 
         from drake.core.compatibility.sources import CachedFactsProvider, StaticFactsProvider
         try:
             facts = await CachedFactsProvider().get_device_facts(ip)
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Fact cache failed, using static: {e}")
             facts = await StaticFactsProvider().get_device_facts(ip)
 
         # 3. Validate
@@ -1106,7 +1108,8 @@ async def get_workflow_explainability(workflow_id: str, target_ip: Optional[str]
         from drake.core.compatibility.sources import CachedFactsProvider, StaticFactsProvider
         try:
             facts = await CachedFactsProvider().get_device_facts(ip)
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Fact cache failed, using static: {e}")
             facts = await StaticFactsProvider().get_device_facts(ip)
 
         # 3. Validate

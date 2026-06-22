@@ -99,18 +99,7 @@ def get_db_connection():  # noqa: E302
 
 def init_db_sync() -> None:  # noqa: E303
     """Initialize SQLite tables for governance and audit trails if they don't exist."""
-    import time
-    max_retries = 5
-    for try_num in range(max_retries):
-        try:
-            _init_db_sync_impl()
-            break
-        except sqlite3.OperationalError as e:
-            if "database is locked" in str(e).lower() and try_num < max_retries - 1:
-                logger.warning(f"Database locked during init_db_sync, retrying... ({try_num+1}/{max_retries})")  # noqa: E501
-                time.sleep(0.5 * (2 ** try_num))
-            else:
-                raise
+    _init_db_sync_impl()
 
 def _init_db_sync_impl() -> None:  # noqa: E302
     with get_db_connection() as conn:

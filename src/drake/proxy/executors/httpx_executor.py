@@ -75,7 +75,8 @@ class HTTPXExecutorBase(BaseExecutor):
             async with httpx.AsyncClient() as client:
                 res = await client.get(self.base_url, timeout=5.0)
                 return res.status_code < 500
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Healthcheck failed: {e}")
             return False
 
     async def execute_step(self, step: Any, params: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:  # noqa: E501
@@ -280,7 +281,7 @@ class PrismExecutor(HTTPXExecutorBase):
         if not token:
             if os.getenv("DELL_ENV", "development").lower() == "production":
                 raise EnvironmentError("MOCK_AUTH_TOKEN is required in production environment.")
-            token = "Basic YWRtaW46Y2Fsdmlu"
+            token = "Basic bW9jay1kZXYtdG9rZW4="  # mock-dev-token
         self.session_headers["Authorization"] = token
         self.session_headers["X-Auth-Token"] = "prism-mock-token"
         return True

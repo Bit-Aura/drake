@@ -45,10 +45,8 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
         embeddings = service.generate_embeddings(endpoints)
         sim_matrix = service.compute_similarity_matrix(embeddings)
     except Exception as err:
-        logger.warning(
-            f"EmbeddingService failed (missing dependencies?): {err}. Falling back to 0.0 semantic scores."  # noqa: E501
-        )
-        sim_matrix = np.zeros((len(endpoints), len(endpoints)))
+        logger.error(f"EmbeddingService failed (missing dependencies?): {err}. Cannot proceed.")
+        raise RuntimeError(f"EmbeddingService failed: {err}") from err
 
     num_nodes = len(endpoints)
     if num_nodes == 0:
@@ -189,7 +187,7 @@ def build_relationship_graph(endpoints: List[Dict[str, Any]]) -> nx.Graph:
     accepted_mask = final_weights > threshold
     np.fill_diagonal(accepted_mask, False)
     # Only upper triangle to avoid duplicate edges
-    accepted_mask = accepted_mask & np.triu(np.ones((num_nodes, num_nodes), dtype=bool), k=1)
+    accepted_mask = np.triu(accepted_mask, k=1)
 
     accepted_indices = np.argwhere(accepted_mask)
 

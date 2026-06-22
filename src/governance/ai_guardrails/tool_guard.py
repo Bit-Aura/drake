@@ -27,7 +27,8 @@ def _load_gov_config() -> Dict[str, Any]:
         path = Path(__file__).resolve().parent.parent.parent / "config" / "governance_config.yaml"
         with open(path, "r") as f:
             return yaml.safe_load(f) or {}
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Failed to load governance config: {e}")
         return {}
 
 logger = logging.getLogger(__name__)
@@ -309,8 +310,8 @@ class ToolGuard:
             decoded_str = decoded_bytes.decode('utf-8')
             if decoded_str and decoded_str != text:
                 results.extend(self._decode_string_recursively(decoded_str, depth + 1, seen))
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Base64 decode error: {e}")
 
         # URL Decode
         try:
@@ -318,8 +319,8 @@ class ToolGuard:
                 url_decoded = urllib.parse.unquote_plus(text)
                 if url_decoded and url_decoded != text:
                     results.extend(self._decode_string_recursively(url_decoded, depth + 1, seen))
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"URL decode error: {e}")
 
         # Hex Decode
         try:
@@ -327,8 +328,8 @@ class ToolGuard:
                 hex_decoded = bytes.fromhex(text).decode('utf-8')
                 if hex_decoded and hex_decoded != text:
                     results.extend(self._decode_string_recursively(hex_decoded, depth + 1, seen))
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Hex decode error: {e}")
 
         return results
 

@@ -89,7 +89,6 @@ async def execute_workflow_route(workflow_name: str, params: Dict[str, Any]) -> 
             
         return result
     except Exception as e:
-        import traceback
         log_audit_event("EXECUTION_FAILED", "FAILED", str(e), workflow_name=workflow_name)
         
         # Update execution metrics for failure
@@ -163,7 +162,7 @@ async def load_approved_tools_from_db() -> None:
                                 if p.get("param_type") == "integer": p_type = int
                                 elif p.get("param_type") == "boolean": p_type = bool
                                 all_params[p_name] = (p_type, ... if p.get("required", True) else None)
-                except Exception as e:
+                except (json.JSONDecodeError, TypeError, KeyError) as e:
                     logger.debug(f"Failed to parse required_params: {e}")
 
                 try:
@@ -182,7 +181,7 @@ async def load_approved_tools_from_db() -> None:
                                     is_required = prop in schema.get("required", [])
                                     prop_type = schema_to_python_type(prop_schema, model_name=f"{name}_{prop}")
                                     all_params[prop] = (prop_type, ... if is_required else None)
-                except Exception as e:
+                except (json.JSONDecodeError, TypeError, KeyError) as e:
                     logger.debug(f"Failed to parse request_schema: {e}")
 
                 if step.url:
@@ -274,7 +273,8 @@ async def get_proxy_status() -> Dict[str, Any]:
 
 # Registry to track expanded granular tools for cleanup
 expanded_tools_registry: Dict[str, list[str]] = {}
-_expansion_lock = asyncio.Lock()
+from collections import defaultdict
+_expansion_locks: Dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 
 @mcp.tool()
 async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
@@ -285,7 +285,7 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
     Args:
         workflow_id (str): The unique identifier of the workflow to expand.
     """
-    async with _expansion_lock:
+    async with _expansion_locks[workflow_id]:
         if workflow_id in expanded_tools_registry:
             return {"status": "success", "message": "Already expanded", "registered_tools": expanded_tools_registry[workflow_id]}
     
@@ -339,7 +339,7 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
                             if p.get("param_type") == "integer": p_type = int
                             elif p.get("param_type") == "boolean": p_type = bool
                             params_dict[p_name] = (p_type, ... if p.get("required", True) else None)
-            except Exception as e:
+            except (json.JSONDecodeError, TypeError, KeyError) as e:
                 logger.debug(f"Failed to parse required_params: {e}")
 
             try:
@@ -352,7 +352,7 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
                                 is_required = prop in schema.get("required", [])
                                 prop_type = schema_to_python_type(prop_schema, model_name=f"{tool_name}_{prop}")
                                 params_dict[prop] = (prop_type, ... if is_required else None)
-            except Exception as e:
+            except (json.JSONDecodeError, TypeError, KeyError) as e:
                 logger.debug(f"Failed to parse request_schema: {e}")
                 
             if step.url:
@@ -393,19 +393,19 @@ async def expand_workflow(workflow_id: str) -> Dict[str, Any]:
         
         expanded_tools_registry[workflow_id] = registered_tools
         
-        # Notify clients
-        for session in list(active_sessions):
-            try:
-                await session.send_tool_list_changed()
-            except Exception as e:
-                logger.debug(f"Failed to notify session: {e}")
-                
-        return {
-            "status": "success",
-            "workflow_id": workflow_id,
-            "message": f"Successfully expanded {len(registered_tools)} granular tools.",
-            "registered_tools": registered_tools
-        }
+    # Notify clients
+    for session in list(active_sessions):
+        try:
+            await session.send_tool_list_changed()
+        except Exception as e:
+            logger.debug(f"Failed to notify session: {e}")
+            
+    return {
+        "status": "success",
+        "workflow_id": workflow_id,
+        "message": f"Successfully expanded {len(registered_tools)} granular tools.",
+        "registered_tools": registered_tools
+    }
 
 @mcp.tool()
 async def collapse_workflow(workflow_id: str) -> Dict[str, Any]:
@@ -417,14 +417,16 @@ async def collapse_workflow(workflow_id: str) -> Dict[str, Any]:
         return {"status": "ignored", "message": f"Workflow '{workflow_id}' is not currently expanded."}
         
     removed_tools = []
-    for tool_name in expanded_tools_registry[workflow_id]:
-        try:
-            mcp.local_provider.remove_tool(tool_name)
-            removed_tools.append(tool_name)
-        except Exception as e:
-            logger.warning(f"Failed to remove tool {tool_name}: {e}")
-            
-    del expanded_tools_registry[workflow_id]
+    async with _expansion_locks[workflow_id]:
+        for tool_name in expanded_tools_registry[workflow_id]:
+            try:
+                mcp.local_provider.remove_tool(tool_name)
+                removed_tools.append(tool_name)
+            except Exception as e:
+                logger.warning(f"Failed to remove tool {tool_name}: {e}")
+                raise RuntimeError(f"Failed to remove tool {tool_name}: {e}")
+                
+        del expanded_tools_registry[workflow_id]
     
     # Notify clients
     for session in list(active_sessions):
@@ -472,10 +474,12 @@ async def check_workflow_compatibility(workflow_id: str, target_ip: str) -> Dict
         provider = RedfishFactsProvider()
         facts = await provider.get_device_facts(target_ip)
         await repo.save_device_facts(facts)
-    except Exception:
+    except Exception as e1:
+        logger.debug(f"RedfishFactsProvider failed: {e1}")
         try:
             facts = await CachedFactsProvider().get_device_facts(target_ip)
-        except Exception:
+        except Exception as e2:
+            logger.debug(f"CachedFactsProvider failed: {e2}")
             facts = await StaticFactsProvider().get_device_facts(target_ip)
             
     # 3. Perform validation
@@ -652,7 +656,7 @@ async def revert_previous_action(server_ip: str) -> str:
         executor = MockExecutor(base_url=settings.MOCK_SERVER_URL)
 
     # Determine base url and headers
-    base_url = "http://localhost:4010"
+    base_url = settings.MOCK_SERVER_URL
     headers = {}
     if hasattr(executor, "base_url"):
         base_url = executor.base_url
@@ -776,7 +780,7 @@ app = FastAPI(
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.CORS_ORIGINS.split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
