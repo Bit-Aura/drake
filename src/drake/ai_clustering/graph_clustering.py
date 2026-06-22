@@ -278,7 +278,7 @@ def detect_communities(G: nx.Graph) -> List[Set[str]]:
             g_ig,
             leidenalg.RBConfigurationVertexPartition,
             weights="weight",
-            resolution_parameter=2.5,
+            resolution_parameter=1.5,
             n_iterations=-1,
             seed=42,
         )

@@ -206,8 +206,10 @@ async def load_approved_tools_from_db() -> None:
                 desc += "\n\n### Required Request Body Structures:\n" + "\n".join(schemas_doc)
             
             # Allow policy overrides for low confidence executions
-            all_params["override_policy"] = (str, None)
-            all_params["target_ip"] = (str, None)
+            if "override_policy" not in all_params:
+                all_params["override_policy"] = (str, None)
+            if "target_ip" not in all_params:
+                all_params["target_ip"] = (str, None)
 
             # Sanitize parameter names for inspect.Signature (e.g. $filter -> filter)
             safe_params = {}

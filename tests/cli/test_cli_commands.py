@@ -11,8 +11,8 @@ runner = CliRunner()
 
 @pytest.fixture(autouse=True)
 def manage_mock_plugins():
-    # Setup: create a valid mock plugin and a broken plugin in src/cli/plugins/
-    plugin_path = Path("src/cli/plugins/mock_plugin.py")
+    # Setup: create a valid mock plugin and a broken plugin in src/drake/cli/plugins/
+    plugin_path = Path("src/drake/cli/plugins/mock_plugin.py")
     plugin_code = """
 import typer
 app = typer.Typer(help="Mock Plugin Subcommand")
@@ -22,7 +22,7 @@ def hello():
 """
     plugin_path.write_text(plugin_code, encoding="utf-8")
 
-    broken_path = Path("src/cli/plugins/broken_plugin.py")
+    broken_path = Path("src/drake/cli/plugins/broken_plugin.py")
     broken_code = """
 raise ValueError("Broken plugin initialization failure")
 """

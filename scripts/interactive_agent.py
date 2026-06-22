@@ -268,7 +268,8 @@ async def decide_tool_with_llm(
         "6. If the tool you want to use is listed in CATEGORY 2, you MUST set tool_type to 'cli'.\n"
         "7. Choose 'none' if the question is conversational and no tool is needed.\n"
         "8. Always verify your argument keys against the schema before responding.\n"
-        "9. Dynamic test tools (firmware_update_test, bios_config_test, factory_reset_test) take an optional 'target_ip' parameter. Make sure to pass the target server IP as 'target_ip' to those tools. Other tools (like revert_previous_action for all revert or rollback requests) require 'server_ip'; make sure to pass the target server IP as 'server_ip'.\n"
+        "9. WORKFLOW EXECUTION: If the user asks to run, deploy, or execute a workflow (e.g., 'factory reset', 'BIOS configuration', 'firmware update'), find the matching MCP tool from the list. Map the target IP to 'target_ip'.\n"
+        "10. ROLLBACKS: If the user asks to revert, rollback, or undo a PREVIOUS action (e.g., 'revert last execution', 'rollback previous change', 'revert the firmware update'), you MUST use the 'revert_previous_action' tool and map the IP to 'server_ip'. NOTE: 'Factory reset' is considered a workflow execution, NOT a rollback.\n"
     )
 
     selection = await client.chat.completions.create(

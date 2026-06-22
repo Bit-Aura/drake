@@ -53,11 +53,11 @@ async def _inject_simulated_rollback_workflows():
                 id=wf_info["id"],
                 system_name=wf_info["name"],
                 display_name=wf_info["display"],
-                risk_level="high",
+                risk_level="HIGH",
                 cluster_size=1,
                 confidence=0.95,
                 generated_description=f"Simulated workflow with strategy {wf_info['strategy']}",
-                approved=1,
+                approved=0,
                 supports_rollback=wf_info["supports"],
                 rollback_strategy=wf_info["strategy"],
                 steps=[step],
@@ -93,7 +93,7 @@ def pipeline_cmd(  # noqa: E302
             approved_count = 0
             for wf in pending:
                 # The CLI service maps risk_level to riskLevel in get_pending()
-                if wf.get("riskLevel") == "low":
+                if wf.get("riskLevel", "").lower() == "low":
                     wrapper.container.governance_service.approve_workflow(wf["id"])
                     approved_count += 1
 

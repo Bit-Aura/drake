@@ -124,8 +124,10 @@ def render_workflow_summary(wf: Dict[str, Any]) -> None:
         f"[bold white]Description:[/bold white] {wf.get('generatedDescription')}"
     )
     if wf.get("rejectionReason"):
+        approved_state = wf.get("approved", 0)
+        label = "Rejection Reason" if approved_state == 2 else "Risk Analysis"
         content += (
-            f"\n[bold red]Rejection Reason:[/bold red] {wf.get('rejectionReason')}"
+            f"\n[bold red]{label}:[/bold red] {wf.get('rejectionReason')}"
         )
 
     console.print(

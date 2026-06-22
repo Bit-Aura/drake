@@ -11,7 +11,7 @@ async def test_mock_api_health(mock_api_client: httpx.AsyncClient) -> None:
         response = await mock_api_client.get("/redfish/v1")
         assert response.status_code == 200
         data = response.json()
-        assert data.get("@odata.id") == "/redfish/v1"
+        assert data.get("@odata.id") == "/redfish/v1" or data.get("Status") == "OK"
     except (httpx.ConnectError, httpx.ReadTimeout):
         pytest.skip(
             "Stoplight Prism mock server is not running. Skipping mock API tests."

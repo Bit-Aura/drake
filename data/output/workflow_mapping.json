@@ -2,7 +2,7 @@
   "workflows": {
     "dell_f_c_management": {
       "name": "dell_f_c_management",
-      "description": "Retrieves and manages Dell Fiber Channel network adapter details.",
+      "description": "Manages Fibre Channel configurations and statistics.",
       "steps": [
         {
           "step_id": 1,
@@ -113,7 +113,7 @@
     },
     "dell_assembly_collection_management": {
       "name": "dell_assembly_collection_management",
-      "description": "Collects assembly and component information for Dell systems via iDRAC API.",
+      "description": "Gathers and manages assembly details from Dell Chassis via Redfish APIs.",
       "steps": [
         {
           "step_id": 1,
@@ -175,7 +175,7 @@
     },
     "dell_infini_band_management": {
       "name": "dell_infini_band_management",
-      "description": "Manages InfiniBand and NIC configurations and metrics on Dell systems.",
+      "description": "Retrieves detailed information and metrics for Dell InfiniBand and NIC devices.",
       "steps": [
         {
           "step_id": 1,
@@ -230,7 +230,7 @@
     },
     "dell_controller_management": {
       "name": "dell_controller_management",
-      "description": "Retrieve detailed information about Dell storage controllers and related components.",
+      "description": "Retrieves detailed information about Dell storage controllers and related components.",
       "steps": [
         {
           "step_id": 1,
@@ -271,7 +271,7 @@
     },
     "dell_p_c_ie_s_s_d_management": {
       "name": "dell_p_c_ie_s_s_d_management",
-      "description": "Retrieves detailed information and SMART attributes of Dell PCIe SSDs.",
+      "description": "Retrieves information about Dell storage drives and PCIe SSDs.",
       "steps": [
         {
           "step_id": 1,
@@ -310,43 +310,9 @@
         }
       ]
     },
-    "dell_enclosure_management": {
-      "name": "dell_enclosure_management",
-      "description": "Manage Dell enclosure configurations and states via iDRAC API.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Chassis/Oem/Dell/DellEnclosureEMM",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/Oem/Dell/DellEnclosureEMM",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Chassis/Oem/Dell/DellEnclosureEMM/{EnclosureEMMId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/Oem/Dell/DellEnclosureEMM/{EnclosureEMMId}",
-          "params": {}
-        },
-        {
-          "step_id": 3,
-          "name": "GET_/redfish/v1/Chassis/Oem/Dell/DellEnclosures",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/Oem/Dell/DellEnclosures",
-          "params": {}
-        },
-        {
-          "step_id": 4,
-          "name": "GET_/redfish/v1/Chassis/Oem/Dell/DellEnclosures/{EnclosureId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/Oem/Dell/DellEnclosures/{EnclosureId}",
-          "params": {}
-        }
-      ]
-    },
     "heater_management": {
       "name": "heater_management",
-      "description": "Manages thermal heaters within the chassis.",
+      "description": "Monitors and controls heaters within thermal subsystems of Dell chassis using iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -378,9 +344,43 @@
         }
       ]
     },
+    "dell_enclosure_management": {
+      "name": "dell_enclosure_management",
+      "description": "Manages Dell enclosures via iDRAC API.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Chassis/Oem/Dell/DellEnclosureEMM",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/Oem/Dell/DellEnclosureEMM",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Chassis/Oem/Dell/DellEnclosureEMM/{EnclosureEMMId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/Oem/Dell/DellEnclosureEMM/{EnclosureEMMId}",
+          "params": {}
+        },
+        {
+          "step_id": 3,
+          "name": "GET_/redfish/v1/Chassis/Oem/Dell/DellEnclosures",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/Oem/Dell/DellEnclosures",
+          "params": {}
+        },
+        {
+          "step_id": 4,
+          "name": "GET_/redfish/v1/Chassis/Oem/Dell/DellEnclosures/{EnclosureId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/Oem/Dell/DellEnclosures/{EnclosureId}",
+          "params": {}
+        }
+      ]
+    },
     "message_registry_management": {
       "name": "message_registry_management",
-      "description": "Manages iDRAC message registries for system diagnostics.",
+      "description": "Manages message registry retrieval and operations via Redfish API.",
       "steps": [
         {
           "step_id": 1,
@@ -414,7 +414,7 @@
     },
     "dell_infini_band_capabilities_collection_management": {
       "name": "dell_infini_band_capabilities_collection_management",
-      "description": "Collects capabilities for Dell InfiniBand and NIC devices via iDRAC API.",
+      "description": "Retrieves capabilities for Dell InfiniBand and NIC devices.",
       "steps": [
         {
           "step_id": 1,
@@ -446,36 +446,9 @@
         }
       ]
     },
-    "dell_accelerator_management": {
-      "name": "dell_accelerator_management",
-      "description": "Manages Dell accelerators via iDRAC API.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/Oem/Dell/DellAccelerators",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/Oem/Dell/DellAccelerators",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/Oem/Dell/DellAccelerators/{AcceleratorId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/Oem/Dell/DellAccelerators/{AcceleratorId}",
-          "params": {}
-        },
-        {
-          "step_id": 3,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/DellAccelerators/{AcceleratorId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/DellAccelerators/{AcceleratorId}",
-          "params": {}
-        }
-      ]
-    },
     "dell_processor_management": {
       "name": "dell_processor_management",
-      "description": "Retrieves details of Dell processors within a system via iDRAC API.",
+      "description": "Retrieves processor details from Dell systems via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -500,9 +473,36 @@
         }
       ]
     },
+    "dell_accelerator_management": {
+      "name": "dell_accelerator_management",
+      "description": "Retrieves information about Dell accelerators within a system.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/Oem/Dell/DellAccelerators",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/Oem/Dell/DellAccelerators",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/Oem/Dell/DellAccelerators/{AcceleratorId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/Oem/Dell/DellAccelerators/{AcceleratorId}",
+          "params": {}
+        },
+        {
+          "step_id": 3,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/DellAccelerators/{AcceleratorId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/DellAccelerators/{AcceleratorId}",
+          "params": {}
+        }
+      ]
+    },
     "dell_memory_management": {
       "name": "dell_memory_management",
-      "description": "Retrieves detailed memory information from Dell systems using iDRAC API.",
+      "description": "Retrieves detailed memory information using Dell iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -527,36 +527,9 @@
         }
       ]
     },
-    "dell_power_supply_collection_management": {
-      "name": "dell_power_supply_collection_management",
-      "description": "Manages the collection of power supply information using iDRAC API endpoints.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupply",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupply",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupplyInventory",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupplyInventory",
-          "params": {}
-        },
-        {
-          "step_id": 3,
-          "name": "GET_/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupplyInventory/{PowerSupplyViewId}",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupplyInventory/{PowerSupplyViewId}",
-          "params": {}
-        }
-      ]
-    },
     "dell_f_c_capabilities_collection_management": {
       "name": "dell_f_c_capabilities_collection_management",
-      "description": "Collects and manages Dell Fibre Channel capabilities, port metrics, and statistics.",
+      "description": "Manages Dell Fibre Channel capabilities, port metrics, and statistics.",
       "steps": [
         {
           "step_id": 1,
@@ -583,7 +556,7 @@
     },
     "dell_infini_band_port_metrics_collection_management": {
       "name": "dell_infini_band_port_metrics_collection_management",
-      "description": "Collects metrics for Dell InfiniBand and NIC ports.",
+      "description": "Collects metrics for Dell InfiniBand and NIC ports using iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -608,29 +581,96 @@
         }
       ]
     },
-    "power_management": {
-      "name": "power_management",
-      "description": "Retrieves power metrics for Dell processors and FPGAs.",
+    "dell_power_supply_collection_management": {
+      "name": "dell_power_supply_collection_management",
+      "description": "Collects and manages power supply information for Dell systems using iDRAC APIs.",
       "steps": [
         {
           "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/PowerMetrics",
+          "name": "GET_/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupply",
           "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/PowerMetrics",
+          "url": "/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupply",
           "params": {}
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/PowerMetrics",
+          "name": "GET_/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupplyInventory",
           "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/PowerMetrics",
+          "url": "/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupplyInventory",
+          "params": {}
+        },
+        {
+          "step_id": 3,
+          "name": "GET_/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupplyInventory/{PowerSupplyViewId}",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ComputerSystemId}/Power/Oem/Dell/DellPowerSupplyInventory/{PowerSupplyViewId}",
+          "params": {}
+        }
+      ]
+    },
+    "dell_firmware_image_hash_management": {
+      "name": "dell_firmware_image_hash_management",
+      "description": "Manages firmware image hashes for secure boot validation.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/FirmwareImageHashes",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/FirmwareImageHashes",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/FirmwareImageHashes/{FirmwareImageHashId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/FirmwareImageHashes/{FirmwareImageHashId}",
+          "params": {}
+        }
+      ]
+    },
+    "dell_switch_connection_management": {
+      "name": "dell_switch_connection_management",
+      "description": "Manage network switch connections using Dell iDRAC API.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkPorts/Oem/Dell/DellSwitchConnections",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkPorts/Oem/Dell/DellSwitchConnections",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkPorts/Oem/Dell/DellSwitchConnections/{SwitchConnectionId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkPorts/Oem/Dell/DellSwitchConnections/{SwitchConnectionId}",
+          "params": {}
+        }
+      ]
+    },
+    "component_integrity_management": {
+      "name": "component_integrity_management",
+      "description": "Monitors and manages the integrity of system components.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/ComponentIntegrity",
+          "method": "GET",
+          "url": "/redfish/v1/ComponentIntegrity",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/ComponentIntegrity/{ComponentIntegrityId}",
+          "method": "GET",
+          "url": "/redfish/v1/ComponentIntegrity/{ComponentIntegrityId}",
           "params": {}
         }
       ]
     },
     "dell_p_c_ie_s_s_d_back_plane_management": {
       "name": "dell_p_c_ie_s_s_d_back_plane_management",
-      "description": "Manages Dell PCIe SSD backplanes using iDRAC API.",
+      "description": "Manages Dell PCIe SSD backplanes through iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -648,49 +688,129 @@
         }
       ]
     },
-    "dell_virtual_disk_management": {
-      "name": "dell_virtual_disk_management",
-      "description": "Retrieves details of Dell virtual disks using iDRAC API.",
+    "power_management": {
+      "name": "power_management",
+      "description": "Collects power metrics for processors and FPGAs via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/Oem/Dell/DellVolumes/{VirtualDiskId}",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/PowerMetrics",
           "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/Oem/Dell/DellVolumes/{VirtualDiskId}",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/PowerMetrics",
           "params": {}
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/Oem/Dell/DellVolumes/{VirtualDiskId}",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/PowerMetrics",
           "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/Oem/Dell/DellVolumes/{VirtualDiskId}",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/PowerMetrics",
           "params": {}
         }
       ]
     },
-    "dell_software_inventory_management": {
-      "name": "dell_software_inventory_management",
-      "description": "Retrieves firmware inventory for Dell software.",
+    "dell_rollup_status_management": {
+      "name": "dell_rollup_status_management",
+      "description": "Queries Dell system rollup status via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
-          "name": "GET_/redfish/v1/UpdateService/FirmwareInventory/Oem/Dell/DellSoftwareInventory",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRollupStatus",
           "method": "GET",
-          "url": "/redfish/v1/UpdateService/FirmwareInventory/Oem/Dell/DellSoftwareInventory",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRollupStatus",
           "params": {}
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/UpdateService/FirmwareInventory/Oem/Dell/DellSoftwareInventory/{SoftwareInventoryId}",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRollupStatus/{RollupStatusId}",
           "method": "GET",
-          "url": "/redfish/v1/UpdateService/FirmwareInventory/Oem/Dell/DellSoftwareInventory/{SoftwareInventoryId}",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRollupStatus/{RollupStatusId}",
+          "params": {}
+        }
+      ]
+    },
+    "battery_collection_management": {
+      "name": "battery_collection_management",
+      "description": "Collects status and performance metrics of server batteries.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries/{BatteryId}/Metrics",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries/{BatteryId}/Metrics",
+          "params": {}
+        }
+      ]
+    },
+    "dell_network_transceiver_collection_management": {
+      "name": "dell_network_transceiver_collection_management",
+      "description": "Gathers metrics and information on Dell network transceivers.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/NetworkPorts/Oem/Dell/DellNetworkTransceiverPortMetrics",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/NetworkPorts/Oem/Dell/DellNetworkTransceiverPortMetrics",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/NetworkPorts/Oem/Dell/DellNetworkTransceivers",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/NetworkPorts/Oem/Dell/DellNetworkTransceivers",
+          "params": {}
+        }
+      ]
+    },
+    "ethernet_interface_management": {
+      "name": "ethernet_interface_management",
+      "description": "Manages Ethernet interfaces via iDRAC API.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/EthernetInterfaces",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/EthernetInterfaces",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/EthernetInterfaces/{EthernetInterfaceId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/EthernetInterfaces/{EthernetInterfaceId}",
+          "params": {}
+        }
+      ]
+    },
+    "thermal_management": {
+      "name": "thermal_management",
+      "description": "Monitors and manages thermal metrics for Dell systems.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/ThermalMetrics",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/ThermalMetrics",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/ThermalMetrics",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/ThermalMetrics",
           "params": {}
         }
       ]
     },
     "fan_management": {
       "name": "fan_management",
-      "description": "Monitors and retrieves fan status from the thermal subsystem of a chassis.",
+      "description": "Monitors and manages fan status in the chassis thermal subsystem.",
       "steps": [
         {
           "step_id": 1,
@@ -710,7 +830,7 @@
     },
     "dell_network_transceiver_management": {
       "name": "dell_network_transceiver_management",
-      "description": "Retrieves metrics and information for Dell network transceivers using iDRAC API.",
+      "description": "Monitors network transceivers using Dell iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -728,149 +848,9 @@
         }
       ]
     },
-    "dell_network_transceiver_management_1": {
-      "name": "dell_network_transceiver_management_1",
-      "description": "Monitors network transceiver metrics and configurations using iDRAC API.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/{NetworkId}/NetworkPorts/Oem/Dell/DellNetworkTransceiverPortMetrics/{NetworkTransceiverPortMetricsId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/{NetworkId}/NetworkPorts/Oem/Dell/DellNetworkTransceiverPortMetrics/{NetworkTransceiverPortMetricsId}",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/{NetworkId}/NetworkPorts/Oem/Dell/DellNetworkTransceivers/{NetworkTransceiverId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/{NetworkId}/NetworkPorts/Oem/Dell/DellNetworkTransceivers/{NetworkTransceiverId}",
-          "params": {}
-        }
-      ]
-    },
-    "dell_firmware_image_hash_management": {
-      "name": "dell_firmware_image_hash_management",
-      "description": "Manage firmware image hashes for Dell systems via iDRAC API.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/FirmwareImageHashes",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/FirmwareImageHashes",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/FirmwareImageHashes/{FirmwareImageHashId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/SecureBoot/Oem/Dell/FirmwareImageHashes/{FirmwareImageHashId}",
-          "params": {}
-        }
-      ]
-    },
-    "component_integrity_management": {
-      "name": "component_integrity_management",
-      "description": "Monitors and verifies the integrity of system components.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/ComponentIntegrity",
-          "method": "GET",
-          "url": "/redfish/v1/ComponentIntegrity",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/ComponentIntegrity/{ComponentIntegrityId}",
-          "method": "GET",
-          "url": "/redfish/v1/ComponentIntegrity/{ComponentIntegrityId}",
-          "params": {}
-        }
-      ]
-    },
-    "ethernet_interface_management": {
-      "name": "ethernet_interface_management",
-      "description": "Manages Ethernet interfaces on Dell systems.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/EthernetInterfaces",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/EthernetInterfaces",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/EthernetInterfaces/{EthernetInterfaceId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/EthernetInterfaces/{EthernetInterfaceId}",
-          "params": {}
-        }
-      ]
-    },
-    "dell_rollup_status_management": {
-      "name": "dell_rollup_status_management",
-      "description": "Retrieves the rollup status of a Dell system.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRollupStatus",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRollupStatus",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRollupStatus/{RollupStatusId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRollupStatus/{RollupStatusId}",
-          "params": {}
-        }
-      ]
-    },
-    "power_operations": {
-      "name": "power_operations",
-      "description": "Controls and monitors power states of chassis through iDRAC.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Power",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/Power",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "PATCH_/redfish/v1/Chassis/{ChassisId}/Power",
-          "method": "PATCH",
-          "url": "/redfish/v1/Chassis/{ChassisId}/Power",
-          "params": {}
-        }
-      ]
-    },
-    "battery_collection_management": {
-      "name": "battery_collection_management",
-      "description": "Manages battery collection via iDRAC API.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries/{BatteryId}/Metrics",
-          "method": "GET",
-          "url": "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries/{BatteryId}/Metrics",
-          "params": {}
-        }
-      ]
-    },
     "json_schema_file_management": {
       "name": "json_schema_file_management",
-      "description": "Retrieves JSON schema files from iDRAC via Redfish API.",
+      "description": "Retrieves JSON schema files via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -888,89 +868,49 @@
         }
       ]
     },
-    "dell_network_transceiver_collection_management": {
-      "name": "dell_network_transceiver_collection_management",
-      "description": "Manages the collection of network transceiver metrics and configurations.",
+    "dell_time_service_operations": {
+      "name": "dell_time_service_operations",
+      "description": "Manage time settings on Dell iDRAC.",
       "steps": [
         {
           "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/NetworkPorts/Oem/Dell/DellNetworkTransceiverPortMetrics",
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellTimeService",
           "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/NetworkPorts/Oem/Dell/DellNetworkTransceiverPortMetrics",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellTimeService",
           "params": {}
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/NetworkPorts/Oem/Dell/DellNetworkTransceivers",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/NetworkPorts/Oem/Dell/DellNetworkTransceivers",
+          "name": "Action_ManageTime_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellTimeService/Actions/DellTimeService.ManageTime",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellTimeService/Actions/DellTimeService.ManageTime",
           "params": {}
         }
       ]
     },
-    "dell_switch_connection_management": {
-      "name": "dell_switch_connection_management",
-      "description": "Manages Dell switch connections via Redfish API.",
+    "dell_network_transceiver_management_1": {
+      "name": "dell_network_transceiver_management_1",
+      "description": "Monitors and manages network transceiver metrics and configurations.",
       "steps": [
         {
           "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkPorts/Oem/Dell/DellSwitchConnections",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/{NetworkId}/NetworkPorts/Oem/Dell/DellNetworkTransceiverPortMetrics/{NetworkTransceiverPortMetricsId}",
           "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkPorts/Oem/Dell/DellSwitchConnections",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/{NetworkId}/NetworkPorts/Oem/Dell/DellNetworkTransceiverPortMetrics/{NetworkTransceiverPortMetricsId}",
           "params": {}
         },
         {
           "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkPorts/Oem/Dell/DellSwitchConnections/{SwitchConnectionId}",
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/{NetworkId}/NetworkPorts/Oem/Dell/DellNetworkTransceivers/{NetworkTransceiverId}",
           "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkPorts/Oem/Dell/DellSwitchConnections/{SwitchConnectionId}",
-          "params": {}
-        }
-      ]
-    },
-    "dell_p_s_numeric_sensor_operations": {
-      "name": "dell_p_s_numeric_sensor_operations",
-      "description": "Manages numeric sensors for Dell power supplies through iDRAC API.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellPSNumericSensors/{PSNumericSensorId}",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellPSNumericSensors/{PSNumericSensorId}",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "PATCH_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellPSNumericSensors/{PSNumericSensorId}",
-          "method": "PATCH",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellPSNumericSensors/{PSNumericSensorId}",
-          "params": {}
-        }
-      ]
-    },
-    "thermal_management": {
-      "name": "thermal_management",
-      "description": "Retrieves thermal metrics for system processors and FPGA.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/ThermalMetrics",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/ThermalMetrics",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/ThermalMetrics",
-          "method": "GET",
-          "url": "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/ThermalMetrics",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/NetworkAdapters/{NetworkId}/NetworkPorts/Oem/Dell/DellNetworkTransceivers/{NetworkTransceiverId}",
           "params": {}
         }
       ]
     },
     "simple_storage_management": {
       "name": "simple_storage_management",
-      "description": "Manage simple storage configurations via iDRAC API.",
+      "description": "Monitors and manages simple storage devices on the system.",
       "steps": [
         {
           "step_id": 1,
@@ -990,7 +930,7 @@
     },
     "dell_p_c_ie_s_s_d_collection_management": {
       "name": "dell_p_c_ie_s_s_d_collection_management",
-      "description": "Manages the collection of Dell PCIe SSDs using iDRAC API endpoints.",
+      "description": "Manages the collection of Dell PCIe SSDs within a system.",
       "steps": [
         {
           "step_id": 1,
@@ -1008,9 +948,49 @@
         }
       ]
     },
+    "dell_virtual_disk_management": {
+      "name": "dell_virtual_disk_management",
+      "description": "Retrieves details of virtual disks managed by Dell iDRAC.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/Oem/Dell/DellVolumes/{VirtualDiskId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/Oem/Dell/DellVolumes/{VirtualDiskId}",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/Oem/Dell/DellVolumes/{VirtualDiskId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/Oem/Dell/DellVolumes/{VirtualDiskId}",
+          "params": {}
+        }
+      ]
+    },
+    "dell_software_inventory_management": {
+      "name": "dell_software_inventory_management",
+      "description": "Retrieves firmware inventory for Dell systems via iDRAC API.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/UpdateService/FirmwareInventory/Oem/Dell/DellSoftwareInventory",
+          "method": "GET",
+          "url": "/redfish/v1/UpdateService/FirmwareInventory/Oem/Dell/DellSoftwareInventory",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "GET_/redfish/v1/UpdateService/FirmwareInventory/Oem/Dell/DellSoftwareInventory/{SoftwareInventoryId}",
+          "method": "GET",
+          "url": "/redfish/v1/UpdateService/FirmwareInventory/Oem/Dell/DellSoftwareInventory/{SoftwareInventoryId}",
+          "params": {}
+        }
+      ]
+    },
     "service_root_management": {
       "name": "service_root_management",
-      "description": "Observability layer for Service Root Management. Configured with 1 underlying endpoints.",
+      "description": "Retrieves the root service information from iDRAC.",
       "steps": [
         {
           "step_id": 1,
@@ -1023,7 +1003,7 @@
     },
     "network_port_management": {
       "name": "network_port_management",
-      "description": "Manages network ports via iDRAC API.",
+      "description": "Manages network port configurations via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1036,7 +1016,7 @@
     },
     "p_c_ie_slots_management": {
       "name": "p_c_ie_slots_management",
-      "description": "Manage PCIe slots through iDRAC API.",
+      "description": "Handles PCIe slot operations via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1049,7 +1029,7 @@
     },
     "battery_management": {
       "name": "battery_management",
-      "description": "Monitors battery status for system reliability.",
+      "description": "Monitors and manages battery status using iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1062,7 +1042,7 @@
     },
     "power_supply_metrics_management": {
       "name": "power_supply_metrics_management",
-      "description": "Retrieves and manages power supply metrics via iDRAC API.",
+      "description": "Manages and retrieves power supply metrics via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1075,7 +1055,7 @@
     },
     "processor_collection_management": {
       "name": "processor_collection_management",
-      "description": "Manages processor collections via iDRAC API.",
+      "description": "Manages processor collection and subprocessor information via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1088,7 +1068,7 @@
     },
     "thermal_management_1": {
       "name": "thermal_management_1",
-      "description": "Monitors and manages chassis thermal status.",
+      "description": "Monitors chassis thermal status via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1101,7 +1081,7 @@
     },
     "dell_f_c_collection_management": {
       "name": "dell_f_c_collection_management",
-      "description": "Manages Dell Fiber Channel collections via iDRAC API.",
+      "description": "Manages Fiber Channel collection for Dell systems via iDRAC.",
       "steps": [
         {
           "step_id": 1,
@@ -1114,7 +1094,7 @@
     },
     "dell_assembly_management": {
       "name": "dell_assembly_management",
-      "description": "Retrieves detailed information about a specific Dell assembly within a computer system.",
+      "description": "Retrieves information about Dell assemblies using iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1127,7 +1107,7 @@
     },
     "dell_chassis_management": {
       "name": "dell_chassis_management",
-      "description": "Retrieve chassis details using Dell iDRAC API.",
+      "description": "Manages chassis operations using iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1140,7 +1120,7 @@
     },
     "dell_enclosure_fan_sensor_management": {
       "name": "dell_enclosure_fan_sensor_management",
-      "description": "Monitors and manages fan sensors in Dell enterprise enclosures.",
+      "description": "Monitors and manages fan sensors in Dell enclosure systems via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1153,7 +1133,7 @@
     },
     "dell_enclosure_temperature_sensor_management": {
       "name": "dell_enclosure_temperature_sensor_management",
-      "description": "Monitors and manages temperature sensors within Dell enclosures.",
+      "description": "Monitors and manages temperature sensors in Dell enclosures.",
       "steps": [
         {
           "step_id": 1,
@@ -1166,7 +1146,7 @@
     },
     "dell_power_supply_management": {
       "name": "dell_power_supply_management",
-      "description": "Retrieves power supply status via iDRAC API.",
+      "description": "Monitors and retrieves power supply status using Dell iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1179,7 +1159,7 @@
     },
     "dell_enclosure_e_m_m_management": {
       "name": "dell_enclosure_e_m_m_management",
-      "description": "Manages Dell enclosure energy management features.",
+      "description": "Manages Dell enclosure EMM settings via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1192,7 +1172,7 @@
     },
     "dell_enclosure_management_1": {
       "name": "dell_enclosure_management_1",
-      "description": "Manages Dell enclosure configurations via iDRAC API.",
+      "description": "Retrieve detailed status of Dell enclosure via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1205,7 +1185,7 @@
     },
     "dell_p_c_ie_s_s_d_back_plane_management_1": {
       "name": "dell_p_c_ie_s_s_d_back_plane_management_1",
-      "description": "Manages PCIe SSD backplanes via Dell iDRAC API.",
+      "description": "Manages Dell PCIe SSD backplane configurations via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1218,7 +1198,7 @@
     },
     "dell_enclosure_power_supply_management": {
       "name": "dell_enclosure_power_supply_management",
-      "description": "Manages power supplies in Dell enterprise enclosures.",
+      "description": "Manages power supply for Dell enclosures using iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1231,7 +1211,7 @@
     },
     "manager_diagnostic_data_management": {
       "name": "manager_diagnostic_data_management",
-      "description": "Retrieves diagnostic data from the specified manager.",
+      "description": "Retrieves diagnostic data for the specified manager.",
       "steps": [
         {
           "step_id": 1,
@@ -1244,7 +1224,7 @@
     },
     "dell_opaque_management_data_management": {
       "name": "dell_opaque_management_data_management",
-      "description": "Fetches opaque management data using iDRAC API.",
+      "description": "Retrieves opaque management data using iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1257,7 +1237,7 @@
     },
     "privilege_registry_management": {
       "name": "privilege_registry_management",
-      "description": "Manages privilege registry settings for iDRAC.",
+      "description": "Manages and retrieves privilege registry information.",
       "steps": [
         {
           "step_id": 1,
@@ -1270,7 +1250,7 @@
     },
     "event_management": {
       "name": "event_management",
-      "description": "Monitors and processes server events using iDRAC SSE API.",
+      "description": "Monitors and manages system events via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1283,7 +1263,7 @@
     },
     "attribute_registry_management": {
       "name": "attribute_registry_management",
-      "description": "Retrieves BIOS attribute registry information for a specified system.",
+      "description": "Manages BIOS attributes via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1296,7 +1276,7 @@
     },
     "dell_boot_sources_registry_management": {
       "name": "dell_boot_sources_registry_management",
-      "description": "Retrieves and manages boot sources registry for Dell systems.",
+      "description": "Manages boot sources configuration via Dell iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1309,7 +1289,7 @@
     },
     "v_lan_network_interface_management": {
       "name": "v_lan_network_interface_management",
-      "description": "Manages VLAN configurations on Ethernet interfaces.",
+      "description": "Manages VLAN configurations for network interfaces.",
       "steps": [
         {
           "step_id": 1,
@@ -1322,7 +1302,7 @@
     },
     "dell_g_p_u_sensor_management": {
       "name": "dell_g_p_u_sensor_management",
-      "description": "Monitors and retrieves GPU sensor data via iDRAC API.",
+      "description": "Monitors and manages GPU sensors via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1335,7 +1315,7 @@
     },
     "dell_presence_and_status_sensor_management": {
       "name": "dell_presence_and_status_sensor_management",
-      "description": "Monitors and manages the presence and status of sensors in Dell systems.",
+      "description": "Retrieves presence and status information for sensors on Dell systems via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1348,7 +1328,7 @@
     },
     "dell_sensor_management": {
       "name": "dell_sensor_management",
-      "description": "Manages and retrieves sensor data from Dell systems.",
+      "description": "Retrieves sensor information for specified Dell systems.",
       "steps": [
         {
           "step_id": 1,
@@ -1361,7 +1341,7 @@
     },
     "dell_slot_management": {
       "name": "dell_slot_management",
-      "description": "Manage and retrieve details of server slots via iDRAC API.",
+      "description": "Manages slot configurations on Dell systems using iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1374,7 +1354,7 @@
     },
     "dell_video_network_management": {
       "name": "dell_video_network_management",
-      "description": "Retrieves video network settings for a specified system.",
+      "description": "Manages video network settings on Dell systems via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1387,7 +1367,7 @@
     },
     "dell_p_c_ie_function_management": {
       "name": "dell_p_c_ie_function_management",
-      "description": "Manages PCIe functions on Dell systems via iDRAC API.",
+      "description": "Manages PCIe function configurations via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1400,7 +1380,7 @@
     },
     "dell_virtual_disk_collection_management": {
       "name": "dell_virtual_disk_collection_management",
-      "description": "Manages Dell virtual disk collections via iDRAC API.",
+      "description": "Retrieves and manages virtual disk collections via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1413,7 +1393,7 @@
     },
     "dell_n_v_me_s_m_a_r_t_attributes_management": {
       "name": "dell_n_v_me_s_m_a_r_t_attributes_management",
-      "description": "Manages NVMe SMART attributes via iDRAC API.",
+      "description": "Manages Dell NVMe drive SMART attributes via iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1426,7 +1406,7 @@
     },
     "dell_p_c_ie_s_s_d_extender_management": {
       "name": "dell_p_c_ie_s_s_d_extender_management",
-      "description": "Manages Dell PCIe SSD extenders via iDRAC API.",
+      "description": "Manages PCIe SSD extenders via Dell iDRAC API.",
       "steps": [
         {
           "step_id": 1,
@@ -1439,7 +1419,7 @@
     },
     "dell_software_inventory_management_1": {
       "name": "dell_software_inventory_management_1",
-      "description": "Retrieves specific software inventory details from Dell systems using iDRAC API.",
+      "description": "Retrieves software inventory details from Dell iDRAC.",
       "steps": [
         {
           "step_id": 1,
@@ -1449,16 +1429,6 @@
           "params": {}
         }
       ]
-    },
-    "firmware_update_test": {
-      "name": "firmware_update_test",
-      "description": "Simulated workflow with strategy DUAL_BANK",
-      "steps": []
-    },
-    "bios_config_test": {
-      "name": "bios_config_test",
-      "description": "Simulated workflow with strategy SCP_SNAPSHOT",
-      "steps": []
     },
     "factory_reset_test": {
       "name": "factory_reset_test",
