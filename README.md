@@ -21,10 +21,11 @@ Raw OpenAPI specification files (like Redfish API definitions) are ingested and 
 * **Graph Theory & LLM Embeddings**: We use `sentence-transformers` and the **Leiden Algorithm** to map endpoints as nodes in a graph and group them into logical "workflows".
 * **Automated Naming**: The `ollama_service` assigns human-readable titles (e.g., *Dell Power Supply Management*) to these clustered workflows.
 
-### 2. Governance Phase (Policy Engine & HITL)
-Once workflows are generated, they enter the `governance` layer.
+### 2. Governance Phase (Strict Approval Gate & HITL)
+Once individual endpoints (tools) are synthesized into high-level workflows, they enter the `governance` layer.
+* **The Strict Rule:** When tools are clustered and converted into an operational workflow, **this is the exact and only moment where human approval is strictly mandatory.**
 * **AST Policy Parsing**: Workflows are evaluated against rules defined in `policy.yaml` (such as blocking bulk destructive operations).
-* **Human-in-the-loop (HITL)**: Administrators must use the CLI (`drake governance review`) or the Web Console to manually approve or reject workflows before the AI agent can use them.
+* **Human-in-the-loop (HITL)**: Administrators must use the CLI (`drake governance review`) or the Web Console to manually certify and approve workflows. Once certified, they are registered as production-ready FastMCP tools, allowing autonomous execution without operator babysitting.
 
 ### 3. Runtime Phase (FastMCP Proxy)
 * **Dynamic Tool Injection**: The `FastMCP` FastAPI backend reads only the *approved* workflows from the SQLite database and dynamically generates callable MCP Python tools on-the-fly.
