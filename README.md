@@ -12,9 +12,23 @@ The CLI acts as a thin presentation and orchestration layer over the underlying 
 
 ---
 
-## Architecture Diagram
+## 🏛 System Architecture & Data Flow
 
-The CLI is decoupled from the core business engines and repositories using a strict presentation layer design:
+Drake is built on a highly modular architecture spanning AI ingestion, human-in-the-loop governance, and dynamic proxying.
+
+### 1. Ingestion Phase (AI Clustering)
+Raw OpenAPI specification files (like Redfish API definitions) are ingested and semantically parsed. 
+* **Graph Theory & LLM Embeddings**: We use `sentence-transformers` and the **Leiden Algorithm** to map endpoints as nodes in a graph and group them into logical "workflows".
+* **Automated Naming**: The `ollama_service` assigns human-readable titles (e.g., *Dell Power Supply Management*) to these clustered workflows.
+
+### 2. Governance Phase (Policy Engine & HITL)
+Once workflows are generated, they enter the `governance` layer.
+* **AST Policy Parsing**: Workflows are evaluated against rules defined in `policy.yaml` (such as blocking bulk destructive operations).
+* **Human-in-the-loop (HITL)**: Administrators must use the CLI (`drake governance review`) or the Web Console to manually approve or reject workflows before the AI agent can use them.
+
+### 3. Runtime Phase (FastMCP Proxy)
+* **Dynamic Tool Injection**: The `FastMCP` FastAPI backend reads only the *approved* workflows from the SQLite database and dynamically generates callable MCP Python tools on-the-fly.
+* **SSE Connections**: The interactive AI Agent connects via Server-Sent Events (SSE) to orchestrate infrastructure securely.
 
 ```mermaid
 flowchart TD
@@ -31,93 +45,113 @@ flowchart TD
     end
 ```
 
-### Dependency Rules
-*   Commands **must never** directly instantiate SQLite connections, SQLAlchemy sessions, HTTPX clients, or core logic engines.
-*   All operations must flow through service adapters resolved via the centralized **CLIContainer**.
-*   Console visual structures are decoupled from business logic.
+---
+
+## 🛡️ Security & Execution Guardrails
+
+To prevent the LLM from making accidental or malicious infrastructure changes, Drake implements robust runtime guardrails located in `src/drake/governance/middleware.py`.
+
+* **Campaign Tracker**: Tracks the AI Agent's sequence of actions within a rolling time window. If the agent repeatedly attempts suspicious operations (e.g., executing multiple destructive `DELETE` HTTP requests on bare-metal hardware), the Campaign Tracker detects the anomaly and hard-blocks the agent.
+* **Evasion & Obfuscation Blocking**: Intercepts LLM attempts to bypass logging or mask its true operational intent.
+* **Policy Engine Engine (`policy.yaml`)**:
+  * `AutoApproveLowRisk`: Approves highly-confident safe workflows.
+  * `BlockDestructiveBulk`: Flags or denies bulk endpoints containing destructive methods.
+  * `RequireApprovalForHighRisk`: Forces manual review for system-critical modifications.
 
 ---
 
-## Installation & Requirements
+## 📂 Codebase Directory Structure
 
-### System Requirements
-*   Python 3.10 or higher.
-*   `uv` (fast Python package installer).
-*   Stateful access to `data/governance.db` (seeded and active).
-
-### Editable Development Installation
-Install the project dependencies and wire the executable script locally using `uv`:
-
-#### 1. Install uv
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+```text
+drake/
+├── data/                      # Local SQLite databases (governance.db, mcp_proxy.db)
+├── frontend/                  # Next.js Web Governance Dashboard
+├── tests/fixtures/            # OpenAPI specifications and mock payloads
+├── windows_scripts/           # Windows Launcher Scripts (start.ps1, start.bat)
+├── linux_scripts/             # Linux/macOS Launcher Scripts (start.sh, test_all.sh)
+└── src/drake/                 # Core Python Backend
+    ├── ai_clustering/         # OpenAPI parsing, Leiden graphing, and semantic grouping
+    ├── cli/                   # Typer presentation layer and CLI commands
+    ├── core/                  # SQLAlchemy models and shared types
+    ├── governance/            # AST Policy engine, runtime guardrails, and HITL logic
+    ├── parser/                # OpenAPI spec ingestion logic
+    └── proxy/                 # FastMCP & FastAPI runtime backend
 ```
 
-#### 2. Install Local LLM Engine (Ollama)
-You must also install and start the local LLM engine Ollama and pull/run the Llama3 model:
-```bash
-# Run Ollama with Llama3 model
-ollama run llama3
-```
+---
 
-#### 3. Environment Setup
-Initialize the virtual environment and install all dependencies:
-```bash
-# Sync all platform virtual environment dependencies
-uv sync
+## 💻 Next.js Web Governance Console
 
-# Install the drake package in editable mode
-uv pip install -e .
-```
+While the `drake` CLI provides immense terminal power, the platform also includes a robust React/Next.js dashboard (running on `http://localhost:3000`).
+* **Visual Workflows**: It hooks directly into the FastAPI backend (`/api/workflows`) to provide a visual interface for the Governance Phase.
+* **One-Click Approval**: Operators can visually inspect the exact HTTP methods, API paths, and payloads assigned to a clustered workflow and click "Approve" or "Reject".
 
-#### 4. Activate the Virtual Environment
-Activate the `uv`-managed virtual environment so that `drake` resolves to the correct venv binary:
+---
+
+## 🚀 End-to-End Workflow Tutorial
+
+Follow these steps if this is your first time setting up the platform and you need to ingest a large number of endpoints into the MCP Proxy.
+
+### Step 1: Ingest OpenAPI Specification & Auto-Approve
+First, parse your Redfish OpenAPI specification file. The AI Clustering Engine will group hundreds of individual endpoints into logical workflows.
+Run the following command to ingest the endpoints. The `--auto-approve` flag triggers the Governance Engine to automatically approve all safe, low-risk workflows based on your `policy.yaml` rules, saving you from manual auditing:
 ```powershell
-# Windows (PowerShell) — run once per terminal session
+# 1. Activate venv (once per terminal session)
 .venv\Scripts\Activate.ps1
+
+# 2. Run the ingestion pipeline
+drake pipeline tests\fixtures\openapi-7.xx.yaml --auto-approve
 ```
 
-After activation, run bare `drake` commands directly:
-```bash
-drake --help
-```
-
-> **Alternative (no activation needed):** Prefix every command with `uv run`:
-> ```bash
-> uv run drake --help
-> uv run drake overview
-> ```
-
-> **Environment Variable:** Ensure the following variable is defined in your `.env` file:
-> `DELL_MCP_API_KEY` — used in `src/proxy/api.py` to authenticate proxy calls and administration endpoints.
-
----
-
-## Quick Start (Automated Launch)
-
-You can launch all required services—including environment validation, package sync, the backend FastMCP/FastAPI server, the Next.js frontend console, and checking Ollama models—with a single command:
-
+### Step 2: Verify Governance Status
+Once the pipeline finishes, verify how many workflows were successfully approved and if any require manual review (or were denied due to destructive bulk rules):
 ```powershell
-# Run the PowerShell launcher script
-.\start.ps1
+# Check workflows that still require human review
+drake governance pending
+
+# Check workflows that are fully certified and ready for the AI Agent
+drake governance approved
 ```
 
-Or simply double-click the `start.bat` file in Windows Explorer, or run:
-```cmd
-start.bat
-```
+### Step 3: Launch Platform Services
+With the database seeded with approved workflows, launch all local services:
+```powershell
+# Windows
+.\windows_scripts\start.ps1
 
-The launcher will verify your dependencies and launch the backend and frontend services in dedicated terminal windows. At the end, it prompts you to launch the **AI Agent Terminal** directly.
+# Linux / macOS
+bash linux_scripts/start.sh
+```
+When you run this script, it orchestrates the entire stack automatically:
+1. **Environment Config**: Verifies your `.env` secrets.
+2. **Virtual Environment**: Installs and syncs `uv` Python dependencies.
+3. **LLM Engine**: Ensures Ollama is running locally with the target model.
+4. **Mock API (Prism)**: Starts a local Mock Redfish server on port `4010` via Docker Compose so the agent can execute real HTTP requests against dummy hardware.
+5. **Security Suite**: Runs the AI Guardrails tests to ensure campaign tracking and obfuscation blocks are active.
+6. **FastMCP / FastAPI Proxy**: Launches the backend proxy server on port `8001`, which binds to the SQLite database and exposes your approved workflows.
+7. **Next.js Console**: Launches the web governance dashboard on port `3000`.
+
+At the end of the script, press **Y** to launch the interactive AI Agent Terminal.
+
+### Step 4: Test the AI Agent
+Inside the Drake AI Agent Terminal, the agent will automatically connect to the Proxy and load all approved MCP workflows. Try copy-pasting some of these sample prompts to test its orchestration reasoning:
+
+* **"What is the current status of the MCP proxy and how many workflows are loaded?"**
+* **"Show me the current BIOS settings and operations for the system `System.Embedded.1`."**
+* **"Check if the firmware update workflow `wf_c_616cc9a0` is compatible with my target server `192.168.1.100`."**
+* **"Retrieve the thermal management status and temperatures for the processor `CPU.Socket.1` on system `System.Embedded.1`."**
+* **"Update the fan speeds for the cooling fan `Fan.Embedded.1` in the chassis `System.Embedded.1`."**
+* **"Expand the Dell RAID service operations workflow into its individual steps."**
 
 ---
 
-## AI Agent Terminal (Dual-Mode)
+## 🤖 AI Agent Terminal (Dual-Mode)
 
 Drake includes an Ollama-powered AI agent that understands natural language and can execute **both** infrastructure workflows and platform admin commands:
 
 ```powershell
-# Launch via start.ps1 (recommended) — choose Y when prompted
-.\start.ps1
+# Launch via start.ps1 or start.sh (recommended) — choose Y when prompted
+.\windows_scripts\start.ps1
 
 # Or launch manually after activating venv
 python scripts/interactive_agent.py
@@ -130,36 +164,11 @@ The agent has **two tool namespaces**:
 | **CLI** (`cli`) | Platform admin: cluster, govern, audit, diagnose | *"show me pending workflows"* |
 | **MCP** (`mcp`) | Infrastructure execution: firmware, config, rollback | *"execute the firmware update workflow"* |
 
-```
-[USER]> ingest openapi.json and discover workflows
-[AGENT]> Running the clustering pipeline on openapi.json now.
-[SYSTEM] Executing CLI tool 'drake_cluster_run'...
-  - Arguments: {"specs": "openapi.json"}
-[SYSTEM] CLI Execution Complete:
-  Ingested Endpoints: 714
-  Discovered Workflows: 119
-  Communities: 119
-
-[USER]> list pending workflows
-[AGENT]> Fetching all workflows awaiting governance review.
-[SYSTEM] CLI Execution Complete:
-  Found 33 result(s):
-  [1]
-      id: wf_c_d489c865
-      display_name: Server Power Management
-      ...
-```
-
-> **Works without the backend**: If the FastMCP server is offline, the agent automatically starts in CLI-only mode. All 29 admin CLI tools remain fully available.
-
-See [`docs/AGENT_CLI_GUIDE.md`](docs/AGENT_CLI_GUIDE.md) for the full guide, including example prompts and troubleshooting.
-
 ---
 
+## ⚙️ Advanced Usage (Manual Commands)
 
-## Quick Start (Manual Setup)
-
-Activate the virtual environment first, then run commands:
+If you prefer to run commands manually instead of using the AI agent, activate the virtual environment first:
 
 ```powershell
 # 1. Activate venv (once per terminal session)
@@ -175,114 +184,63 @@ drake overview
 drake health
 ```
 
-> **Or without activation:** prefix every command with `uv run drake ...`
-
 ---
 
-## Command Reference
+## 📜 Command Reference
 
 The Command Center organizes operational tasks into specialized command groups:
 
 ### 1. `cluster`
 Manages AI clustering, OpenAPI integrations, and spec parsing.
-*   **`summary`**
-    *   *Purpose*: Render clustering metrics and distribution data.
-    *   *Syntax*: `drake cluster summary`
-    *   *Example Output*: Prints total endpoints, Leiden clusters, and average confidence levels.
-*   **`graph`**
-    *   *Purpose*: Display active relationship graphs of endpoints.
-    *   *Syntax*: `drake cluster graph`
-*   **`run --spec <path>`**
-    *   *Purpose*: Parse an OpenAPI specification file and regenerate workflow clusters.
-    *   *Syntax*: `drake cluster run --spec openapi.json`
+*   **`summary`** - Render clustering metrics and distribution data.
+*   **`graph`** - Display active relationship graphs of endpoints.
+*   **`run --spec <path>`** - Parse an OpenAPI specification file and regenerate workflow clusters.
 
 ### 2. `governance`
 Enforces human-in-the-loop review cycles for LLM-generated workflows.
-*   **`pending`**
-    *   *Purpose*: List all workflows awaiting human approval.
-    *   *Syntax*: `drake governance pending`
-*   **`approved`**
-    *   *Purpose*: List all certified/approved operational workflows.
-    *   *Syntax*: `drake governance approved`
-*   **`rejected`**
-    *   *Purpose*: List workflows blocked or rejected by operators.
-    *   *Syntax*: `drake governance rejected`
-*   **`review <workflow_id>`**
-    *   *Purpose*: Inspect a workflow's details and constituent API steps.
-    *   *Syntax*: `drake governance review test_wf_1`
-*   **`approve <workflow_id>`**
-    *   *Purpose*: Approve a pending workflow, promoting it to an executable FastMCP tool.
-    *   *Syntax*: `drake governance approve test_wf_1`
-*   **`reject <workflow_id> --reason <text>`**
-    *   *Purpose*: Reject a workflow and document the audit reason.
-    *   *Syntax*: `drake governance reject test_wf_1 --reason "Security validation failed"`
+*   **`pending`** - List all workflows awaiting human approval.
+*   **`approved`** - List all certified/approved operational workflows.
+*   **`rejected`** - List workflows blocked or rejected by operators.
+*   **`review <workflow_id>`** - Inspect a workflow's details and constituent API steps.
+*   **`approve <workflow_id>`** - Approve a pending workflow, promoting it to an executable FastMCP tool.
+*   **`reject <workflow_id> --reason <text>`** - Reject a workflow and document the audit reason.
 
 ### 3. `compatibility`
 Pre-flight verification intelligence.
-*   **`validate <workflow_id> --target-ip <ip>`**
-    *   *Purpose*: Validate workflow steps against target hardware.
-    *   *Syntax*: `drake compatibility validate test_wf_1 --target-ip 192.168.0.120`
-*   **`explain <workflow_id>`**
-    *   *Purpose*: Render the DAG rules tree that evaluates the workflow.
-    *   *Syntax*: `drake compatibility explain test_wf_1`
-*   **`dashboard <workflow_id> --target-ip <ip>`**
-    *   *Purpose*: Renders the decision cockpit (see flagship section below).
-    *   *Syntax*: `drake compatibility dashboard test_wf_1 --target-ip 192.168.0.120`
-*   **`rules`**
-    *   *Purpose*: Print the active policies and compatibility rules catalog.
-    *   *Syntax*: `drake compatibility rules`
-*   **`device <ip>`**
-    *   *Purpose*: Query stateful cached specifications for a datacenter node.
-    *   *Syntax*: `drake compatibility device 192.168.0.120`
+*   **`validate <workflow_id> --target-ip <ip>`** - Validate workflow steps against target hardware.
+*   **`explain <workflow_id>`** - Render the DAG rules tree that evaluates the workflow.
+*   **`dashboard <workflow_id> --target-ip <ip>`** - Renders the decision cockpit.
+*   **`rules`** - Print the active policies and compatibility rules catalog.
+*   **`device <ip>`** - Query stateful cached specifications for a datacenter node.
 
 ### 4. `runtime`
 Controls the FastMCP integration hooks.
-*   **`tools`**
-    *   *Purpose*: List currently exposed FastMCP tools ready for client consumption.
-    *   *Syntax*: `drake runtime tools`
-*   **`reload`**
-    *   *Purpose*: Trigger hot-reloads to refresh tool mappings from database states.
-    *   *Syntax*: `drake runtime reload`
-*   **`execute <tool_name> --params <json>`**
-    *   *Purpose*: Manually invoke a registered workflow.
-    *   *Syntax*: `drake runtime execute test_workflow --params '{"sys_id": 1}'`
+*   **`tools`** - List currently exposed FastMCP tools ready for client consumption.
+*   **`reload`** - Trigger hot-reloads to refresh tool mappings from database states.
+*   **`execute <tool_name> --params <json>`** - Manually invoke a registered workflow.
 
 ### 5. `ansible`
 Exports workflow logic to infrastructure-as-code files.
-*   **`preview <workflow_id>`**
-    *   *Purpose*: Render syntax-highlighted playbook configurations directly on the console.
-    *   *Syntax*: `drake ansible preview test_wf_1`
-*   **`export <workflow_id> --output <path>`**
-    *   *Purpose*: Export enriched playbooks directly to files.
-    *   *Syntax*: `drake ansible export test_wf_1 --output playbooks/deploy.yml`
+*   **`preview <workflow_id>`** - Render syntax-highlighted playbook configurations directly on the console.
+*   **`export <workflow_id> --output <path>`** - Export enriched playbooks directly to files.
 
 ### 6. `audit`
 Exposes the compliance history ledger.
-*   **`events`**
-    *   *Purpose*: List administrative events, modifications, and approvals.
-    *   *Syntax*: `drake audit events`
-*   **`executions`**
-    *   *Purpose*: Print workflow runs, durations, status codes, and targets.
-    *   *Syntax*: `drake audit executions`
-*   **`summary`**
-    *   *Purpose*: Present compliance summaries and error trends.
-    *   *Syntax*: `drake audit summary`
+*   **`events`** - List administrative events, modifications, and approvals.
+*   **`executions`** - Print workflow runs, durations, status codes, and targets.
+*   **`summary`** - Present compliance summaries and error trends.
 
 ### 7. `system`
 Prints operational topology data.
-*   **`topology`**
-    *   *Purpose*: Display the system dependencies tree.
-    *   *Syntax*: `drake system topology`
+*   **`topology`** - Display the system dependencies tree.
 
 ### 8. `diagnostics`
 Evaluates internal health checks.
-*   **`db`** / **`api`** / **`compatibility`** / **`runtime`**
-    *   *Purpose*: Troubleshoot connections to database files, REST endpoints, and facts caches.
-    *   *Syntax*: `drake diagnostics db`
+*   **`db`** / **`api`** / **`compatibility`** / **`runtime`** - Troubleshoot connections to database files, REST endpoints, and facts caches.
 
 ---
 
-## Flagship Feature: Compatibility Cockpit
+## ✈️ Flagship Feature: Compatibility Cockpit
 
 The **Compatibility Cockpit** provides a single Go/No-Go verdict before executing any workflow on target hardware:
 
@@ -291,156 +249,29 @@ drake compatibility dashboard <workflow_id> --target-ip <ip>
 ```
 
 ### Cockpit Panels
-
 1.  **Target Device**: Displays model, BIOS version, Lifecycle Controller version, and scan time.
-2.  **Validation Scores**: 
-    *   *Compatibility Score*: Measures compliance with active rules catalog (0-100%).
-    *   *Risk Score*: Computes operational risk coefficients (0-100).
-    *   *Blast Radius*: Outlines impact boundary (e.g. `NODE`, `CHASSIS`, `RACK`, `DATACENTER`).
-    *   *Confidence*: Quality indicator of cached/retrieved device specifications.
+2.  **Validation Scores**: Compatibility Score, Risk Score, Blast Radius, Confidence.
 3.  **Violations**: Lists check failures, expected vs actual properties, and corrective remediation actions.
 4.  **Prerequisites Dependencies**: Structured tree showing parent-child dependency checks.
 5.  **Final Execution Verdict**: Bold colored indicator marking either `✓ SAFE TO EXECUTE` or `✗ BLOCK EXECUTION`.
 
 ---
 
-## Universal JSON Mode
-
+## 🛠️ Universal JSON Mode
 To support scripting, automation pipeline runs, and DevOps integration, every CLI command supports the `--json` flag:
-
 ```bash
 drake --json compatibility dashboard test_wf_1 --target-ip 192.168.0.120
 ```
 
-When `--json` is enabled:
-*   All styled panels, colors, tables, trees, and interactive spinners are **bypassed**.
-*   Only valid machine-readable JSON is written to `stdout`.
-*   Standard logs and non-critical warnings are redirected to `stderr`.
+---
+
+## 🔌 Plugin System
+The Command Center includes a self-discovering plugin mechanism located in **`src/cli/plugins/`**. The CLI automatically loads modules that do not start with an underscore (`_`) and registers them as subcommands.
 
 ---
 
-## Watch Mode
+## ❓ Troubleshooting
 
-Monitor executive statuses or health assessment matrices in real-time using watch flags:
-
-```bash
-drake overview --watch --interval 2
-drake health --watch
-```
-
-*   **`--watch`**: Toggles live loop.
-*   **`--interval` (`-i`)**: Defines update frequency in seconds (default: 5).
-*   *Exit*: Cleanly intercepts `Ctrl+C` to terminate the loops without locking SQLite files.
-
----
-
-## Plugin System
-
-The Command Center includes a self-discovering plugin mechanism located in **`src/cli/plugins/`**.
-
-### How Plugin Discovery Works
-*   The CLI scans the `src/cli/plugins/` directory at startup.
-*   It dynamically loads modules that do not start with an underscore (`_`).
-*   It registers subcommands if they expose a `register_plugin(app)` function or expose a `typer.Typer()` application named `app`.
-
-### Authoring Custom Plugins
-Create a Python module in `src/cli/plugins/network_config.py`:
-```python
-import typer
-
-app = typer.Typer(help="Manage switch network configurations")
-
-@app.command("show")
-def show_switch_status():
-    print("Switch connections operational.")
-```
-The CLI automatically loads this, making the command `drake network_config show` immediately available.
-
-### Failure Isolation
-If a plugin raises an exception during import or initialization:
-*   The exception is caught and printed as a warning (`⚠ WARNING: Plugin load failed`).
-*   The core CLI continues to boot successfully, preserving primary operations.
-
----
-
-## Security Features
-
-### Secrets Masking Shield
-To ensure security, the CLI scans outputs for sensitive keys (e.g. `password`, `token`, `key`, `secret`, `authorization`, `ssn`) and masks them recursively:
-*   **Console Output**: Masked with `********` inside tables and panels.
-*   **JSON Mode**: Formatted structure replaces sensitive strings with `********`, preventing data leaks in automation logs.
-
-### Access Trails
-Operations that alter states (e.g. `governance approve`, `governance reject`) write audit records to the local governance ledger, documenting administrative actor and time.
-
----
-
-## Troubleshooting
-
-### Legacy Windows Output Crash (`UnicodeEncodeError`)
-*   *Symptom*: Commands crash printing `UnicodeEncodeError: 'charmap' codec can't encode character...`
-*   *Cause*: Legacy Windows terminal character set (e.g. CP-1252) cannot print unicode symbols (`⚠`, `✓`).
-*   *Resolution*: Force the environment to use UTF-8 encoding:
-    ```powershell
-    $env:PYTHONIOENCODING="utf-8"
-    ```
-
-### Packaging Script Location Error (`ModuleNotFoundError`)
-*   *Symptom*: Running `drake` raises `ModuleNotFoundError: No module named 'src'`.
-*   *Cause*: The bare `drake` command resolves to a system-level Python install that does not have access to the project source tree. This happens when the virtual environment is not activated.
-*   *Resolution (preferred)*: Activate the `uv` virtual environment before running any commands:
-    ```powershell
-    .venv\Scripts\Activate.ps1
-    drake --help
-    ```
-*   *Resolution (alternative)*: Use `uv run` to automatically route through the correct venv:
-    ```bash
-    uv run drake --help
-    uv run drake health
-    ```
-
-### SQLite Database Locks
-*   *Symptom*: Actions time out or fail with database locks.
-*   *Cause*: Concurrent operations on SQLite files during long-running tasks.
-*   *Resolution*: Run `drake diagnostics db` to check connection status. Ensure the microservice FastAPI server is running with WAL journal modes.
-
----
-
-## Operator Workflows
-
-### Workflow 1: Platform Monitoring
-Verify global status and watch for changes during maintenance windows:
-```bash
-$env:PYTHONIOENCODING="utf-8"
-drake health
-drake overview --watch --interval 10
-```
-
-### Workflow 2: Safe Pre-Flight Validation & Approval
-Review a workflow generated by clustering, validate it against target hardware, and approve it:
-```bash
-# 1. List pending LLM workflows
-drake governance pending
-
-# 2. Inspect step details
-drake governance review test_wf_1
-
-# 3. Perform pre-flight compatibility evaluation cockpit
-drake compatibility dashboard test_wf_1 --target-ip 192.168.0.120
-
-# 4. Approve workflow
-drake governance approve test_wf_1
-```
-
-### Workflow 3: IaC Automation Export
-Validate a workflow and export it to an enriched Ansible playbook for target datacenter node setups:
-```bash
-# 1. Verify compatibility
-drake compatibility validate test_wf_1 --target-ip 192.168.0.120
-
-# 2. Preview playbooks syntax
-drake ansible preview test_wf_1
-
-# 3. Export playbook to target directory
-drake ansible export test_wf_1 --output playbooks/idrac_setup.yml
-```
+*   **Legacy Windows Output Crash (`UnicodeEncodeError`)**: Force the environment to use UTF-8 encoding (`$env:PYTHONIOENCODING="utf-8"`).
+*   **Packaging Script Location Error (`ModuleNotFoundError`)**: Activate the `uv` virtual environment before running any commands (`.venv\Scripts\Activate.ps1`).
+*   **SQLite Database Locks**: Run `drake diagnostics db` to check connection status. Ensure the microservice FastAPI server is running with WAL journal modes.

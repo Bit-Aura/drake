@@ -9,6 +9,10 @@
 $env:PYTHONIOENCODING="utf-8"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
+# Shift context to project root since script is now in windows_scripts/
+$PSScriptRoot = Split-Path -Parent -MyInvocation.MyCommand.Definition
+Set-Location -Path "$PSScriptRoot\.."
+
 # Define unicode symbols programmatically to avoid file encoding parser issues
 $tick  = [char]0x2714
 $warn  = [char]0x26A0
