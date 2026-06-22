@@ -87,6 +87,129 @@
           "202": {"description": "Update job accepted"}
         }
       }
+    },
+    "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Metrics": {
+      "get": {
+        "operationId": "GET_PowerSupplyMetrics",
+        "summary": "Get power supply metrics",
+        "tags": ["Power"],
+        "parameters": [
+          {
+            "name": "ChassisId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          },
+          {
+            "name": "PowerSupplyId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mocked Power Metrics Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "InputVoltage": {"type": "number", "example": 220.5},
+                    "PowerConsumedWatts": {"type": "number", "example": 350.2},
+                    "Status": {
+                      "type": "object",
+                      "properties": {
+                        "Health": {"type": "string", "example": "OK"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/FPGA/Oem/Dell/ThermalMetrics": {
+      "get": {
+        "operationId": "GET_ThermalMetrics",
+        "summary": "Get thermal metrics for a processor FPGA",
+        "tags": ["Thermal"],
+        "parameters": [
+          { "name": "ComputerSystemId", "in": "path", "required": true, "schema": {"type": "string"} },
+          { "name": "ProcessorId", "in": "path", "required": true, "schema": {"type": "string"} }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mocked Thermal Metrics Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "TemperatureCelsius": {"type": "number", "example": 45.2},
+                    "Status": {"type": "object", "properties": {"Health": {"type": "string", "example": "OK"}}}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Oem/Dell/ThermalMetrics": {
+      "get": {
+        "operationId": "GET_ThermalMetricsNonFPGA",
+        "summary": "Get thermal metrics for a processor",
+        "tags": ["Thermal"],
+        "parameters": [
+          { "name": "ComputerSystemId", "in": "path", "required": true, "schema": {"type": "string"} },
+          { "name": "ProcessorId", "in": "path", "required": true, "schema": {"type": "string"} }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mocked Thermal Metrics Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "TemperatureCelsius": {"type": "number", "example": 48.9},
+                    "Status": {"type": "object", "properties": {"Health": {"type": "string", "example": "OK"}}}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/redfish/v1/Chassis/{ChassisId}/Thermal": {
+      "get": {
+        "operationId": "GET_ChassisThermal",
+        "summary": "Get thermal metrics for the entire chassis",
+        "tags": ["Thermal"],
+        "parameters": [
+          { "name": "ChassisId", "in": "path", "required": true, "schema": {"type": "string"} }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mocked Chassis Thermal Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Fans": {"type": "array", "items": {"type": "object"}},
+                    "Temperatures": {"type": "array", "items": {"type": "object", "properties": {"ReadingCelsius": {"type": "number", "example": 38.0}}}}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

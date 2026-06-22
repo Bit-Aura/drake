@@ -250,8 +250,8 @@ async def decide_tool_with_llm(
         f"3. For CLI tools, selected_tool_name must be one of: {cli_names}.\n"
         "4. Arguments must ONLY contain keys that exist in the chosen tool's schema. "
         "If a tool has no properties, pass an empty dict {}.\n"
-        "5. Choose 'mcp' for actual infrastructure execution (firmware, power, config changes).\n"
-        "6. Choose 'cli' for admin tasks (ingest specs, list workflows, approve, diagnose, audit).\n"
+        "5. If the tool you want to use is listed in CATEGORY 1, you MUST set tool_type to 'mcp'.\n"
+        "6. If the tool you want to use is listed in CATEGORY 2, you MUST set tool_type to 'cli'.\n"
         "7. Choose 'none' if the question is conversational and no tool is needed.\n"
         "8. Always verify your argument keys against the schema before responding.\n"
     )

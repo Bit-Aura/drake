@@ -3,7 +3,7 @@ version: '3.8'
 services:
   prism-mock:
     image: stoplight/prism:5
-    command: mock -h 0.0.0.0 --multiprocess=false /api/real_world_specs/idrac_redfish_openapi.json
+    command: mock -h 0.0.0.0 --multiprocess=false /api/real_world_specs/auto_simulator.json
     volumes:
       - ./tests/fixtures:/api:ro
     ports:

@@ -149,23 +149,26 @@ These test prompts are designed to be intentionally vague and omit required IDs.
 
 **Test 2: Power Diagnostics**
 * **Prompt:** *"Can you grab the current power metrics and consumption data for my server?"*
-* **Expected Tool:** `power_management`
-* **What to expect:** The agent should realize it needs to call `power_management`, but recognize it lacks the IDs. It should ask for the `ComputerSystemId` and `ProcessorId` you want to target.
+* **Expected Tool:** `power_management` or `power_supply_metrics_management`
+* **What to expect:** The agent should halt and ask for missing IDs. 
+* **What to type:** When it asks, type `1` for the `ChassisId`, and `1` for the `PowerSupplyId`.
 
 **Test 3: Compatibility Engine**
 * **Prompt:** *"I need to run a compatibility check against a target server before we deploy anything to it."*
-* **Expected Tool:** `check_workflow_compatibility`
-* **What to expect:** The agent should stop and ask you for the specific `workflow_id` and the `target_ip` address.
+* **Expected Tool:** `check_workflow_compatibility` or `drake_compatibility_validate`
+* **What to expect:** The agent should stop and ask you for the specific `workflow_id`.
+* **What to type:** When it asks, type `wf_c_616cc9a0` (a firmware update workflow ID). If it asks for an IP, type `192.168.1.100`.
 
 **Test 4: Thermal Monitoring**
 * **Prompt:** *"I'm worried the system might be overheating. Check the thermal sensors and cooling status."*
 * **Expected Tool:** `thermal_management` or `thermal_management_1`
-* **What to expect:** The agent should attempt to check the thermal state but halt to ask which `ChassisId` or System ID you are referring to.
+* **What to expect:** The agent will halt to ask which `ChassisId` or `System ID` you are referring to.
+* **What to type:** Provide `System.Embedded.1` or `1`.
 
 **Test 5: Complex Nested Management**
 * **Prompt:** *"Fetch the current metrics and capabilities for the Fibre Channel network."*
 * **Expected Tool:** `dell_f_c_management`
-* **What to expect:** The agent should map "Fibre Channel" to the tool, realize it is missing many nested IDs, and prompt you to provide them.
+* **What to expect:** The agent will map "Fibre Channel" to the tool, realize it is missing many nested IDs, and prompt you to provide them.
 
 > **Testing Tip:** When the agent replies asking for missing IDs, simply invent dummy IDs (e.g., `System.Embedded.1` or `CPU.1`) and give them back to it to watch it successfully execute the mock tool!
 
