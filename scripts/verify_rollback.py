@@ -109,17 +109,17 @@ async def verify_rollback():
 
         # Execute 1: Dual Bank
         print("\n  -> Executing: firmware_update_test (DUAL_BANK)")
-        result_db = await execute_workflow_route("firmware_update_test", {"server_ip": target_ip})
+        result_db = await execute_workflow_route("firmware_update_test", {"server_ip": target_ip, "override_policy": "WARN_ONLY"})
         print(f"     Result Status: {result_db.get('status')}")
 
         # Execute 2: SCP Snapshot
         print("\n  -> Executing: bios_config_test (SCP_SNAPSHOT)")
-        result_scp = await execute_workflow_route("bios_config_test", {"server_ip": target_ip})
+        result_scp = await execute_workflow_route("bios_config_test", {"server_ip": target_ip, "override_policy": "WARN_ONLY"})
         print(f"     Result Status: {result_scp.get('status')}")
 
         # Execute 3: Factory Reset
         print("\n  -> Executing: factory_reset_test (NONE)")
-        result_none = await execute_workflow_route("factory_reset_test", {"server_ip": target_ip})
+        result_none = await execute_workflow_route("factory_reset_test", {"server_ip": target_ip, "override_policy": "WARN_ONLY"})
         print(f"     Result Status: {result_none.get('status')}")
 
     # Verify execution history ledger logs
