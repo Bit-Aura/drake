@@ -1,3 +1,17 @@
 {
-  "workflows": {}
+  "workflows": {
+    "systems_query_workflow": {
+      "name": "systems_query_workflow",
+      "description": "Edited description",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "POST_/redfish/v1/Systems",
+          "method": "POST",
+          "url": "/redfish/v1/Systems",
+          "params": {}
+        }
+      ]
+    }
+  }
 }

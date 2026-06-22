@@ -89,6 +89,16 @@ For Jenkins or GitHub Actions, the visual elements can be bypassed completely:
 $ drake pipeline --spec target.json --json
 ```
 
+### Example 5: Configuration & Daemon Management
+The CLI also exposes powerful administrative capabilities natively:
+```bash
+# Manage secure .env configurations and execution policies natively
+$ drake config
+
+# Manage local FastMCP server daemons and proxy states
+$ drake server
+```
+
 ---
 
 ## 5. Enterprise Governance, Risk & Security
