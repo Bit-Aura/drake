@@ -928,6 +928,26 @@
         }
       ]
     },
+    "dell_p_s_numeric_sensor_operations": {
+      "name": "dell_p_s_numeric_sensor_operations",
+      "description": "Manages numeric sensors for Dell power supplies through iDRAC API.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellPSNumericSensors/{PSNumericSensorId}",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellPSNumericSensors/{PSNumericSensorId}",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "PATCH_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellPSNumericSensors/{PSNumericSensorId}",
+          "method": "PATCH",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellPSNumericSensors/{PSNumericSensorId}",
+          "params": {}
+        }
+      ]
+    },
     "thermal_management": {
       "name": "thermal_management",
       "description": "Retrieves thermal metrics for system processors and FPGA.",

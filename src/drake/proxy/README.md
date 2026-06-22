@@ -25,6 +25,7 @@ Our architecture abandons these silos. We employ a **Dynamic Proxy Interceptor**
 On startup (or hot-reload), the FastMCP server queries the database for approved workflows.
 - **Synthesis:** Uses `inspect.Signature` to dynamically construct asynchronous Python functions that perfectly map to the required parameters (e.g., exacting `{idrac_ip}` from URLs).
 - **Registration:** Injects these exactly-typed tools directly into the LLM context via `mcp.add_tool()`.
+- **Standardized Transport:** The server executes via robust `stdio` pipe streaming (`stdio_server.py`), providing standard FastMCP compatibility across headless CI runners and local Claude Desktop installations.
 
 ### Stage 2: Asynchronous Execution Routing
 The `WorkflowExecutionService` delegates the execution to decoupled backend engines.

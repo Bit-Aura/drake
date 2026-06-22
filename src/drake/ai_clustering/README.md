@@ -39,7 +39,7 @@ A ratio of ~120 workflows for ~714 endpoints (averaging 5-6 endpoints per workfl
 
 ### Stage 2: Schema-Aware Dependency Discovery
 Inside each semantic cluster, we extract exact producer-consumer relationships to build a Typed Dependency Graph.
-- We **reject naive field name matching**.
+- We **reject naive field name matching**. The `dependency_matcher.py` strictly evaluates types via AST-level verification.
 - Dependencies are evaluated using Field Type Matching, OpenAPI References, Schema Lineage, Object Hierarchy, and Enum Compatibility.
 - **Output:** A strict Directed Edge Map guaranteeing that prerequisites execute before targets.
 
@@ -85,7 +85,8 @@ We abandon naive HTTP-method-only risk scoring. Workflows are dynamically assess
 ## 5. Maximum Explainability & AI Capabilities
 
 Our engine is completely transparent. Every decision is explainable.
-- **Graph Explainability:** The system explains *why* endpoints are grouped, *why* a dependency exists, *why* an execution order was chosen, and *why* a rollback was generated.
+- **Graph Explainability:** The system explains *why* endpoints are grouped, *why* a dependency exists, *why* an execution order was chosen, and *why* a rollback was generated. The `explain.py` engine generates plain-text rationales mapping algorithm decisions to human-readable insights.
+- **Natural Language Compilation:** The `nl_compiler.py` dynamically builds rich semantic representations of graph clusters so the LLM understands exactly what each generated tool encompasses.
 - **Multi-Dimensional Graphs:** The system maintains queryable Knowledge Graphs, Execution Graphs, Risk Graphs, and Blast Radius Graphs.
 - **AI-Powered, Deterministically Validated:** We use asynchronous LLMs (Ollama) out-of-band for Workflow Naming, Summaries, and Failure Prediction. However, **AI is never the sole source of truth**. All execution and discovery logic is mathematically deterministic.
 

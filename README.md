@@ -17,7 +17,8 @@ The CLI acts as a thin presentation and orchestration layer over the underlying 
 Drake is built on a highly modular architecture spanning AI ingestion, human-in-the-loop governance, and dynamic proxying.
 
 ### 1. Ingestion Phase (AI Clustering)
-Raw OpenAPI specification files (like Redfish API definitions) are ingested and semantically parsed. 
+Raw specification files (OpenAPI, GraphQL, gRPC, AsyncAPI) are ingested and semantically parsed. 
+* **Multi-Protocol Parsing**: We natively extract structural truth across REST, protobuf, and event-driven architectures into a unified contract.
 * **Graph Theory & LLM Embeddings**: We use `sentence-transformers` and the **Leiden Algorithm** to map endpoints as nodes in a graph and group them into logical "workflows".
 * **Automated Naming**: The `ollama_service` assigns human-readable titles (e.g., *Dell Power Supply Management*) to these clustered workflows.
 
@@ -29,7 +30,8 @@ Once individual endpoints (tools) are synthesized into high-level workflows, the
 
 ### 3. Runtime Phase (FastMCP Proxy)
 * **Dynamic Tool Injection**: The `FastMCP` FastAPI backend reads only the *approved* workflows from the SQLite database and dynamically generates callable MCP Python tools on-the-fly.
-* **SSE Connections**: The interactive AI Agent connects via Server-Sent Events (SSE) to orchestrate infrastructure securely.
+* **Response Compression**: The backend natively shrinks JSON payloads by stripping verbose HATEOAS/Redfish links and nulls, saving >80% of LLM token limits.
+* **Standardized Transport**: The interactive AI Agent connects via standard `stdio` pipe streaming, ensuring native integration with modern MCP clients (like Claude Desktop).
 
 ```mermaid
 flowchart TD
@@ -52,6 +54,8 @@ flowchart TD
 
 To prevent the LLM from making accidental or malicious infrastructure changes, Drake implements robust runtime guardrails located in `src/drake/governance/middleware.py`.
 
+* **Sub-10ms PreFilter**: Replaces slow ML security models with a fast regex engine, tracking sessions and preventing prompt injections natively.
+* **Universal Rollback**: Automated SCP XML snapshots and Dual-Bank boot-partition swaps protect against bricked hardware during mutating operations.
 * **Campaign Tracker**: Tracks the AI Agent's sequence of actions within a rolling time window. If the agent repeatedly attempts suspicious operations (e.g., executing multiple destructive `DELETE` HTTP requests on bare-metal hardware), the Campaign Tracker detects the anomaly and hard-blocks the agent.
 * **Evasion & Obfuscation Blocking**: Intercepts LLM attempts to bypass logging or mask its true operational intent.
 * **Policy Engine Engine (`policy.yaml`)**:
@@ -79,6 +83,19 @@ drake/
     └── proxy/                 # FastMCP & FastAPI runtime backend
 ```
 
+### 📚 Deep-Dive Component Documentation
+
+For deep technical insights, architecture rules, and specific "Wow Factors" of each core subsystem, refer to the following authoritative documents:
+
+| Component | Path / Link | Description |
+| :--- | :--- | :--- |
+|
+| **AI Clustering & Graph Engine** | [src/drake/ai_clustering/README.md](src/drake/ai_clustering/README.md) | Details on the Leiden algorithm, AST dependency matcher, and NL compiler. |
+| **CLI Command Center** | [src/drake/cli/README.md](src/drake/cli/README.md) | Full command reference, plugin architecture, and dashboard overviews. |
+| **Core Compatibility & Compression** | [src/drake/core/README.md](src/drake/core/README.md) | Specs for the Redfish Response Compression Engine and Ansible playbook enricher. |
+| **Governance & Security** | [src/drake/governance/README.md](src/drake/governance/README.md) | Deep dive into the Sub-10ms PreFilter, Escalation Engine, and SOC logging. |
+| **Multi-Protocol Parser** | [src/drake/parser/README.md](src/drake/parser/README.md) | Architecture of the unified AST and support for GraphQL, gRPC, and AsyncAPI. |
+| **FastMCP Proxy Server** | [src/drake/proxy/README.md](src/drake/proxy/README.md) | Details on Stdio transport, dynamic tool injection, and the Auto-Simulator. |
 ---
 
 ## 💻 Next.js Web Governance Console
@@ -131,7 +148,7 @@ When you run this script, it orchestrates the entire stack automatically:
 1. **Environment Config**: Verifies your `.env` secrets.
 2. **Virtual Environment**: Installs and syncs `uv` Python dependencies.
 3. **LLM Engine**: Ensures Ollama is running locally with the target model.
-4. **Simulated API (Prism)**: Starts a local simulated Redfish server on port `4010` via Docker Compose so the agent can execute real HTTP requests against simulated hardware.
+4. **Mock API (Auto-Simulator)**: Generates a dynamic `prism-mock` simulator reflecting approved endpoints, running on port `4010` via Docker Compose so the agent can execute requests against dummy hardware with zero risk.
 5. **Security Suite**: Runs the AI Guardrails tests to ensure campaign tracking and obfuscation blocks are active.
 6. **FastMCP / FastAPI Proxy**: Launches the backend proxy server on port `8001`, which binds to the SQLite database and exposes your approved workflows.
 7. **Next.js Console**: Launches the web governance dashboard on port `3000`.
@@ -259,7 +276,7 @@ Controls the FastMCP integration hooks.
 *   **`execute <tool_name> --params <json>`** - Manually invoke a registered workflow.
 
 ### 5. `ansible`
-Exports workflow logic to infrastructure-as-code files.
+Exports workflow logic to infrastructure-as-code files, automatically translating clustered AI workflows into production-ready `ansible.builtin.uri` playbook YAML for DevOps integration.
 *   **`preview <workflow_id>`** - Render syntax-highlighted playbook configurations directly on the console.
 *   **`export <workflow_id> --output <path>`** - Export enriched playbooks directly to files.
 
@@ -276,6 +293,11 @@ Prints operational topology data.
 ### 8. `diagnostics`
 Evaluates internal health checks.
 *   **`db`** / **`api`** / **`compatibility`** / **`runtime`** - Troubleshoot connections to database files, REST endpoints, and facts caches.
+
+### 9. `config` & `server`
+Administrative daemon controls.
+*   **`drake config`** - Manage secure `.env` configurations and execution policies natively.
+*   **`drake server`** - Manage local FastMCP server daemons and proxy states.
 
 ---
 

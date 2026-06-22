@@ -45,6 +45,12 @@ Standard AI security tools rely on ML models that add 500ms+ latency. We ported 
 - **The Mechanism:** `FastPreFilter` inside `GovernanceMiddleware`. Before a workflow is saved or executed, the proxy intercepts it. The `FastPreFilter` operates as a lightweight regex-based engine that catches prompt injection, role-play jailbreaks, and unauthorized data exfiltration patterns instantaneously before the request even reaches the policy engine. 
 - **The Result:** It blocks known injection vectors in under 5 milliseconds, meaning it catches payload-escaping characters and halts execution with zero ML latency penalty.
 
+### 2. Advanced Escalation & Session Engines
+The governance layer extends beyond simple pre-filtering to handle multi-step stateful threats.
+- **Escalation Engine (`escalation_engine.py`):** Automatically elevates risk tiers based on runtime contexts, dynamically modifying the strictness of the policy engine if an agent behaves erratically.
+- **Session Management (`session_manager.py`):** Tracks multi-agent states and execution sessions to prevent slow-loris or coordinated multi-step exfiltration attempts.
+- **SOC Integration (`soc_logger.py`):** A specialized Security Operations Center logging hook designed for immediate Splunk/SIEM integration, ensuring all intercepted actions are forensically available to enterprise security teams.
+
 ---
 
 ## 4. Execution Resilience & Stateful Orchestration

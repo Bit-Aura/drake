@@ -22,8 +22,12 @@ Our architecture abandons these silos. We employ a **High-Fidelity Normalization
 ## 2. The Ingestion Normalization Pipeline
 
 ### Stage 1: Multi-Protocol Parsing
-The parser accepts various spec formats (JSON/YAML) and normalizes them into a unified `ContractA` model.
-- **Normalization:** Extracts `operation_id`, `method`, `url`, and core parameters.
+The parser accepts various spec formats (JSON/YAML) and normalizes them into a unified `ContractA` model. We natively support a comprehensive suite of protocols:
+- **OpenAPI / Swagger**: Standard RESTful API ingestion.
+- **GraphQL**: `graphql_parser.py` extracts schemas and mutations.
+- **gRPC**: `grpc_parser.py` ingests protobuf contracts.
+- **AsyncAPI**: `asyncapi_parser.py` maps event-driven architectures.
+- **Normalization:** Extracts `operation_id`, `method`, `url`, and core parameters across all formats.
 - **Output:** A strict Python representation that strips out UI-specific metadata but retains the exact operational constraints required for the cluster engine.
 
 ### Stage 2: Recursive Schema Extraction
