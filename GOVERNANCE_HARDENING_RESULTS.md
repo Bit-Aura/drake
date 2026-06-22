@@ -41,5 +41,5 @@ Malformed Base64 Payload: `OyBybSAtcmYgLw=@`
 Safe GET Request -> Policy Status: 1 (Expected 1: Auto-Approve)
 Single DELETE Request -> Policy Status: 0 (Expected 0/2: Pending/Block)
 Campaign/Bulk CRITICAL Request -> Policy Status: 2 (Expected 2: Block)
-Policy Evaluation Latency: 0.089 ms
+Policy Evaluation Latency: 0.093 ms
 ```

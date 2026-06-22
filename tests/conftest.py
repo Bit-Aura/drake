@@ -98,7 +98,7 @@ TESTS_DIR = Path(__file__).parent.resolve()
 FIXTURES_DIR = TESTS_DIR / "fixtures"
 
 #: Absolute path to the minimal Dell iDRAC fixture
-MINI_SPEC_PATH = FIXTURES_DIR / "mini_openapi.yaml"
+MINI_SPEC_PATH = FIXTURES_DIR / "openapi-7.xx.yaml"
 
 #: Absolute path to the real Dell iDRAC spec (skipped if absent)
 REAL_SPEC_PATH = TESTS_DIR.parent / "data" / "raw_specs" / "openapi-7.xx.yaml"

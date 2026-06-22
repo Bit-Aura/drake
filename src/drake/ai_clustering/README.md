@@ -22,7 +22,17 @@ Our architecture abandons these silos. We employ a **4-Stage Hybrid Pipeline** t
 The pipeline begins by ingesting OpenAPI specifications, natively resolving recursive `$ref`, `allOf`, and `anyOf` schemas. We use high-performance vectorized mathematics to construct a semantic graph:
 - **Embedding & Path Similarity:** Endpoint metadata is embedded (`all-MiniLM-L6-v2`) and URL hierarchies are vectorized.
 - **Leiden Modularity Optimization:** We dynamically compute the "Goldilocks Zone" threshold (`0.71-0.72`) to cluster nodes mathematically. 
-- **Output:** Human-readable semantic clusters (e.g., "Firmware Updates", "Storage Provisioning") that reduce 714+ raw endpoints into ~120 optimized operational workflows, eliminating the "God Tool" context-window overload.
+- **Output:** Human-readable semantic clusters (e.g., "Firmware Updates", "Storage Provisioning") that reduce raw endpoints into optimized operational workflows, eliminating the "God Tool" context-window overload. For example, a 714-endpoint specification is naturally reduced to ~120 workflows.
+
+#### The "Goldilocks" Clustering Ratio
+*(Note: The 714-to-120 metric is an illustrative example. If a user uploads an OpenAPI spec with 5,000 endpoints, the dynamic thresholding will scale proportionately to output ~800-1,000 workflows, maintaining the optimal density).*
+
+A ratio of ~120 workflows for ~714 endpoints (averaging 5-6 endpoints per workflow) is mathematically optimal for LLM agents utilizing MCP:
+* **Natural Distribution:** It's important to note that 5-6 is the *mean average*. Because the clustering relies on actual schema dependencies and graph weights, the engine will naturally produce a distribution. A complex subsystem might yield a workflow with 12-15 endpoints, while a simple standalone action (like a server reboot) might yield a workflow with just 1 or 2 endpoints.
+* **Why not fewer workflows (e.g., 30 massive clusters)?** Leads to **Context Overload & Governance Failure**. 20+ endpoints in a single tool floods the LLM context window with irrelevant parameters, spiking hallucination risk. Furthermore, bundling safe and destructive endpoints into massive clusters prevents the Governance Engine from auto-approving safe operations.
+* **Why not more workflows (e.g., 600 micro-clusters)?** Leads to **Tool Overload & Routing Failures**. Passing 600 tools in a system prompt exhausts token limits and confuses the LLM (e.g., picking `getUser` instead of `updateUser`). It also forces the LLM to execute highly unreliable multi-step reasoning chains just to complete basic operational tasks.
+* **The Perfect Balance:** 5-6 endpoints naturally encapsulate a single entity's CRUD lifecycle (e.g., `GET/POST/PATCH/DELETE /users`), providing the LLM with exact, cohesive boundaries while keeping prompt sizes minimal.
+
 
 ### Stage 2: Schema-Aware Dependency Discovery
 Inside each semantic cluster, we extract exact producer-consumer relationships to build a Typed Dependency Graph.
