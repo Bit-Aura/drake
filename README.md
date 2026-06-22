@@ -201,6 +201,115 @@ These test prompts are designed to be intentionally vague and omit required IDs.
 
 ---
 
+## 🎬 Video Demonstration Command Guide
+
+This section outlines the step-by-step command sequence and visual actions for recorded presentations and demonstration shoots:
+
+### **Scene 1: The Problem**
+* **Visual Action**: Open the terminal.
+* **Commands**:
+  ```powershell
+  # 1. View the first 30 lines of the raw OpenAPI spec
+  head -30 data/raw_specs/openapi-7.xx.yaml
+
+  # 2. Show the massive count of operations (500+)
+  grep -c "operationId:" data/raw_specs/openapi-7.xx.yaml
+  ```
+
+### **Scene 2: Architecture Overview**
+* **Visual Action**: Display the architecture diagram on screen and hover/point to each stage (Ingestion, Clustering, Governance, FastMCP Server, Pre-flight check, Execution/Rollback).
+* **Commands**: *None (Visual slide/diagram presentation).*
+
+### **Scene 3: CLI Magic & Health**
+* **Visual Action**: Run CLI commands in the terminal to show groups, overview metrics, and system status.
+* **Commands**:
+  ```powershell
+  # 1. Show the main CLI help menu and the 7 command groups
+  drake --help
+
+  # 2. Query the SQLite database for the executive overview
+  drake overview
+
+  # 3. Perform a health check of all subsystems
+  drake health
+  ```
+
+### **Scene 4: Clustering**
+* **Visual Action**: Show the cluster statistics and output the network graph.
+* **Commands**:
+  ```powershell
+  # 1. View the semantic workflow clusters summary
+  drake cluster summary
+
+  # 2. View the generated Leiden community detection network graph
+  drake cluster graph
+  ```
+
+### **Scene 5: Governance & Guardrails**
+* **Visual Action**: Split your screen.
+  * **Left side (Terminal)**: Manage reviews.
+  * **Right side (Browser)**: Navigate to `http://localhost:3000` to show risk badges, audit tab, and UI-based reviews.
+* **Commands (Terminal)**:
+  ```powershell
+  # 1. List pending workflows waiting for human review
+  drake governance pending
+
+  # 2. Review the detailed API steps of a specific workflow (replace <id> with a pending workflow ID, e.g. wf_c_21621502)
+  drake governance review <id>
+
+  # 3. Approve the workflow to register it as a live MCP tool
+  drake governance approve <id>
+  ```
+
+### **Scene 6: AI Agent Execution**
+* **Visual Action**: Full-screen terminal. Launch the interactive agent using a local Ollama model and send prompts.
+* **Commands**:
+  ```powershell
+  # 1. Set the proxy URL environment variable (port 8001) and launch the interactive agent
+  # Note: For Windows PowerShell:
+  $env:MCP_PROXY_URL="http://localhost:8001/mcp/sse"; python scripts/interactive_agent.py
+
+  # Note: For Git Bash / Linux / macOS:
+  # MCP_PROXY_URL=http://localhost:8001/mcp/sse python scripts/interactive_agent.py
+  ```
+* **Agent Prompts to Type**:
+  1. `Check the proxy status and list available workflow tools`
+  2. `Expand the Dell RAID Service Operations workflow to show fine-grained steps`
+  3. `Collapse the Dell RAID workflow back to clean up the context`
+
+### **Scene 7: Compatibility & Rollback**
+* **Visual Action**: Check compatibility for a workflow target, then launch the agent again to execute a configuration and trigger a rollback.
+* **Commands**:
+  ```powershell
+  # 1. Run the Compatibility Cockpit check (replace <workflow_id> with your active workflow ID, e.g., wf_c_3383c7f8)
+  drake compatibility dashboard <workflow_id> --target-ip 192.168.0.120
+
+  # 2. Launch the agent again
+  $env:MCP_PROXY_URL="http://localhost:8001/mcp/sse"; python scripts/interactive_agent.py
+  ```
+* **Agent Prompts to Type**:
+  1. `Deploy the BIOS configuration setup on server 192.168.1.150 with override policy WARN_ONLY.`
+  2. `Rollback the previous configuration change on server 192.168.1.150.`
+
+### **Scene 8: The Dashboard Tour**
+* **Visual Action**: Full-screen your browser at `http://localhost:3000`. Click through the following sections:
+  * **Dashboard** (KPIs)
+  * **Workflows** (Approvals and risk analysis)
+  * **Graph** (Visual representation of Leiden clustering)
+  * **Metrics** (Token savings & endpoint reduction charts)
+  * **Audit** (SHA-256 ledger)
+* **Commands**: *None (Browser walkthrough).*
+
+### **Scene 9: Closing**
+* **Visual Action**: Bring the terminal back to full focus and show the final version output.
+* **Commands**:
+  ```powershell
+  # Show the package version to close out the demo
+  drake --version
+  ```
+
+---
+
 ## 🤖 AI Agent Terminal (Dual-Mode)
 
 Drake includes an Ollama-powered AI agent that understands natural language and can execute **both** infrastructure workflows and platform admin commands:
