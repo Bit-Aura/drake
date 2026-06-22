@@ -17,7 +17,7 @@ rules:
     reason: "Bulk destructive operations require manual approval before agent usage."
 
   - name: RequireApprovalForHighRisk
-    condition: "workflow.risk_level == 'HIGH'"
+    condition: "workflow.risk_level in ['HIGH', 'CRITICAL']"
     action: REQUIRE_APPROVAL
     
 limits:

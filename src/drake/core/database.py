@@ -568,11 +568,12 @@ def save_workflows(workflows_list: List[Dict[str, Any]]) -> None:
             rollback_version = None
 
             if wf_id in existing:
-                # Retain existing manual status if it was previously set
-                # unless governance wants to strictly overwrite it (we default to keeping user approvals)  # noqa: E501
-                approved = existing[wf_id]["approved"]
-                rejection_reason = existing[wf_id]["rejection_reason"]
-
+                # Only retain existing manual status if it was explicitly approved by a human
+                # Auto-approved workflows (approved_by is None) should accept the new policy engine decision
+                if existing[wf_id]["approved_by"] is not None:
+                    approved = existing[wf_id]["approved"]
+                    rejection_reason = existing[wf_id]["rejection_reason"]
+                
                 # System name never changes after creation
                 system_name = existing[wf_id]["system_name"]
 
