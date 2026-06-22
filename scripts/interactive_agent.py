@@ -269,7 +269,7 @@ async def decide_tool_with_llm(
         "7. Choose 'none' if the question is conversational and no tool is needed.\n"
         "8. Always verify your argument keys against the schema before responding.\n"
         "9. WORKFLOW EXECUTION: If the user asks to run, deploy, or execute a workflow (e.g., 'factory reset', 'BIOS configuration', 'firmware update'), find the matching MCP tool from the list. Map the target IP to 'target_ip'.\n"
-        "10. ROLLBACKS: If the user asks to revert, rollback, or undo a PREVIOUS action (e.g., 'revert last execution', 'rollback previous change', 'revert the firmware update'), you MUST use the 'revert_previous_action' tool and map the IP to 'server_ip'. NOTE: 'Factory reset' is considered a workflow execution, NOT a rollback.\n"
+        "10. ROLLBACKS: If the user asks to revert, rollback, or undo a PREVIOUS action (e.g., 'revert last execution', 'rollback previous change', 'revert the firmware update'), you MUST use the 'revert_previous_action' tool and map the IP to 'server_ip'. In your agent_response, explicitly state that you are reverting the action. NOTE: 'Factory reset' is considered a workflow execution, NOT a rollback.\n"
     )
 
     selection = await client.chat.completions.create(
