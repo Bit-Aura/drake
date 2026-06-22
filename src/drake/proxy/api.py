@@ -536,7 +536,7 @@ async def run_pipeline_task():
 
         # Refine workflow names using local LLM or fallbacks
         try:
-            from scripts.refine_workflow_names import refine_workflow_names
+            from drake.ai_clustering.refine_workflow_names import refine_workflow_names
             await refine_workflow_names()
             logger.info("Background Pipeline: Successfully refined workflow names.")
         except Exception as ref_err:
