@@ -3,8 +3,8 @@ version: '3.8'
 services:
   prism-mock:
     image: stoplight/prism:5
-    command: mock -h 0.0.0.0 --multiprocess=false /api/openapi-7.xx.yaml
+    command: mock -h 0.0.0.0 --multiprocess=false /api/real_world_specs/idrac_redfish_openapi.json
     volumes:
-      - ./tests/fixtures/openapi-7.xx.yaml:/api/openapi-7.xx.yaml:ro
+      - ./tests/fixtures:/api:ro
     ports:
       - "4010:4010"

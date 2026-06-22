@@ -107,6 +107,7 @@ class GovernanceMiddleware:  # noqa: E302
                 "is_read_only": risk_result["is_read_only"],
                 "actions": actions,
                 "is_bulk": len(underlying) > 1,
+                "confidence": wf.get("confidence", 0.0),
             }
 
             policy_result = self.policy_engine.evaluate(context)

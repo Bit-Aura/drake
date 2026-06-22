@@ -7,14 +7,14 @@ risk_classification:
   read_only_methods: ["GET", "HEAD"]
 
 rules:
-  - name: AutoApproveReadOnly
-    condition: "workflow.risk_level == 'LOW' and workflow.is_read_only == True"
+  - name: AutoApproveLowRisk
+    condition: "workflow.risk_level == 'LOW' and (workflow.is_read_only == True or workflow.confidence >= 0.90)"
     action: AUTO_APPROVE
 
   - name: BlockDestructiveBulk
     condition: "'DELETE' in workflow.actions and workflow.is_bulk == True"
-    action: DENY
-    reason: "Bulk destructive operations are not permitted via MCP."
+    action: REQUIRE_APPROVAL
+    reason: "Bulk destructive operations require manual approval before agent usage."
 
   - name: RequireApprovalForHighRisk
     condition: "workflow.risk_level == 'HIGH'"
