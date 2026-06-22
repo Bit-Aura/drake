@@ -109,6 +109,10 @@ Once the pipeline finishes, verify how many workflows were successfully approved
 # Check workflows that still require human review
 drake governance pending
 
+# Manually approve a specific workflow that was blocked by policy (e.g., HIGH/CRITICAL risk)
+drake governance approve <workflow_id>
+# Example: drake governance approve wf_c_616cc9a0
+
 # Check workflows that are fully certified and ready for the AI Agent
 drake governance approved
 ```
@@ -134,14 +138,36 @@ When you run this script, it orchestrates the entire stack automatically:
 At the end of the script, press **Y** to launch the interactive AI Agent Terminal.
 
 ### Step 4: Test the AI Agent
-Inside the Drake AI Agent Terminal, the agent will automatically connect to the Proxy and load all approved MCP workflows. Try copy-pasting some of these sample prompts to test its orchestration reasoning:
+Inside the Drake AI Agent Terminal, the agent will automatically connect to the Proxy and load all approved MCP workflows. 
 
-* **"What is the current status of the MCP proxy and how many workflows are loaded?"**
-* **"Show me the current BIOS settings and operations for the system `System.Embedded.1`."**
-* **"Check if the firmware update workflow `wf_c_616cc9a0` is compatible with my target server `192.168.1.100`."**
-* **"Retrieve the thermal management status and temperatures for the processor `CPU.Socket.1` on system `System.Embedded.1`."**
-* **"Update the fan speeds for the cooling fan `Fan.Embedded.1` in the chassis `System.Embedded.1`."**
-* **"Expand the Dell RAID service operations workflow into its individual steps."**
+These test prompts are designed to be intentionally vague and omit required IDs. This tests the AI's ability to semantically map your request to the correct tool, and then halt to ask you for the missing information before executing:
+
+**Test 1: Core System Diagnostics**
+* **Prompt:** *"Are you connected to the backend proxy? Give me a status report on the connection."*
+* **Expected Tool:** `get_proxy_status`
+* **What to expect:** The agent should instantly fire the tool (no params needed).
+
+**Test 2: Power Diagnostics**
+* **Prompt:** *"Can you grab the current power metrics and consumption data for my server?"*
+* **Expected Tool:** `power_management`
+* **What to expect:** The agent should realize it needs to call `power_management`, but recognize it lacks the IDs. It should ask for the `ComputerSystemId` and `ProcessorId` you want to target.
+
+**Test 3: Compatibility Engine**
+* **Prompt:** *"I need to run a compatibility check against a target server before we deploy anything to it."*
+* **Expected Tool:** `check_workflow_compatibility`
+* **What to expect:** The agent should stop and ask you for the specific `workflow_id` and the `target_ip` address.
+
+**Test 4: Thermal Monitoring**
+* **Prompt:** *"I'm worried the system might be overheating. Check the thermal sensors and cooling status."*
+* **Expected Tool:** `thermal_management` or `thermal_management_1`
+* **What to expect:** The agent should attempt to check the thermal state but halt to ask which `ChassisId` or System ID you are referring to.
+
+**Test 5: Complex Nested Management**
+* **Prompt:** *"Fetch the current metrics and capabilities for the Fibre Channel network."*
+* **Expected Tool:** `dell_f_c_management`
+* **What to expect:** The agent should map "Fibre Channel" to the tool, realize it is missing many nested IDs, and prompt you to provide them.
+
+> **Testing Tip:** When the agent replies asking for missing IDs, simply invent dummy IDs (e.g., `System.Embedded.1` or `CPU.1`) and give them back to it to watch it successfully execute the mock tool!
 
 ---
 
