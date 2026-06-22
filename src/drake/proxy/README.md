@@ -55,8 +55,8 @@ Raw HTTP requests are fragile. Dell provides the OMSDK for a reason.
 - **Mechanism:** `DellOMSDKExecutor`. An implementation of `BaseExecutor` that stubs out `authenticate` and `execute_workflow`. The proxy uses a factory pattern checking `DELL_EXECUTOR_TYPE` to hot-swap between raw HTTP and the official OMSDK, proving production-readiness for native Dell environments.
 
 ### 4. Dynamic OpenAPI Simulator Generation (Auto-Simulator)
-Testing LLM execution against live datacenter hardware during development is dangerous. Relying on static OpenAPI mocks breaks when the clustering algorithm dynamically changes the endpoint grouping.
-- **Mechanism:** The `generate_simulator.py` script reads the live SQLite `governance.db`, extracts the exact endpoints mapped by the current policy, and auto-generates a lightweight `auto_simulator.json` specification. The proxy's mock environment (powered by Docker Compose and `prism-mock`) immediately serves this dynamic spec, allowing for aggressive, zero-risk integration testing without modifying real Dell hardware.
+Testing LLM execution against live datacenter hardware during development is dangerous. Relying on static OpenAPI simulations breaks when the clustering algorithm dynamically changes the endpoint grouping.
+- **Mechanism:** The `generate_simulator.py` script reads the live SQLite `governance.db`, extracts the exact endpoints mapped by the current policy, and auto-generates a lightweight `auto_simulator.json` specification. The proxy's simulated environment (powered by Docker Compose and `prism-simulator`) immediately serves this dynamic spec, allowing for aggressive, zero-risk integration testing without modifying real Dell hardware.
 
 ---
 
