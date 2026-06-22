@@ -1429,6 +1429,11 @@
           "params": {}
         }
       ]
+    },
+    "factory_reset_test": {
+      "name": "factory_reset_test",
+      "description": "Simulated workflow with strategy NONE",
+      "steps": []
     }
   }
 }

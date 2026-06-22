@@ -268,8 +268,8 @@ async def decide_tool_with_llm(
         "6. If the tool you want to use is listed in CATEGORY 2, you MUST set tool_type to 'cli'.\n"
         "7. Choose 'none' if the question is conversational and no tool is needed.\n"
         "8. Always verify your argument keys against the schema before responding.\n"
-        "9. WORKFLOW EXECUTION: If the user asks to run, deploy, or execute a workflow (e.g., 'factory reset', 'BIOS configuration', 'firmware update'), find the matching MCP tool from the list. Map the target IP to 'target_ip'.\n"
-        "10. ROLLBACKS: If the user asks to revert, rollback, or undo a PREVIOUS action (e.g., 'revert last execution', 'rollback previous change', 'revert the firmware update'), you MUST use the 'revert_previous_action' tool and map the IP to 'server_ip'. In your agent_response, explicitly state that you are reverting the action. NOTE: 'Factory reset' is considered a workflow execution, NOT a rollback.\n"
+        "9. WORKFLOW EXECUTION: If the user asks to run, deploy, or execute a workflow (e.g., 'factory reset', 'BIOS configuration', 'firmware update'), find the matching MCP tool from the list. If no exact match is found, pick the closest one or use 'none'. DO NOT use 'revert_previous_action' for these requests. Map the target IP to 'target_ip'.\n"
+        "10. ROLLBACKS: ONLY use 'revert_previous_action' if the user EXPLICITLY asks to revert, rollback, or undo a PREVIOUS action (e.g., 'revert last execution', 'rollback previous change', 'undo'). NEVER use 'revert_previous_action' when the user asks to 'run' or 'execute' something (like a factory reset). Map the target IP to 'server_ip'.\n"
     )
 
     selection = await client.chat.completions.create(
