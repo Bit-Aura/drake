@@ -146,11 +146,25 @@ def _normalize_mcp_arguments(
 
     normalized_to_canonical = {_normalize_key(k): k for k in valid_props}
 
+    # Common parameter translations for LLM mapping errors
+    translations = {
+        "targetip": "server_ip",
+        "targetserverip": "server_ip",
+        "ip": "server_ip",
+        "ipaddress": "server_ip",
+        "serverip": "target_ip",
+        "server_ip": "target_ip",
+        "policy": "override_policy",
+    }
+
     remapped: Dict[str, Any] = {}
     for key, value in arguments.items():
-        canonical = normalized_to_canonical.get(_normalize_key(key))
+        norm_key = _normalize_key(key)
+        canonical = normalized_to_canonical.get(norm_key)
         if canonical:
             remapped[canonical] = value
+        elif norm_key in translations and translations[norm_key] in valid_props:
+            remapped[translations[norm_key]] = value
         else:
             remapped[key] = value  # keep unknown keys for error reporting
     return remapped
@@ -254,6 +268,7 @@ async def decide_tool_with_llm(
         "6. If the tool you want to use is listed in CATEGORY 2, you MUST set tool_type to 'cli'.\n"
         "7. Choose 'none' if the question is conversational and no tool is needed.\n"
         "8. Always verify your argument keys against the schema before responding.\n"
+        "9. Dynamic test tools (firmware_update_test, bios_config_test, factory_reset_test) take an optional 'target_ip' parameter. Make sure to pass the target server IP as 'target_ip' to those tools. Other tools (like revert_previous_action for all revert or rollback requests) require 'server_ip'; make sure to pass the target server IP as 'server_ip'.\n"
     )
 
     selection = await client.chat.completions.create(
@@ -427,6 +442,13 @@ async def execute_mcp_tool_and_display(
                 val = input(f"  Please provide value for '{prop}': ").strip()
                 if val:
                     arguments[prop] = val
+            
+            # Clean up unexpected/invalid keys so they don't cause validation to fail
+            valid_keys = set(schema.get("properties", {}).keys()) | {"override_policy"}
+            for k in list(arguments.keys()):
+                if k not in valid_keys:
+                    arguments.pop(k)
+                    
             valid, msg = validate_mcp_arguments(tool_name, arguments, available_mcp_tools)
 
     if not valid:
@@ -688,6 +710,15 @@ async def _run_prompt_loop(client, cli_tools_schema, mcp_session, available_mcp_
 
             tool_type = selection.tool_type.lower().strip()
             tool_name = selection.selected_tool_name.strip()
+
+            mcp_names = [t["name"] for t in available_mcp_tools]
+            cli_names = [t["name"] for t in CLI_TOOLS]
+
+            # Auto-correct tool_type based on actual tool category
+            if tool_name in mcp_names:
+                tool_type = "mcp"
+            elif tool_name in cli_names:
+                tool_type = "cli"
 
             # ── NONE: conversational, no tool needed ─────────────────────
             if tool_type == "none" or tool_name.upper() == "NONE":

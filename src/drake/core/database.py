@@ -531,7 +531,7 @@ def save_workflows(workflows_list: List[Dict[str, Any]]) -> None:
     with get_db_connection() as conn:
         # Load existing approval status for preservation
         cursor = conn.execute(
-            "SELECT id, approved, rejection_reason, system_name, display_name, generated_description FROM workflows"  # noqa: E501
+            "SELECT id, approved, rejection_reason, system_name, display_name, generated_description, approved_by, approved_at, workflow_version, execution_count, last_execution_status, rollback_version FROM workflows"  # noqa: E501
         )
         existing = {row["id"]: dict(row) for row in cursor.fetchall()}
 
