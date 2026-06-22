@@ -9,6 +9,7 @@ from drake.core.database import (
     get_db_connection,
     get_workflows,
     Workflow,
+    log_audit_event,
 )
 from .bridge import AsyncServiceBridge
 
@@ -105,6 +106,16 @@ class GovernanceCLIService:
                     )
                     conn.commit()
                 await session.commit()
+
+                # Log audit event for CLI approval
+                log_audit_event(
+                    event_type="workflow_approved",
+                    status="success",
+                    description=f"Approved workflow cluster '{wf.display_name}'",
+                    workflow_name=wf.system_name,
+                    actor="admin",
+                )
+
             from drake.cli.services.system import SystemCLIService
             SystemCLIService.notify_proxy_reload()
 
@@ -134,6 +145,15 @@ class GovernanceCLIService:
                     )
                     conn.commit()
                 await session.commit()
+
+                # Log audit event for CLI rejection
+                log_audit_event(
+                    event_type="workflow_rejected",
+                    status="success",
+                    description=f"Rejected workflow '{wf.display_name}'. Reason: {reason}",
+                    workflow_name=wf.system_name,
+                    actor="admin",
+                )
 
             from drake.cli.services.system import SystemCLIService
             SystemCLIService.notify_proxy_reload()

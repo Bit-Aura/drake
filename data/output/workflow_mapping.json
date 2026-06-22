@@ -828,6 +828,26 @@
         }
       ]
     },
+    "power_operations": {
+      "name": "power_operations",
+      "description": "Controls and monitors power states of chassis through iDRAC.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Chassis/{ChassisId}/Power",
+          "method": "GET",
+          "url": "/redfish/v1/Chassis/{ChassisId}/Power",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "PATCH_/redfish/v1/Chassis/{ChassisId}/Power",
+          "method": "PATCH",
+          "url": "/redfish/v1/Chassis/{ChassisId}/Power",
+          "params": {}
+        }
+      ]
+    },
     "battery_collection_management": {
       "name": "battery_collection_management",
       "description": "Manages battery collection via iDRAC API.",
@@ -1409,6 +1429,21 @@
           "params": {}
         }
       ]
+    },
+    "firmware_update_test": {
+      "name": "firmware_update_test",
+      "description": "Simulated workflow with strategy DUAL_BANK",
+      "steps": []
+    },
+    "bios_config_test": {
+      "name": "bios_config_test",
+      "description": "Simulated workflow with strategy SCP_SNAPSHOT",
+      "steps": []
+    },
+    "factory_reset_test": {
+      "name": "factory_reset_test",
+      "description": "Simulated workflow with strategy NONE",
+      "steps": []
     }
   }
 }
