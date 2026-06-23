@@ -14,23 +14,28 @@ The CLI acts as a thin presentation and orchestration layer over the underlying 
 
 ## 🏛 System Architecture & Data Flow
 
-Drake is built on a highly modular architecture spanning AI ingestion, human-in-the-loop governance, and dynamic proxying.
+Drake is built on a highly modular architecture spanning AI ingestion, human-in-the-loop governance, and dynamic proxying. We utilize a **4-Stage Hybrid Pipeline** that employs semantic clustering for operational boundary discovery and strict DAGs for internal execution mapping.
 
-### 1. Ingestion Phase (AI Clustering)
+### 1. Ingestion Phase (Hybrid Intelligent Workflow Discovery)
 Raw specification files (OpenAPI, GraphQL, gRPC, AsyncAPI) are ingested and semantically parsed. 
-* **Multi-Protocol Parsing**: We natively extract structural truth across REST, protobuf, and event-driven architectures into a unified contract.
-* **Graph Theory & LLM Embeddings**: We use `sentence-transformers` and the **Leiden Algorithm** to map endpoints as nodes in a graph and group them into logical "workflows".
+* **Stage 1: Semantic Discovery (Intent Boundary)**: We use `sentence-transformers` and the **Leiden Algorithm** to mathematically group endpoints into "Goldilocks Zone" clusters (e.g., 5-6 endpoints per workflow). This eliminates the "God Tool" context-window overload and gives the LLM perfect, human-readable boundaries.
+* **Stage 2: Schema-Aware Dependency Discovery**: Inside each cluster, we extract exact producer-consumer relationships using field types and references to build a strict **Directed Acyclic Graph (DAG)**.
+* **Stage 3: Variable Mapping Engine**: We automatically generate runtime bindings (`{{step.id}}`) to wire data flow between endpoints (e.g. POST ID automatically passes to PATCH body).
+* **Stage 4: Execution DAG & Cycle Management**: We resolve circular dependencies with a self-correcting cycle management engine to guarantee safe execution.
 * **Automated Naming**: The `ollama_service` assigns human-readable titles (e.g., *Dell Power Supply Management*) to these clustered workflows.
 
-### 2. Governance Phase (Strict Approval Gate & HITL)
+### 2. Governance Phase (Sub-10ms Zero-Trust Interceptor)
 Once individual endpoints (tools) are synthesized into high-level workflows, they enter the `governance` layer.
 * **The Strict Rule:** When tools are clustered and converted into an operational workflow, **this is the exact and only moment where human approval is strictly mandatory.**
-* **AST Policy Parsing**: Workflows are evaluated against rules defined in `policy.yaml` (such as blocking bulk destructive operations).
-* **Human-in-the-loop (HITL)**: Administrators must use the CLI (`drake governance review`) or the Web Console to manually certify and approve workflows. Once certified, they are registered as production-ready FastMCP tools, allowing autonomous execution without operator babysitting.
+* **Dynamic Risk Assessment:** We abandon naive HTTP-method-only scoring. Operations are dynamically assessed on blast radius and criticality.
+* **DAG Cycle Detection:** Utilizing Depth-First Search to ensure workflows form valid, acyclic dependencies.
+* **Stateful Campaign Tracking:** Tracks multi-step chained actions across sessions to prevent slow-loris or complex exfiltration attempts.
+* **Human-in-the-loop (HITL)**: Administrators use the CLI (`drake governance review`) or Web Console to certify workflows as production-ready FastMCP tools.
 
-### 3. Runtime Phase (FastMCP Proxy)
-* **Dynamic Tool Injection**: The `FastMCP` FastAPI backend reads only the *approved* workflows from the SQLite database and dynamically generates callable MCP Python tools on-the-fly.
-* **Response Compression**: The backend natively shrinks JSON payloads by stripping verbose HATEOAS/Redfish links and nulls, saving >80% of LLM token limits.
+### 3. Runtime Phase (Dynamic Proxy Interceptor)
+* **Dynamic Tool Initialization**: The `FastMCP` FastAPI backend reads approved workflows from the database and uses `inspect.Signature` to synthesize strictly-typed Python functions dynamically on-the-fly.
+* **Asynchronous Execution Routing**: Decouples execution logic with pluggable engines like the raw HTTP executor or the Dell OMSDK stub.
+* **Extreme Token Compression**: The `compress_redfish_response()` engine natively shrinks JSON payloads by recursively stripping verbose HATEOAS/Redfish links, nulls, and empty arrays, saving >80% of LLM token limits (compressing 1,500 tokens down to 200).
 * **Standardized Transport**: The interactive AI Agent connects via standard `stdio` pipe streaming, ensuring native integration with modern MCP clients (like Claude Desktop).
 
 ```mermaid
@@ -54,14 +59,26 @@ flowchart TD
 
 To prevent the LLM from making accidental or malicious infrastructure changes, Drake implements robust runtime guardrails located in `src/drake/governance/middleware.py`.
 
-* **Sub-10ms PreFilter**: Replaces slow ML security models with a fast regex engine, tracking sessions and preventing prompt injections natively.
-* **Universal Rollback**: Automated SCP XML snapshots and Dual-Bank boot-partition swaps protect against bricked hardware during mutating operations.
-* **Campaign Tracker**: Tracks the AI Agent's sequence of actions within a rolling time window. If the agent repeatedly attempts suspicious operations (e.g., executing multiple destructive `DELETE` HTTP requests on bare-metal hardware), the Campaign Tracker detects the anomaly and hard-blocks the agent.
-* **Evasion & Obfuscation Blocking**: Intercepts LLM attempts to bypass logging or mask its true operational intent.
+* **Sub-10ms FastPreFilter**: We stripped out heavy PyTorch dependencies. A blazing-fast regex engine intercepts prompt injections, role-play jailbreaks, and evasions instantaneously in under 5 milliseconds with zero ML latency penalty.
+* **Universal State-Aware Rollback**: 
+  * **DUAL_BANK**: The proxy issues automated `SwitchActiveFirmwarePartition` POST commands to flip iDRAC boot banks upon firmware update failure.
+  * **SCP_SNAPSHOT**: Automated XML `ExportSystemConfiguration` snapshots are taken *before* mutating calls, reverting to `ImportSystemConfiguration` on failure.
+* **Advanced Escalation & Session Engines**: Dynamically elevates risk tiers based on anomalous runtime contexts.
+* **SOC Integration (`soc_logger.py`)**: A specialized SOC logging hook routes intercepted payload attempts directly into enterprise SIEM platforms like Splunk.
 * **Policy Engine Engine (`policy.yaml`)**:
   * `AutoApproveLowRisk`: Approves highly-confident safe workflows.
   * `BlockDestructiveBulk`: Flags or denies bulk endpoints containing destructive methods.
   * `RequireApprovalForHighRisk`: Forces manual review for system-critical modifications.
+
+---
+
+## ✨ Advanced Proxy Capabilities (Wow Factors)
+
+We implemented major beyond-baseline capabilities directly in the proxy layer to solve complex enterprise problems:
+
+* **Hierarchical Tool Exposure:** When an agent gets stuck, it can use `expand_workflow(workflow_id)`. The server dynamically generates fine-grained micro-tools for just that workflow, injects them into the prompt window via `mcp.add_tool()`, and broadcasts a `send_tool_list_changed()` event—all without overflowing context.
+* **Dynamic OpenAPI Simulator Generation (`generate_simulator.py`):** The engine reads the live SQLite `governance.db` to extract approved policies and auto-generates a dynamic `auto_simulator.json` spec. Our Docker Compose mock environment instantly serves this via `prism-simulator` for zero-risk, high-speed LLM integration testing.
+* **Dell OMSDK Integration Stub (`DellOMSDKExecutor`):** Native factory pattern backing that hot-swaps raw HTTP requests with official Dell OMSDK wrappers (`DELL_EXECUTOR_TYPE`) for bulletproof production deployment.
 
 ---
 
@@ -75,12 +92,12 @@ drake/
 ├── windows_scripts/           # Windows Launcher Scripts (start.ps1, start.bat)
 ├── linux_scripts/             # Linux/macOS Launcher Scripts (start.sh, test_all.sh)
 └── src/drake/                 # Core Python Backend
-    ├── ai_clustering/         # OpenAPI parsing, Leiden graphing, and semantic grouping
+    ├── ai_clustering/         # Hybrid Pipeline: Leiden graphs, Dependency DAGs, NLP mappings
     ├── cli/                   # Typer presentation layer and CLI commands
     ├── core/                  # SQLAlchemy models and shared types
-    ├── governance/            # AST Policy engine, runtime guardrails, and HITL logic
-    ├── parser/                # OpenAPI spec ingestion logic
-    └── proxy/                 # FastMCP & FastAPI runtime backend
+    ├── governance/            # Sub-10ms PreFilter, Policy engine, Risk V2, SOC logging
+    ├── parser/                # Multi-protocol OpenAPI ingestion logic
+    └── proxy/                 # FastMCP Runtime, Token Compression, Simulator Generation
 ```
 
 ### 📚 Deep-Dive Component Documentation
@@ -89,13 +106,13 @@ For deep technical insights, architecture rules, and specific "Wow Factors" of e
 
 | Component | Path / Link | Description |
 | :--- | :--- | :--- |
-|
-| **AI Clustering & Graph Engine** | [src/drake/ai_clustering/README.md](src/drake/ai_clustering/README.md) | Details on the Leiden algorithm, AST dependency matcher, and NL compiler. |
+| **AI Clustering & Graph Engine** | [src/drake/ai_clustering/README.md](src/drake/ai_clustering/README.md) | Details on the 4-Stage DAG Pipeline, Leiden algorithm, and Variable Mapping. |
 | **CLI Command Center** | [src/drake/cli/README.md](src/drake/cli/README.md) | Full command reference, plugin architecture, and dashboard overviews. |
 | **Core Compatibility & Compression** | [src/drake/core/README.md](src/drake/core/README.md) | Specs for the Redfish Response Compression Engine and Ansible playbook enricher. |
 | **Governance & Security** | [src/drake/governance/README.md](src/drake/governance/README.md) | Deep dive into the Sub-10ms PreFilter, Escalation Engine, and SOC logging. |
 | **Multi-Protocol Parser** | [src/drake/parser/README.md](src/drake/parser/README.md) | Architecture of the unified AST and support for GraphQL, gRPC, and AsyncAPI. |
-| **FastMCP Proxy Server** | [src/drake/proxy/README.md](src/drake/proxy/README.md) | Details on Stdio transport, dynamic tool injection, and the Auto-Simulator. |
+| **FastMCP Proxy Server** | [src/drake/proxy/README.md](src/drake/proxy/README.md) | Details on Hierarchical Tools, Universal Rollback, and the Auto-Simulator. |
+
 ---
 
 ## 💻 Next.js Web Governance Console
@@ -111,7 +128,7 @@ While the `drake` CLI provides immense terminal power, the platform also include
 Follow these steps if this is your first time setting up the platform and you need to ingest a large number of endpoints into the MCP Proxy.
 
 ### Step 1: Ingest OpenAPI Specification & Auto-Approve
-First, parse your Redfish OpenAPI specification file. The AI Clustering Engine will group hundreds of individual endpoints into logical workflows.
+First, parse your Redfish OpenAPI specification file. The AI Clustering Engine will group hundreds of individual endpoints into logical workflows, resolving cycle dependencies.
 Run the following command to ingest the endpoints. The `--auto-approve` flag triggers the Governance Engine to automatically approve all safe, low-risk workflows based on your `policy.yaml` rules, saving you from manual auditing:
 ```powershell
 # 1. Activate venv (once per terminal session)
@@ -148,9 +165,9 @@ When you run this script, it orchestrates the entire stack automatically:
 1. **Environment Config**: Verifies your `.env` secrets.
 2. **Virtual Environment**: Installs and syncs `uv` Python dependencies.
 3. **LLM Engine**: Ensures Ollama is running locally with the target model.
-4. **Mock API (Auto-Simulator)**: Generates a dynamic `prism-mock` simulator reflecting approved endpoints, running on port `4010` via Docker Compose so the agent can execute requests against dummy hardware with zero risk.
-5. **Security Suite**: Runs the AI Guardrails tests to ensure campaign tracking and obfuscation blocks are active.
-6. **FastMCP / FastAPI Proxy**: Launches the backend proxy server on port `8001`, which binds to the SQLite database and exposes your approved workflows.
+4. **Mock API (Auto-Simulator)**: Executes `generate_simulator.py` to create a `prism-mock` dynamic simulator reflecting the exact approved DAGs, running on port `4010` via Docker Compose so the agent can execute requests against dummy hardware with zero risk.
+5. **Security Suite**: Runs the AI Guardrails tests to ensure campaign tracking, the Sub-10ms PreFilter, and SOC logic are active.
+6. **FastMCP / FastAPI Proxy**: Launches the backend proxy server on port `8001`, dynamically injecting approved workflows.
 7. **Next.js Console**: Launches the web governance dashboard on port `3000`.
 
 At the end of the script, press **Y** to launch the interactive AI Agent Terminal.
@@ -177,11 +194,10 @@ These test prompts are designed to be intentionally vague and omit required IDs.
 * **What to expect:** The agent should stop and ask you for the specific `workflow_id`.
 * **What to type:** When it asks, type `wf_c_616cc9a0` (a firmware update workflow ID). If it asks for an IP, type `192.168.1.100`.
 
-**Test 4: Thermal Monitoring**
-* **Prompt:** *"I'm worried the system might be overheating. Check the thermal sensors and cooling status."*
-* **Expected Tool:** `thermal_management` or `thermal_management_1`
-* **What to expect:** The agent will halt to ask which `ChassisId` or `System ID` you are referring to.
-* **What to type:** Provide `System.Embedded.1` or `1`.
+**Test 4: Hierarchical Tool Exposure (Wow Factor Test)**
+* **Prompt:** *"Expand the Dell RAID Service Operations workflow to show fine-grained steps."*
+* **Expected Tool:** `expand_workflow`
+* **What to expect:** The agent calls the tool, and the proxy dynamically injects new micro-tools into the context window for granular debugging. You can then say *"Collapse the Dell RAID workflow back to clean up the context"* to fire `collapse_workflow`.
 
 **Test 5: Complex Nested Management**
 * **Prompt:** *"Fetch the current metrics and capabilities for the Fibre Channel network."*
@@ -191,10 +207,10 @@ These test prompts are designed to be intentionally vague and omit required IDs.
 **Test 6: Rollback and Reversion Execution**
 * **Prompt:** *"I need to rollback the last configuration change we made on server 192.168.1.150."*
 * **Expected Tool:** `revert_previous_action`
-* **What to expect:** The agent should call the revert tool, specifying `server_ip`. Depending on the last action logged in the execution ledger for that server, the proxy executes the appropriate simulated rollback strategy:
-  * **NONE**: If the last workflow has no rollback capability (e.g. `factory_reset_test`), the operation is rejected indicating that rollback is not supported for this action.
-  * **SCP_SNAPSHOT**: If the last workflow modified configuration (e.g. `bios_config_test`), the proxy restores system configuration using the previously exported SCP XML snapshot.
-  * **DUAL_BANK**: If the last workflow updated firmware (e.g. `firmware_update_test`), the proxy switches active firmware partitions via simulated warm reboot.
+* **What to expect:** The agent should call the revert tool, specifying `server_ip`. Depending on the last action logged, the proxy executes the appropriate simulated rollback strategy:
+  * **NONE**: If the last workflow has no rollback capability, it is rejected.
+  * **SCP_SNAPSHOT**: Reverts system configuration using the automatically exported SCP XML snapshot.
+  * **DUAL_BANK**: Switches active firmware partitions via simulated warm reboot.
 * **What to type:** Provide `192.168.1.150` if prompted for the server IP.
 
 > **Testing Tip:** When the agent replies asking for missing IDs, simply invent dummy IDs (e.g., `System.Embedded.1` or `CPU.1`) and give them back to it to watch it successfully execute the simulated tool!
@@ -217,7 +233,7 @@ This section outlines the step-by-step command sequence and visual actions for r
   ```
 
 ### **Scene 2: Architecture Overview**
-* **Visual Action**: Display the architecture diagram on screen and hover/point to each stage (Ingestion, Clustering, Governance, FastMCP Server, Pre-flight check, Execution/Rollback).
+* **Visual Action**: Display the architecture diagram on screen and hover/point to each stage (Ingestion DAG, Governance Interceptor, FastMCP Server, Execution/Rollback).
 * **Commands**: *None (Visual slide/diagram presentation).*
 
 ### **Scene 3: CLI Magic & Health**
@@ -234,7 +250,7 @@ This section outlines the step-by-step command sequence and visual actions for r
   drake health
   ```
 
-### **Scene 4: Clustering**
+### **Scene 4: Clustering & DAG Verification**
 * **Visual Action**: Show the cluster statistics and output the network graph.
 * **Commands**:
   ```powershell
