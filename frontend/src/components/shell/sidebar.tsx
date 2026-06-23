@@ -2,6 +2,7 @@
 
 import {
   Activity,
+  Bot,
   GitBranch,
   LayoutDashboard,
   ListChecks,
@@ -22,6 +23,7 @@ const navIcons = {
   "/graph": GitBranch,
   "/metrics": Activity,
   "/audit": ScrollText,
+  "/agent": Bot,
 };
 
 export function Sidebar() {

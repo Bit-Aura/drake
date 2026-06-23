@@ -513,7 +513,7 @@ def run_pipeline(contract_a_data: ContractA) -> None:
 
         workflow_id = f"wf_{comm_id}"
         system_name, display_name, wf_desc, confidence = generate_semantic_label(
-            workflow_id, comm_endpoints, use_llm=True
+            workflow_id, comm_endpoints, use_llm=is_explain_mode()
         )
 
         # Deduplicate system names
