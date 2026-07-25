@@ -150,8 +150,7 @@ paths:
                   '@odata.id': /redfish/v1/UpdateService
                 Vendor: Dell
               schema:
-                $ref: >-
-                  ServiceRoot.v1_17_0.yaml#/components/schemas/ServiceRoot_v1_17_0_ServiceRoot
+                type: object
           description: The response contains a representation of the ServiceRoot resource
         default:
           content:

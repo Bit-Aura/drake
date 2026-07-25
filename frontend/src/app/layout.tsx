@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>
           <div className="flex h-screen bg-gradient-to-br from-black to-[#2a3c1f] p-4 md:p-8 overflow-hidden">
             <LayoutWrapper>
