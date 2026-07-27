@@ -50,7 +50,21 @@ if [ ! -f .env ]; then
     cp .env.example .env
 fi
 # Load env variables safely
-export $(grep -v '^#' .env | xargs)
+if [ -f .env ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Strip leading and trailing whitespace
+        line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        # Skip empty lines and comment lines
+        if [[ -z "$line" || "$line" =~ ^# ]]; then
+            continue
+        fi
+        # Strip inline comments
+        line=$(echo "$line" | cut -d'#' -f1 | sed -e 's/[[:space:]]*$//')
+        if [[ -n "$line" ]]; then
+            export "$line"
+        fi
+    done < .env
+fi
 
 if [ ! -f frontend/.env.local ]; then
     echo -e "  -> No frontend/.env.local found. Copying frontend/.env.example..."
@@ -72,6 +86,8 @@ if ! command -v uv &> /dev/null; then
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Determine if we should sync dependencies
+SYNC_DEPS=false
 if [ ! -d .venv ]; then
     echo -e "  -> Virtual environment not found. Creating .venv..."
     if command -v uv &> /dev/null; then
@@ -79,18 +95,36 @@ if [ ! -d .venv ]; then
     else
         python3 -m venv .venv
     fi
+    SYNC_DEPS=true
 fi
 
-# Sync dependencies
-echo -e "  -> Syncing dependencies..."
-if command -v uv &> /dev/null; then
-    uv sync
-    uv pip install -e .
+# Check for --sync option
+for arg in "$@"; do
+    if [ "$arg" = "--sync" ]; then
+        SYNC_DEPS=true
+    fi
+done
+
+if [ "$SYNC_DEPS" = true ]; then
+    echo -e "  -> Syncing dependencies..."
+    if command -v uv &> /dev/null; then
+        uv sync
+        uv pip install -e .
+    else
+        .venv/bin/pip install -r requirements.txt
+        .venv/bin/pip install -e .
+    fi
+    echo -e "  ${GREEN}$tick Virtual environment dependencies synced & package installed in editable mode.${NC}\n"
 else
-    .venv/bin/pip install -r requirements.txt
-    .venv/bin/pip install -e .
+    echo -e "  -> Skipping dependency sync (run with --sync or delete .venv to update)."
+    # Quick register of local packages in editable mode without reinstalling dependencies
+    if command -v uv &> /dev/null; then
+        uv pip install -e . --no-deps >/dev/null 2>&1 || true
+    else
+        .venv/bin/pip install -e . --no-deps >/dev/null 2>&1 || true
+    fi
+    echo -e "  ${GREEN}$tick Virtual environment ready.${NC}\n"
 fi
-echo -e "  ${GREEN}$tick Virtual environment dependencies synced & package installed in editable mode.${NC}\n"
 
 # ---------------------------------------------------------------------
 # Step 3: Check local LLM Engine (Ollama)
