@@ -19,6 +19,13 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   useApproveWorkflow,
   usePendingWorkflows,
   useRejectWorkflow,
@@ -327,6 +334,9 @@ export function WorkflowReviewTable() {
   const [rejecting, setRejecting] = useState<WorkflowCluster | null>(null);
   const [feedback, setFeedback] = useState<ActionFeedback | null>(null);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [riskFilter, setRiskFilter] = useState("all");
+
   useEffect(() => {
     if (!feedback) return;
     const timer = window.setTimeout(() => setFeedback(null), 5000);
@@ -379,8 +389,50 @@ export function WorkflowReviewTable() {
     );
   }
 
+  const filteredData = data.filter((workflow) => {
+    // Filter by Risk Level
+    if (riskFilter !== "all" && workflow.riskLevel !== riskFilter) {
+      return false;
+    }
+    // Search by workflow name or description
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
+      const nameMatch = workflow.workflowName?.toLowerCase().includes(query);
+      const descMatch = workflow.generatedDescription?.toLowerCase().includes(query);
+      return nameMatch || descMatch;
+    }
+    return true;
+  });
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      {/* Filtering Controls */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-white p-4 rounded-lg border border-slate-200">
+        <div className="relative flex-1">
+          <Input
+            placeholder="Search workflows by name or description..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full"
+            id="workflow-search"
+          />
+        </div>
+        <div className="w-full sm:w-[200px]">
+          <Select value={riskFilter} onValueChange={setRiskFilter}>
+            <SelectTrigger id="workflow-risk-filter">
+              <SelectValue placeholder="Filter by risk" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Risk Levels</SelectItem>
+              <SelectItem value="low">Low Risk</SelectItem>
+              <SelectItem value="medium">Medium Risk</SelectItem>
+              <SelectItem value="high">High Risk</SelectItem>
+              <SelectItem value="critical">Critical Risk</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       {feedback ? (
         <div
           aria-live="polite"
@@ -395,17 +447,24 @@ export function WorkflowReviewTable() {
         </div>
       ) : null}
 
-      {data.map((workflow) => (
-        <WorkflowCard
-          key={workflow.id}
-          workflow={workflow}
-          onApprove={handleApprove}
-          onReject={setRejecting}
-          onEdit={setEditing}
-          onViewInGraph={handleViewInGraph}
-          isApprovePending={approveWorkflow.isPending}
+      {filteredData.length === 0 ? (
+        <EmptyState
+          title="No matching workflows"
+          description="Try adjusting your search query or risk level filter."
         />
-      ))}
+      ) : (
+        filteredData.map((workflow) => (
+          <WorkflowCard
+            key={workflow.id}
+            workflow={workflow}
+            onApprove={handleApprove}
+            onReject={setRejecting}
+            onEdit={setEditing}
+            onViewInGraph={handleViewInGraph}
+            isApprovePending={approveWorkflow.isPending}
+          />
+        ))
+      )}
 
       <EditWorkflowDialog
         onOpenChange={(open) => {
@@ -434,3 +493,5 @@ export function WorkflowReviewTable() {
     </div>
   );
 }
+
+
