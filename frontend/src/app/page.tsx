@@ -1,11 +1,13 @@
 "use client";
 
-import { Activity, Database, GitBranch, ServerCog } from "lucide-react";
+import { Activity, Database, GitBranch, ServerCog, Loader2 } from "lucide-react";
 import { ErrorState } from "@/components/feedback/error-state";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOverview } from "@/hooks/use-overview";
+import { useRunPipeline, usePublishPipeline } from "@/hooks/use-workflows";
 import type { PipelineStatus } from "@/lib/types";
 
 const cards = [
@@ -39,6 +41,15 @@ function statusTone(
 
 export default function OverviewPage() {
   const { data, isLoading, error } = useOverview();
+  const runPipelineMutation = useRunPipeline();
+  const publishPipelineMutation = usePublishPipeline();
+
+  const isPipelineRunning = pipelineStages.some(
+    (stage) => data?.[stage.key] === "running"
+  );
+  const isRunPending = runPipelineMutation.isPending;
+  const isPublishPending = publishPipelineMutation.isPending;
+  const isDisabled = isPipelineRunning || isRunPending || isPublishPending;
 
   if (error) {
     return <ErrorState message={(error as Error).message} />;
@@ -52,6 +63,28 @@ export default function OverviewPage() {
           <p className="mt-2 text-sm text-[rgb(var(--muted-foreground))] max-w-xl">
             Monitor ingestion, graph clustering, approval posture, and MCP runtime registration from one governed surface.
           </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="secondary"
+            disabled={isDisabled}
+            onClick={() => runPipelineMutation.mutate()}
+          >
+            {isRunPending ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : null}
+            Run Pipeline
+          </Button>
+          <Button
+            variant="default"
+            disabled={isDisabled}
+            onClick={() => publishPipelineMutation.mutate()}
+          >
+            {isPublishPending ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : null}
+            Publish Changes
+          </Button>
         </div>
       </section>
 
