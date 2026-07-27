@@ -93,7 +93,7 @@ export default function OverviewPage() {
           const CardContentComponent = (
             <>
               <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 opacity-[0.03] rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 opacity-[0.03] rounded-bl-full -mr-8 -mt-8 transition-all duration-300 group-hover:scale-110 group-hover:opacity-[0.08]"></div>
               <CardContent className="flex flex-col pt-6 relative z-10 p-6">
                 <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100 mb-4 transition-colors group-hover:bg-emerald-100">
                   <card.icon className="h-6 w-6 text-emerald-600" />
@@ -113,7 +113,7 @@ export default function OverviewPage() {
           if (card.key === "registeredWorkflowCount") {
             return (
               <div key={card.key} className="relative">
-                <Card className="relative overflow-hidden group border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50">
+                <Card className="relative overflow-hidden group border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 hover:border-emerald-200">
                   {CardContentComponent}
                 </Card>
               </div>
@@ -121,7 +121,7 @@ export default function OverviewPage() {
           }
 
           return (
-            <Card key={card.key} className="relative overflow-hidden group border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50">
+            <Card key={card.key} className="relative overflow-hidden group border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 hover:border-emerald-200">
               {CardContentComponent}
             </Card>
           );
