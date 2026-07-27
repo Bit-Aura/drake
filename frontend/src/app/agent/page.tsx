@@ -225,7 +225,7 @@ export default function AgentPage() {
                   {/* Reasoning (Collapsible) */}
                   {msg.reasoning && (
                     <details className="group">
-                      <summary className="flex items-center gap-1.5 text-xs text-[rgb(var(--muted-foreground))] cursor-pointer hover:text-[rgb(var(--foreground))] transition-colors">
+                      <summary className="flex items-center gap-1.5 text-xs text-[rgb(var(--muted-foreground))] cursor-pointer hover:text-[rgb(var(--foreground))] transition-colors list-none [&::-webkit-details-marker]:hidden">
                         <Cpu className="w-3 h-3" />
                         Internal Reasoning
                       </summary>
