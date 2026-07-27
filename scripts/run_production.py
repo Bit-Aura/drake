@@ -5,7 +5,10 @@ from pathlib import Path
 from drake.parser.openapi_parser import OpenAPIParser
 from drake.ai_clustering.graph_clustering import run_pipeline
 from drake.core.database import init_db_sync
-from scripts.refine_workflow_names import refine_workflow_names
+from drake.ai_clustering.refine_workflow_names import refine_workflow_names
+
+from dotenv import load_dotenv
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ProductionPipeline")
