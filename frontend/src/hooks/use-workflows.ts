@@ -63,3 +63,21 @@ export function usePublishPipeline() {
     onSuccess: () => invalidateGovernanceQueries(queryClient),
   });
 }
+
+export function useSettings() {
+  return useQuery({
+    queryKey: queryKeys.settings,
+    queryFn: api.getSettings,
+  });
+}
+
+export function useUpdateSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: api.updateSettings,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.settings });
+    },
+  });
+}
+

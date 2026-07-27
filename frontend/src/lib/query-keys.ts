@@ -4,4 +4,5 @@ export const queryKeys = {
   graph: ["graph"] as const,
   metrics: ["metrics"] as const,
   audit: ["audit", "events"] as const,
+  settings: ["settings"] as const,
 };

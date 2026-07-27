@@ -1,29 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Save, Server, AlertOctagon, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {  } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useSettings, useUpdateSettings } from "@/hooks/use-workflows";
 
 export default function SettingsPage() {
+  const { data: settingsData, isLoading } = useSettings();
+  const updateSettingsMutation = useUpdateSettings();
   const [executor, setExecutor] = useState("prism");
-  const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  useEffect(() => {
+    if (settingsData?.executor) {
+      setExecutor(settingsData.executor);
+    }
+  }, [settingsData]);
+
   const handleSave = () => {
-    setIsSaving(true);
-    setSaveSuccess(false);
-    
-    // Simulate backend save
-    setTimeout(() => {
-      setIsSaving(false);
-      setSaveSuccess(true);
-      
-      setTimeout(() => setSaveSuccess(false), 3000);
-    }, 800);
+    updateSettingsMutation.mutate(executor, {
+      onSuccess: () => {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      },
+    });
   };
+
+  const isSaving = updateSettingsMutation.isPending;
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-10">

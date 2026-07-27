@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { useAuditEvents } from "@/hooks/use-audit";
 import type { AuditEvent } from "@/lib/types";
 
@@ -41,6 +42,45 @@ export function AuditTrail() {
   const { data, isLoading, error } = useAuditEvents();
   const [eventFilter, setEventFilter] = useState<(typeof eventTypes)[number]>("all");
   const [search, setSearch] = useState("");
+
+  const handleExportCSV = () => {
+    const headers = ["Date/Time", "Event Type", "Status", "Workflow", "Description", "Actor"];
+    const rows = filteredEvents.map(event => [
+      new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date(event.timestamp)),
+      event.eventType,
+      event.status,
+      event.workflowName || "",
+      event.description,
+      event.actor
+    ]);
+
+    const escapeCSV = (val: any) => {
+      if (val === null || val === undefined) return '';
+      const formatted = val.toString().replace(/"/g, '""');
+      if (formatted.includes(',') || formatted.includes('"') || formatted.includes('\n') || formatted.includes('\r')) {
+        return `"${formatted}"`;
+      }
+      return formatted;
+    };
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(escapeCSV).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "audit_trail_export.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const filteredEvents = useMemo(() => {
     if (!data) return [];
@@ -88,49 +128,52 @@ export function AuditTrail() {
           placeholder="Search by workflow, actor, or description"
           value={search}
         />
-        <Select.Root
-          value={eventFilter}
-          onValueChange={(value) => setEventFilter(value as (typeof eventTypes)[number])}
-        >
-          <Select.Trigger className="flex h-10 w-[220px] items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-slate-400" />
-              <Select.Value />
-            </div>
-            <Select.Icon>
-              <ChevronDown className="h-4 w-4 text-slate-400" />
-            </Select.Icon>
-          </Select.Trigger>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Select.Root
+            value={eventFilter}
+            onValueChange={(value) => setEventFilter(value as (typeof eventTypes)[number])}
+          >
+            <Select.Trigger className="flex h-10 w-[220px] items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-slate-400" />
+                <Select.Value />
+              </div>
+              <Select.Icon>
+                <ChevronDown className="h-4 w-4 text-slate-400" />
+              </Select.Icon>
+            </Select.Trigger>
 
-          <Select.Portal>
-            <Select.Content
-              position="popper"
-              sideOffset={4}
-              className="z-50 w-[220px] overflow-hidden rounded-xl border border-slate-100 bg-white text-slate-700 shadow-lg"
-            >
-              <Select.Viewport className="p-1">
-                {eventTypes.map((type) => (
-                  <Select.Item
-                    key={type}
-                    value={type}
-                    className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-9 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-900 transition-colors"
-                  >
-                    <Select.ItemText>
-                      <span className="capitalize">
-                        {type === "all" ? "All events" : type.replaceAll("_", " ")}
+            <Select.Portal>
+              <Select.Content
+                position="popper"
+                sideOffset={4}
+                className="z-50 w-[220px] overflow-hidden rounded-xl border border-slate-100 bg-white text-slate-700 shadow-lg"
+              >
+                <Select.Viewport className="p-1">
+                  {eventTypes.map((type) => (
+                    <Select.Item
+                      key={type}
+                      value={type}
+                      className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-9 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-900 transition-colors"
+                    >
+                      <Select.ItemText>
+                        <span className="capitalize">
+                          {type === "all" ? "All events" : type.replaceAll("_", " ")}
+                        </span>
+                      </Select.ItemText>
+                      <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+                        <Select.ItemIndicator>
+                          <Check className="h-4 w-4" />
+                        </Select.ItemIndicator>
                       </span>
-                    </Select.ItemText>
-                    <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
-                      <Select.ItemIndicator>
-                        <Check className="h-4 w-4" />
-                      </Select.ItemIndicator>
-                    </span>
-                  </Select.Item>
-                ))}
-              </Select.Viewport>
-            </Select.Content>
-          </Select.Portal>
-        </Select.Root>
+                    </Select.Item>
+                  ))}
+                </Select.Viewport>
+              </Select.Content>
+            </Select.Portal>
+          </Select.Root>
+          <Button onClick={handleExportCSV}>Export CSV</Button>
+        </div>
       </div>
 
       {!filteredEvents.length ? (

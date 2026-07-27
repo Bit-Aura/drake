@@ -51,4 +51,12 @@ export const api = {
   metrics: () => apiRequest<MetricsData>("/metrics"),
 
   auditEvents: () => apiRequest<AuditEvent[]>("/audit/events"),
+
+  getSettings: () => apiRequest<{ executor: string }>("/settings"),
+
+  updateSettings: (executor: string) =>
+    apiRequest<{ status: string; executor: string }>("/settings", {
+      method: "PUT",
+      body: JSON.stringify({ executor }),
+    }),
 };

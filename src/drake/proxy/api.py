@@ -1161,3 +1161,57 @@ async def get_workflow_explainability(workflow_id: str, target_ip: Optional[str]
     except Exception as err:
         logger.error(f"Failed to fetch explainability report: {err}")
         raise HTTPException(status_code=500, detail=str(err))
+
+
+class SettingsPayload(BaseModel):
+    executor: str = Field(..., pattern="^(prism|omsdk|mock)$")
+
+
+@app.get("/api/v1/settings")
+async def get_settings() -> Dict[str, Any]:
+    return {
+        "executor": settings.DELL_EXECUTOR_TYPE
+    }
+
+
+@app.put("/api/v1/settings", dependencies=[Depends(get_api_key)])
+async def update_settings(payload: SettingsPayload) -> Dict[str, Any]:
+    import os
+    os.environ["DELL_EXECUTOR_TYPE"] = payload.executor
+    # Also persist to .env file in root directory so it persists across server restarts
+    env_path = Path(__file__).resolve().parent.parent.parent.parent / ".env"
+    try:
+        lines = []
+        if env_path.exists():
+            with open(env_path, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+        
+        updated = False
+        new_line = f"DELL_EXECUTOR_TYPE={payload.executor}\n"
+        for i, line in enumerate(lines):
+            if line.strip().startswith("DELL_EXECUTOR_TYPE="):
+                lines[i] = new_line
+                updated = True
+                break
+        
+        if not updated:
+            lines.append(new_line)
+            
+        with open(env_path, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+            
+    except Exception as e:
+        logger.error(f"Failed to persist settings to .env file: {e}")
+        
+    await log_audit_event_async(
+        "settings_updated",
+        "success",
+        f"Updated execution engine setting to '{payload.executor}'",
+        None,
+        "admin"
+    )
+    return {
+        "status": "success",
+        "executor": payload.executor
+    }
+
