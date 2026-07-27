@@ -38,7 +38,8 @@ trap cleanup EXIT
 
 # Helper function to check port
 check_port() {
-    nc -z 127.0.0.1 $1 >/dev/null 2>&1
+    local host=${2:-127.0.0.1}
+    nc -z "$host" "$1" >/dev/null 2>&1
 }
 
 # ---------------------------------------------------------------------
@@ -50,7 +51,21 @@ if [ ! -f .env ]; then
     cp .env.example .env
 fi
 # Load env variables safely
-export $(grep -v '^#' .env | xargs)
+if [ -f .env ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Strip leading and trailing whitespace
+        line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        # Skip empty lines and comment lines
+        if [[ -z "$line" || "$line" =~ ^# ]]; then
+            continue
+        fi
+        # Strip inline comments
+        line=$(echo "$line" | cut -d'#' -f1 | sed -e 's/[[:space:]]*$//')
+        if [[ -n "$line" ]]; then
+            export "$line"
+        fi
+    done < .env
+fi
 
 if [ ! -f frontend/.env.local ]; then
     echo -e "  -> No frontend/.env.local found. Copying frontend/.env.example..."
@@ -72,6 +87,8 @@ if ! command -v uv &> /dev/null; then
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Determine if we should sync dependencies
+SYNC_DEPS=false
 if [ ! -d .venv ]; then
     echo -e "  -> Virtual environment not found. Creating .venv..."
     if command -v uv &> /dev/null; then
@@ -79,47 +96,81 @@ if [ ! -d .venv ]; then
     else
         python3 -m venv .venv
     fi
+    SYNC_DEPS=true
 fi
 
-# Sync dependencies
-echo -e "  -> Syncing dependencies..."
-if command -v uv &> /dev/null; then
-    uv sync
-    uv pip install -e .
+# Check for --sync option
+for arg in "$@"; do
+    if [ "$arg" = "--sync" ]; then
+        SYNC_DEPS=true
+    fi
+done
+
+if [ "$SYNC_DEPS" = true ]; then
+    echo -e "  -> Syncing dependencies..."
+    if command -v uv &> /dev/null; then
+        uv sync
+        uv pip install -e .
+    else
+        .venv/bin/pip install -r requirements.txt
+        .venv/bin/pip install -e .
+    fi
+    echo -e "  ${GREEN}$tick Virtual environment dependencies synced & package installed in editable mode.${NC}\n"
 else
-    .venv/bin/pip install -r requirements.txt
-    .venv/bin/pip install -e .
+    echo -e "  -> Skipping dependency sync (run with --sync or delete .venv to update)."
+    # Quick register of local packages in editable mode without reinstalling dependencies
+    if command -v uv &> /dev/null; then
+        uv pip install -e . --no-deps >/dev/null 2>&1 || true
+    else
+        .venv/bin/pip install -e . --no-deps >/dev/null 2>&1 || true
+    fi
+    echo -e "  ${GREEN}$tick Virtual environment ready.${NC}\n"
 fi
-echo -e "  ${GREEN}$tick Virtual environment dependencies synced & package installed in editable mode.${NC}\n"
 
 # ---------------------------------------------------------------------
-# Step 3: Check local LLM Engine (Ollama)
+# Step 3: Check LLM Engine (Ollama)
 # ---------------------------------------------------------------------
 echo -e "${YELLOW}[3/7] Checking LLM Engine (Ollama)...${NC}"
 OLLAMA_HOST=${OLLAMA_HOST:-http://localhost:11434}
 OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5-coder:14b}
 
-if ! check_port 11434; then
-    echo -e "  ${RED}$warn Ollama is NOT running on port 11434!${NC}"
-    if command -v ollama &> /dev/null; then
-        echo -e "  -> Attempting to start Ollama application in background..."
-        ollama serve > /dev/null 2>&1 &
-        sleep 3
+# Extract host and port from OLLAMA_HOST
+url_no_proto="${OLLAMA_HOST#*://}"
+url_no_path="${url_no_proto%%/*}"
+OLLAMA_IP="${url_no_path%%:*}"
+OLLAMA_PORT="${url_no_path##*:}"
+if [ "$OLLAMA_PORT" = "$OLLAMA_IP" ]; then
+    OLLAMA_PORT="11434"
+fi
+
+if ! check_port "$OLLAMA_PORT" "$OLLAMA_IP"; then
+    echo -e "  ${RED}$warn Ollama is NOT running on $OLLAMA_IP:$OLLAMA_PORT!${NC}"
+    if [ "$OLLAMA_IP" = "localhost" ] || [ "$OLLAMA_IP" = "127.0.0.1" ]; then
+        if command -v ollama &> /dev/null; then
+            echo -e "  -> Attempting to start Ollama application in background..."
+            ollama serve > /dev/null 2>&1 &
+            sleep 3
+        else
+            echo -e "  ${RED}[CRITICAL] Ollama executable not found in PATH.${NC}"
+            echo -e "             Please install Ollama from https://ollama.com and run 'ollama run llama3'.${NC}"
+        fi
     else
-        echo -e "  ${RED}[CRITICAL] Ollama executable not found in PATH.${NC}"
-        echo -e "             Please install Ollama from https://ollama.com and run 'ollama run llama3'.${NC}"
+        echo -e "  ${RED}[CRITICAL] Remote Ollama server at $OLLAMA_IP:$OLLAMA_PORT is unreachable.${NC}"
     fi
 fi
 
-if check_port 11434; then
+if check_port "$OLLAMA_PORT" "$OLLAMA_IP"; then
     echo -e "  ${GREEN}$tick Ollama is running.${NC}"
     if curl -s "$OLLAMA_HOST/api/tags" | grep -q "$OLLAMA_MODEL"; then
         echo -e "  ${GREEN}$tick Found LLM model: $OLLAMA_MODEL${NC}"
     else
-        echo -e "  ${YELLOW}$warn Model '$OLLAMA_MODEL' not found in local Ollama repository!${NC}"
-        echo -e "  -> Attempting to pull '$OLLAMA_MODEL' in background..."
-        echo -e "     (This might take some time depending on your connection. You can continue work.)"
-        ollama pull "$OLLAMA_MODEL" &
+        echo -e "  ${YELLOW}$warn Model '$OLLAMA_MODEL' not found in Ollama repository at $OLLAMA_HOST!${NC}"
+        if [ "$OLLAMA_IP" = "localhost" ] || [ "$OLLAMA_IP" = "127.0.0.1" ]; then
+            if command -v ollama &> /dev/null; then
+                echo -e "  -> Attempting to pull '$OLLAMA_MODEL' in background..."
+                ollama pull "$OLLAMA_MODEL" &
+            fi
+        fi
     fi
 fi
 echo ""
@@ -270,7 +321,7 @@ echo -e "  ${GREEN}- FastAPI REST Subsystems        : http://127.0.0.1:8001/docs
 echo -e "  ${GREEN}- FastMCP SSE Proxy Endpoint     : http://127.0.0.1:8001/mcp/sse${NC}"
 echo -e "  ${GREEN}- Web Agent API Server           : http://127.0.0.1:8002/docs${NC}"
 echo -e "  ${GREEN}- Mock Redfish Server (Prism)    : http://localhost:4010${NC}"
-echo -e "  ${GREEN}- Local Ollama Service           : http://localhost:11434${NC}"
+echo -e "  ${GREEN}- Ollama Service                 : $OLLAMA_HOST${NC}"
 echo -e "${CYAN}=====================================================================${NC}\n"
 
 read -p "Do you want to start the Interactive AI Agent terminal here? (Y/N) " agentChoice

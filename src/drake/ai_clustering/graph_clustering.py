@@ -292,8 +292,10 @@ def detect_communities(G: nx.Graph) -> List[Set[str]]:
 
 
 def check_ollama_status() -> bool:
+    import os
+    ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
     try:
-        urllib.request.urlopen("http://localhost:11434/api/tags", timeout=1.0)
+        urllib.request.urlopen(f"{ollama_host}/api/tags", timeout=1.0)
         return True
     except Exception:
         return False

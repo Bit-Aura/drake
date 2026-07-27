@@ -1,8 +1,524 @@
 {
   "workflows": {
+    "dell_raid_service_operations": {
+      "name": "dell_raid_service_operations",
+      "description": "Management layer for Dell Raid Service Operations. Configured with 38 underlying endpoints.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService",
+          "method": "GET",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "Action_AssignSpare_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.AssignSpare",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.AssignSpare",
+          "params": {}
+        },
+        {
+          "step_id": 3,
+          "name": "Action_BlinkTarget_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.BlinkTarget",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.BlinkTarget",
+          "params": {}
+        },
+        {
+          "step_id": 4,
+          "name": "Action_CancelBackgroundInitialization_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CancelBackgroundInitialization",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CancelBackgroundInitialization",
+          "params": {}
+        },
+        {
+          "step_id": 5,
+          "name": "Action_CancelCheckConsistency_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CancelCheckConsistency",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CancelCheckConsistency",
+          "params": {}
+        },
+        {
+          "step_id": 6,
+          "name": "Action_CancelRebuildPhysicalDisk_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CancelRebuildPhysicalDisk",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CancelRebuildPhysicalDisk",
+          "params": {}
+        },
+        {
+          "step_id": 7,
+          "name": "Action_ChangePDState_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ChangePDState",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ChangePDState",
+          "params": {}
+        },
+        {
+          "step_id": 8,
+          "name": "Action_CheckVDValues_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CheckVDValues",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CheckVDValues",
+          "params": {}
+        },
+        {
+          "step_id": 9,
+          "name": "Action_ClearControllerPreservedCache_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ClearControllerPreservedCache",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ClearControllerPreservedCache",
+          "params": {}
+        },
+        {
+          "step_id": 10,
+          "name": "Action_ClearForeignConfig_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ClearForeignConfig",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ClearForeignConfig",
+          "params": {}
+        },
+        {
+          "step_id": 11,
+          "name": "Action_ConvertToNonRAID_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ConvertToNonRAID",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ConvertToNonRAID",
+          "params": {}
+        },
+        {
+          "step_id": 12,
+          "name": "Action_ConvertToRAID_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ConvertToRAID",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ConvertToRAID",
+          "params": {}
+        },
+        {
+          "step_id": 13,
+          "name": "Action_CryptographicEraseWithPSID_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CryptographicEraseWithPSID",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.CryptographicEraseWithPSID",
+          "params": {}
+        },
+        {
+          "step_id": 14,
+          "name": "Action_DisableSecurity_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.DisableSecurity",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.DisableSecurity",
+          "params": {}
+        },
+        {
+          "step_id": 15,
+          "name": "Action_EnableControllerEncryption_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.EnableControllerEncryption",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.EnableControllerEncryption",
+          "params": {}
+        },
+        {
+          "step_id": 16,
+          "name": "Action_EnableSecurity_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.EnableSecurity",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.EnableSecurity",
+          "params": {}
+        },
+        {
+          "step_id": 17,
+          "name": "Action_GetAvailableDisks_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.GetAvailableDisks",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.GetAvailableDisks",
+          "params": {}
+        },
+        {
+          "step_id": 18,
+          "name": "Action_GetDHSDisks_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.GetDHSDisks",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.GetDHSDisks",
+          "params": {}
+        },
+        {
+          "step_id": 19,
+          "name": "Action_GetRAIDLevels_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.GetRAIDLevels",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.GetRAIDLevels",
+          "params": {}
+        },
+        {
+          "step_id": 20,
+          "name": "Action_ImportForeignConfig_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ImportForeignConfig",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ImportForeignConfig",
+          "params": {}
+        },
+        {
+          "step_id": 21,
+          "name": "Action_LockVirtualDisk_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.LockVirtualDisk",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.LockVirtualDisk",
+          "params": {}
+        },
+        {
+          "step_id": 22,
+          "name": "Action_OnlineCapacityExpansion_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.OnlineCapacityExpansion",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.OnlineCapacityExpansion",
+          "params": {}
+        },
+        {
+          "step_id": 23,
+          "name": "Action_PrepareToRemove_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.PrepareToRemove",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.PrepareToRemove",
+          "params": {}
+        },
+        {
+          "step_id": 24,
+          "name": "Action_RAIDLevelMigration_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.RAIDLevelMigration",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.RAIDLevelMigration",
+          "params": {}
+        },
+        {
+          "step_id": 25,
+          "name": "Action_ReKey_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ReKey",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ReKey",
+          "params": {}
+        },
+        {
+          "step_id": 26,
+          "name": "Action_RebuildPhysicalDisk_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.RebuildPhysicalDisk",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.RebuildPhysicalDisk",
+          "params": {}
+        },
+        {
+          "step_id": 27,
+          "name": "Action_RemoveControllerKey_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.RemoveControllerKey",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.RemoveControllerKey",
+          "params": {}
+        },
+        {
+          "step_id": 28,
+          "name": "Action_RenameVD_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.RenameVD",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.RenameVD",
+          "params": {}
+        },
+        {
+          "step_id": 29,
+          "name": "Action_ReplacePhysicalDisk_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ReplacePhysicalDisk",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ReplacePhysicalDisk",
+          "params": {}
+        },
+        {
+          "step_id": 30,
+          "name": "Action_ResetConfig_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ResetConfig",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.ResetConfig",
+          "params": {}
+        },
+        {
+          "step_id": 31,
+          "name": "Action_SetAssetName_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.SetAssetName",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.SetAssetName",
+          "params": {}
+        },
+        {
+          "step_id": 32,
+          "name": "Action_SetBootVD_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.SetBootVD",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.SetBootVD",
+          "params": {}
+        },
+        {
+          "step_id": 33,
+          "name": "Action_SetControllerKey_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.SetControllerKey",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.SetControllerKey",
+          "params": {}
+        },
+        {
+          "step_id": 34,
+          "name": "Action_StartPatrolRead_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.StartPatrolRead",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.StartPatrolRead",
+          "params": {}
+        },
+        {
+          "step_id": 35,
+          "name": "Action_StopPatrolRead_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.StopPatrolRead",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.StopPatrolRead",
+          "params": {}
+        },
+        {
+          "step_id": 36,
+          "name": "Action_UnBlinkTarget_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.UnBlinkTarget",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.UnBlinkTarget",
+          "params": {}
+        },
+        {
+          "step_id": 37,
+          "name": "Action_UnLockSecureForeignConfig_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.UnLockSecureForeignConfig",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.UnLockSecureForeignConfig",
+          "params": {}
+        },
+        {
+          "step_id": 38,
+          "name": "Action_UnassignSpare_/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.UnassignSpare",
+          "method": "POST",
+          "url": "/redfish/v1/Systems/{ComputerSystemId}/Oem/Dell/DellRaidService/Actions/DellRaidService.UnassignSpare",
+          "params": {}
+        }
+      ]
+    },
+    "dell_l_c_service_operations": {
+      "name": "dell_l_c_service_operations",
+      "description": "Handles lifecycle management tasks for Dell servers.",
+      "steps": [
+        {
+          "step_id": 1,
+          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService",
+          "method": "GET",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService",
+          "params": {}
+        },
+        {
+          "step_id": 2,
+          "name": "Action_ClearProvisioningServer_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ClearProvisioningServer",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ClearProvisioningServer",
+          "params": {}
+        },
+        {
+          "step_id": 3,
+          "name": "Action_DeleteAutoDiscoveryClientCerts_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.DeleteAutoDiscoveryClientCerts",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.DeleteAutoDiscoveryClientCerts",
+          "params": {}
+        },
+        {
+          "step_id": 4,
+          "name": "Action_DeleteAutoDiscoveryServerPublicKey_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.DeleteAutoDiscoveryServerPublicKey",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.DeleteAutoDiscoveryServerPublicKey",
+          "params": {}
+        },
+        {
+          "step_id": 5,
+          "name": "Action_DownloadClientCerts_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.DownloadClientCerts",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.DownloadClientCerts",
+          "params": {}
+        },
+        {
+          "step_id": 6,
+          "name": "Action_ExportCompleteLCLog_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportCompleteLCLog",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportCompleteLCLog",
+          "params": {}
+        },
+        {
+          "step_id": 7,
+          "name": "Action_ExportFactoryConfiguration_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportFactoryConfiguration",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportFactoryConfiguration",
+          "params": {}
+        },
+        {
+          "step_id": 8,
+          "name": "Action_ExportHWInventory_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportHWInventory",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportHWInventory",
+          "params": {}
+        },
+        {
+          "step_id": 9,
+          "name": "Action_ExportLCLog_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportLCLog",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportLCLog",
+          "params": {}
+        },
+        {
+          "step_id": 10,
+          "name": "Action_ExportSVGFile_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportSVGFile",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportSVGFile",
+          "params": {}
+        },
+        {
+          "step_id": 11,
+          "name": "Action_ExportServerScreenShot_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportServerScreenShot",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportServerScreenShot",
+          "params": {}
+        },
+        {
+          "step_id": 12,
+          "name": "Action_ExportTechSupportReport_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportTechSupportReport",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportTechSupportReport",
+          "params": {}
+        },
+        {
+          "step_id": 13,
+          "name": "Action_ExportVideoLog_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportVideoLog",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportVideoLog",
+          "params": {}
+        },
+        {
+          "step_id": 14,
+          "name": "Action_ExportePSADiagnosticsResult_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportePSADiagnosticsResult",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExportePSADiagnosticsResult",
+          "params": {}
+        },
+        {
+          "step_id": 15,
+          "name": "Action_ExposeiSMInstallerToHostOS_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExposeiSMInstallerToHostOS",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ExposeiSMInstallerToHostOS",
+          "params": {}
+        },
+        {
+          "step_id": 16,
+          "name": "Action_GetRSStatus_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.GetRSStatus",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.GetRSStatus",
+          "params": {}
+        },
+        {
+          "step_id": 17,
+          "name": "Action_GetRemoteServicesAPIStatus_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.GetRemoteServicesAPIStatus",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.GetRemoteServicesAPIStatus",
+          "params": {}
+        },
+        {
+          "step_id": 18,
+          "name": "Action_InsertCommentInLCLog_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.InsertCommentInLCLog",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.InsertCommentInLCLog",
+          "params": {}
+        },
+        {
+          "step_id": 19,
+          "name": "Action_LCWipe_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.LCWipe",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.LCWipe",
+          "params": {}
+        },
+        {
+          "step_id": 20,
+          "name": "Action_ReInitiateAutoDiscovery_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ReInitiateAutoDiscovery",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ReInitiateAutoDiscovery",
+          "params": {}
+        },
+        {
+          "step_id": 21,
+          "name": "Action_ReInitiateDHS_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ReInitiateDHS",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.ReInitiateDHS",
+          "params": {}
+        },
+        {
+          "step_id": 22,
+          "name": "Action_RunePSADiagnostics_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.RunePSADiagnostics",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.RunePSADiagnostics",
+          "params": {}
+        },
+        {
+          "step_id": 23,
+          "name": "Action_SupportAssistAcceptEULA_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistAcceptEULA",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistAcceptEULA",
+          "params": {}
+        },
+        {
+          "step_id": 24,
+          "name": "Action_SupportAssistClearAutoCollectSchedule_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistClearAutoCollectSchedule",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistClearAutoCollectSchedule",
+          "params": {}
+        },
+        {
+          "step_id": 25,
+          "name": "Action_SupportAssistCollection_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistCollection",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistCollection",
+          "params": {}
+        },
+        {
+          "step_id": 26,
+          "name": "Action_SupportAssistExportLastCollection_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistExportLastCollection",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistExportLastCollection",
+          "params": {}
+        },
+        {
+          "step_id": 27,
+          "name": "Action_SupportAssistGetAutoCollectSchedule_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistGetAutoCollectSchedule",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistGetAutoCollectSchedule",
+          "params": {}
+        },
+        {
+          "step_id": 28,
+          "name": "Action_SupportAssistGetEULAStatus_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistGetEULAStatus",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistGetEULAStatus",
+          "params": {}
+        },
+        {
+          "step_id": 29,
+          "name": "Action_SupportAssistRegister_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistRegister",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistRegister",
+          "params": {}
+        },
+        {
+          "step_id": 30,
+          "name": "Action_SupportAssistSetAutoCollectSchedule_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistSetAutoCollectSchedule",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistSetAutoCollectSchedule",
+          "params": {}
+        },
+        {
+          "step_id": 31,
+          "name": "Action_SupportAssistUploadLastCollection_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistUploadLastCollection",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SupportAssistUploadLastCollection",
+          "params": {}
+        },
+        {
+          "step_id": 32,
+          "name": "Action_SystemErase_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SystemErase",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.SystemErase",
+          "params": {}
+        },
+        {
+          "step_id": 33,
+          "name": "Action_TestNetworkShare_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.TestNetworkShare",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.TestNetworkShare",
+          "params": {}
+        },
+        {
+          "step_id": 34,
+          "name": "Action_UpdateOSAppHealthData_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.UpdateOSAppHealthData",
+          "method": "POST",
+          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellLCService/Actions/DellLCService.UpdateOSAppHealthData",
+          "params": {}
+        }
+      ]
+    },
     "dell_f_c_management": {
       "name": "dell_f_c_management",
-      "description": "Manages Fibre Channel configurations and statistics.",
+      "description": "Observability layer for Dell F C Management. Configured with 15 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -113,7 +629,7 @@
     },
     "dell_assembly_collection_management": {
       "name": "dell_assembly_collection_management",
-      "description": "Gathers and manages assembly details from Dell Chassis via Redfish APIs.",
+      "description": "Observability layer for Dell Assembly Collection Management. Configured with 8 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -175,7 +691,7 @@
     },
     "dell_infini_band_management": {
       "name": "dell_infini_band_management",
-      "description": "Retrieves detailed information and metrics for Dell InfiniBand and NIC devices.",
+      "description": "Observability layer for Dell Infini Band Management. Configured with 7 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -230,7 +746,7 @@
     },
     "dell_controller_management": {
       "name": "dell_controller_management",
-      "description": "Retrieves detailed information about Dell storage controllers and related components.",
+      "description": "Observability layer for Dell Controller Management. Configured with 5 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -271,7 +787,7 @@
     },
     "dell_p_c_ie_s_s_d_management": {
       "name": "dell_p_c_ie_s_s_d_management",
-      "description": "Retrieves information about Dell storage drives and PCIe SSDs.",
+      "description": "Observability layer for Dell P C Ie S S D Management. Configured with 5 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -312,7 +828,7 @@
     },
     "heater_management": {
       "name": "heater_management",
-      "description": "Monitors and controls heaters within thermal subsystems of Dell chassis using iDRAC API.",
+      "description": "Observability layer for Heater Management. Configured with 4 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -346,7 +862,7 @@
     },
     "dell_enclosure_management": {
       "name": "dell_enclosure_management",
-      "description": "Manages Dell enclosures via iDRAC API.",
+      "description": "Observability layer for Dell Enclosure Management. Configured with 4 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -380,7 +896,7 @@
     },
     "message_registry_management": {
       "name": "message_registry_management",
-      "description": "Manages message registry retrieval and operations via Redfish API.",
+      "description": "Observability layer for Message Registry Management. Configured with 4 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -414,7 +930,7 @@
     },
     "dell_infini_band_capabilities_collection_management": {
       "name": "dell_infini_band_capabilities_collection_management",
-      "description": "Retrieves capabilities for Dell InfiniBand and NIC devices.",
+      "description": "Observability layer for Dell Infini Band Capabilities Collection Management. Configured with 4 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -448,7 +964,7 @@
     },
     "dell_processor_management": {
       "name": "dell_processor_management",
-      "description": "Retrieves processor details from Dell systems via iDRAC API.",
+      "description": "Observability layer for Dell Processor Management. Configured with 3 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -475,7 +991,7 @@
     },
     "dell_accelerator_management": {
       "name": "dell_accelerator_management",
-      "description": "Retrieves information about Dell accelerators within a system.",
+      "description": "Observability layer for Dell Accelerator Management. Configured with 3 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -502,7 +1018,7 @@
     },
     "dell_memory_management": {
       "name": "dell_memory_management",
-      "description": "Retrieves detailed memory information using Dell iDRAC API.",
+      "description": "Observability layer for Dell Memory Management. Configured with 3 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -529,7 +1045,7 @@
     },
     "dell_f_c_capabilities_collection_management": {
       "name": "dell_f_c_capabilities_collection_management",
-      "description": "Manages Dell Fibre Channel capabilities, port metrics, and statistics.",
+      "description": "Observability layer for Dell F C Capabilities Collection Management. Configured with 3 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -556,7 +1072,7 @@
     },
     "dell_infini_band_port_metrics_collection_management": {
       "name": "dell_infini_band_port_metrics_collection_management",
-      "description": "Collects metrics for Dell InfiniBand and NIC ports using iDRAC API.",
+      "description": "Observability layer for Dell Infini Band Port Metrics Collection Management. Configured with 3 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -583,7 +1099,7 @@
     },
     "dell_power_supply_collection_management": {
       "name": "dell_power_supply_collection_management",
-      "description": "Collects and manages power supply information for Dell systems using iDRAC APIs.",
+      "description": "Observability layer for Dell Power Supply Collection Management. Configured with 3 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -610,7 +1126,7 @@
     },
     "dell_firmware_image_hash_management": {
       "name": "dell_firmware_image_hash_management",
-      "description": "Manages firmware image hashes for secure boot validation.",
+      "description": "Observability layer for Dell Firmware Image Hash Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -630,7 +1146,7 @@
     },
     "dell_switch_connection_management": {
       "name": "dell_switch_connection_management",
-      "description": "Manage network switch connections using Dell iDRAC API.",
+      "description": "Observability layer for Dell Switch Connection Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -650,7 +1166,7 @@
     },
     "component_integrity_management": {
       "name": "component_integrity_management",
-      "description": "Monitors and manages the integrity of system components.",
+      "description": "Observability layer for Component Integrity Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -670,7 +1186,7 @@
     },
     "dell_p_c_ie_s_s_d_back_plane_management": {
       "name": "dell_p_c_ie_s_s_d_back_plane_management",
-      "description": "Manages Dell PCIe SSD backplanes through iDRAC API.",
+      "description": "Observability layer for Dell P C Ie S S D Back Plane Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -690,7 +1206,7 @@
     },
     "power_management": {
       "name": "power_management",
-      "description": "Collects power metrics for processors and FPGAs via iDRAC API.",
+      "description": "Observability layer for Power Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -710,7 +1226,7 @@
     },
     "dell_rollup_status_management": {
       "name": "dell_rollup_status_management",
-      "description": "Queries Dell system rollup status via iDRAC API.",
+      "description": "Observability layer for Dell Rollup Status Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -730,7 +1246,7 @@
     },
     "battery_collection_management": {
       "name": "battery_collection_management",
-      "description": "Collects status and performance metrics of server batteries.",
+      "description": "Observability layer for Battery Collection Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -750,7 +1266,7 @@
     },
     "dell_network_transceiver_collection_management": {
       "name": "dell_network_transceiver_collection_management",
-      "description": "Gathers metrics and information on Dell network transceivers.",
+      "description": "Observability layer for Dell Network Transceiver Collection Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -770,7 +1286,7 @@
     },
     "ethernet_interface_management": {
       "name": "ethernet_interface_management",
-      "description": "Manages Ethernet interfaces via iDRAC API.",
+      "description": "Observability layer for Ethernet Interface Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -790,7 +1306,7 @@
     },
     "thermal_management": {
       "name": "thermal_management",
-      "description": "Monitors and manages thermal metrics for Dell systems.",
+      "description": "Observability layer for Thermal Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -810,7 +1326,7 @@
     },
     "fan_management": {
       "name": "fan_management",
-      "description": "Monitors and manages fan status in the chassis thermal subsystem.",
+      "description": "Observability layer for Fan Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -830,7 +1346,7 @@
     },
     "dell_network_transceiver_management": {
       "name": "dell_network_transceiver_management",
-      "description": "Monitors network transceivers using Dell iDRAC API.",
+      "description": "Observability layer for Dell Network Transceiver Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -850,7 +1366,7 @@
     },
     "json_schema_file_management": {
       "name": "json_schema_file_management",
-      "description": "Retrieves JSON schema files via iDRAC API.",
+      "description": "Observability layer for Json Schema File Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -868,29 +1384,9 @@
         }
       ]
     },
-    "dell_time_service_operations": {
-      "name": "dell_time_service_operations",
-      "description": "Manage time settings on Dell iDRAC.",
-      "steps": [
-        {
-          "step_id": 1,
-          "name": "GET_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellTimeService",
-          "method": "GET",
-          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellTimeService",
-          "params": {}
-        },
-        {
-          "step_id": 2,
-          "name": "Action_ManageTime_/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellTimeService/Actions/DellTimeService.ManageTime",
-          "method": "POST",
-          "url": "/redfish/v1/Managers/{ManagerId}/Oem/Dell/DellTimeService/Actions/DellTimeService.ManageTime",
-          "params": {}
-        }
-      ]
-    },
     "dell_network_transceiver_management_1": {
       "name": "dell_network_transceiver_management_1",
-      "description": "Monitors and manages network transceiver metrics and configurations.",
+      "description": "Observability layer for Dell Network Transceiver Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -910,7 +1406,7 @@
     },
     "simple_storage_management": {
       "name": "simple_storage_management",
-      "description": "Monitors and manages simple storage devices on the system.",
+      "description": "Observability layer for Simple Storage Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -930,7 +1426,7 @@
     },
     "dell_p_c_ie_s_s_d_collection_management": {
       "name": "dell_p_c_ie_s_s_d_collection_management",
-      "description": "Manages the collection of Dell PCIe SSDs within a system.",
+      "description": "Observability layer for Dell P C Ie S S D Collection Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -950,7 +1446,7 @@
     },
     "dell_virtual_disk_management": {
       "name": "dell_virtual_disk_management",
-      "description": "Retrieves details of virtual disks managed by Dell iDRAC.",
+      "description": "Observability layer for Dell Virtual Disk Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -970,7 +1466,7 @@
     },
     "dell_software_inventory_management": {
       "name": "dell_software_inventory_management",
-      "description": "Retrieves firmware inventory for Dell systems via iDRAC API.",
+      "description": "Observability layer for Dell Software Inventory Management. Configured with 2 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -990,7 +1486,7 @@
     },
     "service_root_management": {
       "name": "service_root_management",
-      "description": "Retrieves the root service information from iDRAC.",
+      "description": "Observability layer for Service Root Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1003,7 +1499,7 @@
     },
     "network_port_management": {
       "name": "network_port_management",
-      "description": "Manages network port configurations via iDRAC API.",
+      "description": "Observability layer for Network Port Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1016,7 +1512,7 @@
     },
     "p_c_ie_slots_management": {
       "name": "p_c_ie_slots_management",
-      "description": "Handles PCIe slot operations via iDRAC API.",
+      "description": "Observability layer for P C Ie Slots Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1029,7 +1525,7 @@
     },
     "battery_management": {
       "name": "battery_management",
-      "description": "Monitors and manages battery status using iDRAC API.",
+      "description": "Observability layer for Battery Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1042,7 +1538,7 @@
     },
     "power_supply_metrics_management": {
       "name": "power_supply_metrics_management",
-      "description": "Manages and retrieves power supply metrics via iDRAC API.",
+      "description": "Observability layer for Power Supply Metrics Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1055,7 +1551,7 @@
     },
     "processor_collection_management": {
       "name": "processor_collection_management",
-      "description": "Manages processor collection and subprocessor information via iDRAC API.",
+      "description": "Observability layer for Processor Collection Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1068,7 +1564,7 @@
     },
     "thermal_management_1": {
       "name": "thermal_management_1",
-      "description": "Monitors chassis thermal status via iDRAC API.",
+      "description": "Observability layer for Thermal Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1081,7 +1577,7 @@
     },
     "dell_f_c_collection_management": {
       "name": "dell_f_c_collection_management",
-      "description": "Manages Fiber Channel collection for Dell systems via iDRAC.",
+      "description": "Observability layer for Dell F C Collection Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1094,7 +1590,7 @@
     },
     "dell_assembly_management": {
       "name": "dell_assembly_management",
-      "description": "Retrieves information about Dell assemblies using iDRAC API.",
+      "description": "Observability layer for Dell Assembly Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1107,7 +1603,7 @@
     },
     "dell_chassis_management": {
       "name": "dell_chassis_management",
-      "description": "Manages chassis operations using iDRAC API.",
+      "description": "Observability layer for Dell Chassis Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1120,7 +1616,7 @@
     },
     "dell_enclosure_fan_sensor_management": {
       "name": "dell_enclosure_fan_sensor_management",
-      "description": "Monitors and manages fan sensors in Dell enclosure systems via iDRAC API.",
+      "description": "Observability layer for Dell Enclosure Fan Sensor Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1133,7 +1629,7 @@
     },
     "dell_enclosure_temperature_sensor_management": {
       "name": "dell_enclosure_temperature_sensor_management",
-      "description": "Monitors and manages temperature sensors in Dell enclosures.",
+      "description": "Observability layer for Dell Enclosure Temperature Sensor Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1146,7 +1642,7 @@
     },
     "dell_power_supply_management": {
       "name": "dell_power_supply_management",
-      "description": "Monitors and retrieves power supply status using Dell iDRAC API.",
+      "description": "Observability layer for Dell Power Supply Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1159,7 +1655,7 @@
     },
     "dell_enclosure_e_m_m_management": {
       "name": "dell_enclosure_e_m_m_management",
-      "description": "Manages Dell enclosure EMM settings via iDRAC API.",
+      "description": "Observability layer for Dell Enclosure E M M Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1172,7 +1668,7 @@
     },
     "dell_enclosure_management_1": {
       "name": "dell_enclosure_management_1",
-      "description": "Retrieve detailed status of Dell enclosure via iDRAC API.",
+      "description": "Observability layer for Dell Enclosure Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1185,7 +1681,7 @@
     },
     "dell_p_c_ie_s_s_d_back_plane_management_1": {
       "name": "dell_p_c_ie_s_s_d_back_plane_management_1",
-      "description": "Manages Dell PCIe SSD backplane configurations via iDRAC API.",
+      "description": "Observability layer for Dell P C Ie S S D Back Plane Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1198,7 +1694,7 @@
     },
     "dell_enclosure_power_supply_management": {
       "name": "dell_enclosure_power_supply_management",
-      "description": "Manages power supply for Dell enclosures using iDRAC API.",
+      "description": "Observability layer for Dell Enclosure Power Supply Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1211,7 +1707,7 @@
     },
     "manager_diagnostic_data_management": {
       "name": "manager_diagnostic_data_management",
-      "description": "Retrieves diagnostic data for the specified manager.",
+      "description": "Observability layer for Manager Diagnostic Data Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1224,7 +1720,7 @@
     },
     "dell_opaque_management_data_management": {
       "name": "dell_opaque_management_data_management",
-      "description": "Retrieves opaque management data using iDRAC API.",
+      "description": "Observability layer for Dell Opaque Management Data Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1237,7 +1733,7 @@
     },
     "privilege_registry_management": {
       "name": "privilege_registry_management",
-      "description": "Manages and retrieves privilege registry information.",
+      "description": "Observability layer for Privilege Registry Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1250,7 +1746,7 @@
     },
     "event_management": {
       "name": "event_management",
-      "description": "Monitors and manages system events via iDRAC API.",
+      "description": "Observability layer for Event Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1263,7 +1759,7 @@
     },
     "attribute_registry_management": {
       "name": "attribute_registry_management",
-      "description": "Manages BIOS attributes via iDRAC API.",
+      "description": "Observability layer for Attribute Registry Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1276,7 +1772,7 @@
     },
     "dell_boot_sources_registry_management": {
       "name": "dell_boot_sources_registry_management",
-      "description": "Manages boot sources configuration via Dell iDRAC API.",
+      "description": "Observability layer for Dell Boot Sources Registry Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1289,7 +1785,7 @@
     },
     "v_lan_network_interface_management": {
       "name": "v_lan_network_interface_management",
-      "description": "Manages VLAN configurations for network interfaces.",
+      "description": "Observability layer for V Lan Network Interface Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1302,7 +1798,7 @@
     },
     "dell_g_p_u_sensor_management": {
       "name": "dell_g_p_u_sensor_management",
-      "description": "Monitors and manages GPU sensors via iDRAC API.",
+      "description": "Observability layer for Dell G P U Sensor Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1315,7 +1811,7 @@
     },
     "dell_presence_and_status_sensor_management": {
       "name": "dell_presence_and_status_sensor_management",
-      "description": "Retrieves presence and status information for sensors on Dell systems via iDRAC API.",
+      "description": "Observability layer for Dell Presence And Status Sensor Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1328,7 +1824,7 @@
     },
     "dell_sensor_management": {
       "name": "dell_sensor_management",
-      "description": "Retrieves sensor information for specified Dell systems.",
+      "description": "Observability layer for Dell Sensor Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1341,7 +1837,7 @@
     },
     "dell_slot_management": {
       "name": "dell_slot_management",
-      "description": "Manages slot configurations on Dell systems using iDRAC API.",
+      "description": "Observability layer for Dell Slot Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1354,7 +1850,7 @@
     },
     "dell_video_network_management": {
       "name": "dell_video_network_management",
-      "description": "Manages video network settings on Dell systems via iDRAC API.",
+      "description": "Observability layer for Dell Video Network Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1367,7 +1863,7 @@
     },
     "dell_p_c_ie_function_management": {
       "name": "dell_p_c_ie_function_management",
-      "description": "Manages PCIe function configurations via iDRAC API.",
+      "description": "Observability layer for Dell P C Ie Function Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1380,7 +1876,7 @@
     },
     "dell_virtual_disk_collection_management": {
       "name": "dell_virtual_disk_collection_management",
-      "description": "Retrieves and manages virtual disk collections via iDRAC API.",
+      "description": "Observability layer for Dell Virtual Disk Collection Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1393,7 +1889,7 @@
     },
     "dell_n_v_me_s_m_a_r_t_attributes_management": {
       "name": "dell_n_v_me_s_m_a_r_t_attributes_management",
-      "description": "Manages Dell NVMe drive SMART attributes via iDRAC API.",
+      "description": "Observability layer for Dell N V Me S M A R T Attributes Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1406,7 +1902,7 @@
     },
     "dell_p_c_ie_s_s_d_extender_management": {
       "name": "dell_p_c_ie_s_s_d_extender_management",
-      "description": "Manages PCIe SSD extenders via Dell iDRAC API.",
+      "description": "Observability layer for Dell P C Ie S S D Extender Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1419,7 +1915,7 @@
     },
     "dell_software_inventory_management_1": {
       "name": "dell_software_inventory_management_1",
-      "description": "Retrieves software inventory details from Dell iDRAC.",
+      "description": "Observability layer for Dell Software Inventory Management. Configured with 1 underlying endpoints.",
       "steps": [
         {
           "step_id": 1,
@@ -1429,11 +1925,6 @@
           "params": {}
         }
       ]
-    },
-    "factory_reset_test": {
-      "name": "factory_reset_test",
-      "description": "Simulated workflow with strategy NONE",
-      "steps": []
     }
   }
 }

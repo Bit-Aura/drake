@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from typing import Any
 
 import instructor
@@ -13,8 +14,8 @@ class WorkflowValidationError(Exception):  # noqa: E302
     pass
 
 class Settings:  # noqa: E302
-    OLLAMA_MODEL = "qwen2.5-coder:14b"
-    OLLAMA_TIMEOUT = 120.0
+    OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5-coder:14b")
+    OLLAMA_TIMEOUT = float(os.environ.get("OLLAMA_TIMEOUT", "120.0"))
 
 settings = Settings()  # noqa: E305
 
@@ -41,10 +42,11 @@ class OllamaService:
         logger: logging.Logger | None = None,
     ) -> None:
         """Initialize a local Ollama client."""
+        host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
         self._model = model
         self._timeout = timeout
         self._logger = logger or logging.getLogger(__name__)
-        self._client = ollama.Client(timeout=timeout)
+        self._client = ollama.Client(host=host, timeout=timeout)
         self._structured_output_library = instructor
 
     def generate_workflow_mapping(self, prompt: str) -> dict[str, Any]:
