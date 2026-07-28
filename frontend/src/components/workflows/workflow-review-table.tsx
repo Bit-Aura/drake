@@ -42,6 +42,13 @@ const riskTone: Record<RiskLevel, "success" | "warning" | "danger" | "neutral"> 
   critical: "danger",
 };
 
+const riskCardStyles: Record<RiskLevel, string> = {
+  low: "border-emerald-200 bg-emerald-50/20 hover:border-emerald-300",
+  medium: "border-amber-200 bg-amber-50/20 hover:border-amber-300",
+  high: "border-rose-200 bg-rose-50/20 hover:border-rose-300",
+  critical: "border-rose-200 bg-rose-50/20 hover:border-rose-300",
+};
+
 type ActionFeedback = {
   type: "success" | "error";
   message: string;
@@ -231,7 +238,7 @@ function WorkflowCard({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Card className="p-4" key={workflow.id}>
+    <div className={`rounded-2xl border shadow-sm text-[rgb(var(--foreground))] p-4 transition-colors ${riskCardStyles[workflow.riskLevel]}`} key={workflow.id}>
       <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
@@ -321,7 +328,7 @@ function WorkflowCard({
           </Link>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
