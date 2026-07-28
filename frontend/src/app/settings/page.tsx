@@ -89,7 +89,12 @@ export default function SettingsPage() {
               >
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-semibold text-slate-900">Prism Simulation</h3>
-                  {executor === "prism" && <Badge tone="success">Active</Badge>}
+                  {executor === "prism" && (
+                    <div className="flex items-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse mr-2 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+                      <Badge tone="success">Active</Badge>
+                    </div>
+                  )}
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed">
                   Routes all requests to a local Prism mock server. Safest for testing OpenAPI spec integrity without real hardware.
@@ -106,7 +111,12 @@ export default function SettingsPage() {
               >
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-semibold text-slate-900">Live iDRAC (OMSDK)</h3>
-                  {executor === "omsdk" && <Badge tone="success">Active</Badge>}
+                  {executor === "omsdk" && (
+                    <div className="flex items-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse mr-2 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+                      <Badge tone="success">Active</Badge>
+                    </div>
+                  )}
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed">
                   Routes directly to live Dell PowerEdge servers via the OpenManage SDK. Requires network line-of-sight.
@@ -123,7 +133,12 @@ export default function SettingsPage() {
               >
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-semibold text-slate-900">Unit Test Mock</h3>
-                  {executor === "mock" && <Badge tone="success">Active</Badge>}
+                  {executor === "mock" && (
+                    <div className="flex items-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse mr-2 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+                      <Badge tone="success">Active</Badge>
+                    </div>
+                  )}
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed">
                   Static JSON response mocks. Used primarily during the CI/CD pipeline integration testing phase.
