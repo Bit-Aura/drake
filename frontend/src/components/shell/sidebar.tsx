@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 
 import { isActiveRoute, navItems } from "@/components/shell/nav-items";
 import { cn } from "@/lib/utils";
+import { usePendingWorkflows } from "@/hooks/use-workflows";
 
 const navIcons = {
   "/": LayoutDashboard,
@@ -28,6 +29,8 @@ const navIcons = {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { data: pendingWorkflows } = usePendingWorkflows();
+  const pendingCount = pendingWorkflows?.length || 0;
 
   return (
     <aside className="hidden w-64 shrink-0 bg-white lg:flex flex-col border-r border-[rgb(var(--border))] rounded-l-3xl">
@@ -47,6 +50,7 @@ export function Sidebar() {
       <nav aria-label="Primary navigation" className="space-y-1.5 px-4 flex-1">
         {navItems.map((item) => {
           const active = isActiveRoute(pathname, item.href);
+          const isWorkflowReview = item.href === "/workflows";
           const Icon = navIcons[item.href as keyof typeof navIcons];
           return (
             <Link
@@ -62,6 +66,11 @@ export function Sidebar() {
             >
               <Icon className="h-4 w-4" />
               {item.label}
+              {isWorkflowReview && pendingCount > 0 && (
+                <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto">
+                  {pendingCount}
+                </span>
+              )}
             </Link>
           );
         })}
