@@ -143,7 +143,12 @@ export default function OverviewPage() {
                     {isLoading ? (
                       <Skeleton className="h-6 w-24 rounded-full" />
                     ) : (
-                      <Badge tone={statusTone(value)}>{value ?? "unknown"}</Badge>
+                      <Badge tone={statusTone(value)}>
+                        {value === "running" && (
+                          <Loader2 className="h-3 w-3 animate-spin mr-1.5" />
+                        )}
+                        {value ?? "unknown"}
+                      </Badge>
                     )}
                   </div>
                 </div>
