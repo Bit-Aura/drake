@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Bot, Send, User, Cpu, Terminal, AlertTriangle, Loader2 } from "lucide-react";
+import { Bot, Send, User, Cpu, Terminal, AlertTriangle, Loader2, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 const API_URL = process.env.NEXT_PUBLIC_WEB_AGENT_URL || "http://localhost:8002";
@@ -117,7 +117,7 @@ export default function AgentPage() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Header */}
-      <div className="shrink-0 px-6 py-4 border-b border-[rgb(var(--border))]">
+      <div className="shrink-0 px-6 py-4 border-b border-[rgb(var(--border))] flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg">
@@ -140,6 +140,16 @@ export default function AgentPage() {
             </p>
           </div>
         </div>
+        {messages.length > 0 && (
+          <button
+            onClick={() => setMessages([])}
+            className="text-slate-400 hover:text-rose-500 transition-colors p-2"
+            title="Clear Chat"
+            aria-label="Clear Chat"
+          >
+            <Trash2 className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Messages Area */}
