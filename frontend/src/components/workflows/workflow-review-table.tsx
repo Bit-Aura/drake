@@ -450,8 +450,30 @@ export function WorkflowReviewTable() {
     return true;
   });
 
+  const stats = {
+    highCritical: data?.filter(w => w.riskLevel === "high" || w.riskLevel === "critical").length || 0,
+    medium: data?.filter(w => w.riskLevel === "medium").length || 0,
+    low: data?.filter(w => w.riskLevel === "low").length || 0,
+  };
+
   return (
     <div className="space-y-4">
+      {/* Summary Statistics Banner */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="rounded-xl border border-rose-200 bg-rose-50/20 p-4 text-rose-700">
+          <div className="text-sm font-medium">High/Critical Risk</div>
+          <div className="mt-1 text-2xl font-semibold">{stats.highCritical}</div>
+        </div>
+        <div className="rounded-xl border border-amber-200 bg-amber-50/20 p-4 text-amber-700">
+          <div className="text-sm font-medium">Medium Risk</div>
+          <div className="mt-1 text-2xl font-semibold">{stats.medium}</div>
+        </div>
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50/20 p-4 text-emerald-700">
+          <div className="text-sm font-medium">Low Risk</div>
+          <div className="mt-1 text-2xl font-semibold">{stats.low}</div>
+        </div>
+      </div>
+
       {/* Filtering Controls */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-white p-4 rounded-lg border border-slate-200">
         <div className="relative flex-1">
