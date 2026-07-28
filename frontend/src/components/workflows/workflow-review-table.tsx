@@ -2,6 +2,7 @@
 
 import { Check,  GitMerge, Pencil, X, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { EmptyState } from "@/components/feedback/empty-state";
@@ -334,8 +335,46 @@ export function WorkflowReviewTable() {
   const [rejecting, setRejecting] = useState<WorkflowCluster | null>(null);
   const [feedback, setFeedback] = useState<ActionFeedback | null>(null);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [riskFilter, setRiskFilter] = useState("all");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const urlSearch = searchParams.get("search") || "";
+  const urlRisk = searchParams.get("risk") || "all";
+
+  const [searchQuery, setSearchQuery] = useState(urlSearch);
+
+  // Sync local input with URL when URL changes (e.g. on load, or back/forward navigation)
+  useEffect(() => {
+    setSearchQuery(urlSearch);
+  }, [urlSearch]);
+
+  // Debounce updating the URL search param
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const currentParams = new URLSearchParams(searchParams.toString());
+      if (searchQuery) {
+        currentParams.set("search", searchQuery);
+      } else {
+        currentParams.delete("search");
+      }
+      const newUrl = `${pathname}?${currentParams.toString()}`;
+      router.replace(newUrl, { scroll: false });
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, pathname, router, searchParams]);
+
+  const handleRiskFilterChange = (value: string) => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    if (value && value !== "all") {
+      currentParams.set("risk", value);
+    } else {
+      currentParams.delete("risk");
+    }
+    const newUrl = `${pathname}?${currentParams.toString()}`;
+    router.push(newUrl, { scroll: false });
+  };
 
   useEffect(() => {
     if (!feedback) return;
@@ -391,7 +430,7 @@ export function WorkflowReviewTable() {
 
   const filteredData = data.filter((workflow) => {
     // Filter by Risk Level
-    if (riskFilter !== "all" && workflow.riskLevel !== riskFilter) {
+    if (urlRisk !== "all" && workflow.riskLevel !== urlRisk) {
       return false;
     }
     // Search by workflow name or description
@@ -418,7 +457,7 @@ export function WorkflowReviewTable() {
           />
         </div>
         <div className="w-full sm:w-[200px]">
-          <Select value={riskFilter} onValueChange={setRiskFilter}>
+          <Select value={urlRisk} onValueChange={handleRiskFilterChange}>
             <SelectTrigger id="workflow-risk-filter">
               <SelectValue placeholder="Filter by risk" />
             </SelectTrigger>

@@ -11,7 +11,7 @@ import {
   FolderOpen
 } from "@phosphor-icons/react";
 
-export function VoidNode({ data, selected }: unknown) {
+export function VoidNode({ data, selected }: any) {
   const { label, method, isCommunityNode, communitySize } = data;
 
   let Icon = TerminalWindow;
