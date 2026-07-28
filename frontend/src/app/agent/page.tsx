@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Bot, Send, User, Cpu, Terminal, AlertTriangle, Loader2 } from "lucide-react";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const API_URL = process.env.NEXT_PUBLIC_WEB_AGENT_URL || "http://localhost:8002";
 
@@ -18,6 +21,94 @@ interface ChatMessage {
   timestamp: Date;
   isLoading?: boolean;
 }
+
+function CodeBlock({ language, value }: { language: string; value: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
+  return (
+    <div className="relative my-3 rounded-lg overflow-hidden border border-zinc-800 bg-[#0a0a0c] shadow-md font-mono text-xs">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-[#121214] border-b border-zinc-800 text-[10px] text-zinc-400 font-semibold uppercase tracking-wider select-none">
+        <span>{language || "code"}</span>
+        <button
+          onClick={handleCopy}
+          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-cyan-500/20 hover:text-cyan-400 text-zinc-300 transition-all cursor-pointer border border-zinc-700/50"
+        >
+          {copied ? "Copied!" : "Copy"}
+        </button>
+      </div>
+      <div className="p-3 overflow-x-auto">
+        <SyntaxHighlighter
+          language={language || "text"}
+          style={vscDarkPlus}
+          PreTag="div"
+          customStyle={{
+            margin: 0,
+            padding: 0,
+            background: "transparent",
+            fontSize: "12px",
+          }}
+        >
+          {value}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+}
+
+const renderers = {
+  code({ className, children, ...props }: any) {
+    const match = /language-(\w+)/.exec(className || "");
+    const value = String(children).replace(/\n$/, "");
+    return match ? (
+      <CodeBlock language={match[1]} value={value} />
+    ) : (
+      <code className="bg-zinc-100 dark:bg-zinc-800 text-xs px-1.5 py-0.5 rounded font-mono text-rose-600 dark:text-rose-400" {...props}>
+        {children}
+      </code>
+    );
+  },
+  ul({ children }: any) {
+    return <ul className="list-disc pl-5 my-2 space-y-1">{children}</ul>;
+  },
+  ol({ children }: any) {
+    return <ol className="list-decimal pl-5 my-2 space-y-1">{children}</ol>;
+  },
+  p({ children }: any) {
+    return <p className="mb-2 last:mb-0 leading-relaxed text-sm">{children}</p>;
+  },
+  h1({ children }: any) {
+    return <h1 className="text-xl font-bold mt-3 mb-1 text-[rgb(var(--foreground))]">{children}</h1>;
+  },
+  h2({ children }: any) {
+    return <h2 className="text-lg font-bold mt-3 mb-1 text-[rgb(var(--foreground))]">{children}</h2>;
+  },
+  h3({ children }: any) {
+    return <h3 className="text-base font-bold mt-2 mb-1 text-[rgb(var(--foreground))]">{children}</h3>;
+  },
+  a({ href, children }: any) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-emerald-600 hover:text-emerald-500 underline transition-colors"
+      >
+        {children}
+      </a>
+    );
+  },
+};
+
 
 export default function AgentPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -212,14 +303,14 @@ export default function AgentPage() {
                   <span className="text-sm">Agent is thinking...</span>
                 </div>
               ) : msg.role === "user" ? (
-                <p className="text-sm leading-relaxed">{msg.content}</p>
+                <div className="text-sm leading-relaxed">
+                  <ReactMarkdown components={renderers}>{msg.content}</ReactMarkdown>
+                </div>
               ) : (
                 <>
                   {/* Agent Response */}
-                  <div className="bg-white rounded-2xl rounded-bl-md px-4 py-3 border border-[rgb(var(--border))] shadow-sm">
-                    <p className="text-sm text-[rgb(var(--foreground))] leading-relaxed">
-                      {msg.content}
-                    </p>
+                  <div className="bg-white rounded-2xl rounded-bl-md px-4 py-3 border border-[rgb(var(--border))] shadow-sm text-sm text-[rgb(var(--foreground))] leading-relaxed">
+                    <ReactMarkdown components={renderers}>{msg.content}</ReactMarkdown>
                   </div>
 
                   {/* Reasoning (Collapsible) */}
