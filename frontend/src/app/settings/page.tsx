@@ -157,7 +157,15 @@ export default function SettingsPage() {
                   Permanently deletes all clustered workflows, execution history, and audit trail events. The proxy will require a full OpenAPI re-ingestion.
                 </p>
               </div>
-              <Button variant="destructive" className="bg-rose-600 hover:bg-rose-700 rounded-lg font-medium whitespace-nowrap px-6">
+              <Button 
+                variant="destructive" 
+                className="bg-rose-600 hover:bg-rose-700 rounded-lg font-medium whitespace-nowrap px-6"
+                onClick={() => {
+                  if (window.confirm("Are you absolutely sure you want to purge the governance database? This action is irreversible.")) {
+                    window.alert("Database purge initiated.");
+                  }
+                }}
+              >
                 Purge Database
               </Button>
             </div>
