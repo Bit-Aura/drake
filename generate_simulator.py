@@ -32,6 +32,20 @@ def generate():
                 "schema": {"type": "string"}
             })
 
+        if required_params:
+            try:
+                req_params_list = json.loads(required_params)
+                for rp in req_params_list:
+                    if rp not in path_params:
+                        parameters.append({
+                            "name": rp,
+                            "in": "query",
+                            "required": True,
+                            "schema": {"type": "string"}
+                        })
+            except (json.JSONDecodeError, TypeError):
+                pass
+
         paths[url][method] = {
             "operationId": operation_id,
             "summary": f"Auto-generated simulator for {operation_id}",
