@@ -291,11 +291,14 @@ def detect_communities(G: nx.Graph) -> List[Set[str]]:
         return [{node} for node in G.nodes()]
 
 
-def check_ollama_status() -> bool:
+def check_llm_status() -> bool:
     import os
-    ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
+    from openai import OpenAI
+    base_url = os.environ.get("LLM_BASE_URL", "http://localhost:11434/v1")
+    api_key = os.environ.get("OPENAI_API_KEY", "ollama")
     try:
-        urllib.request.urlopen(f"{ollama_host}/api/tags", timeout=1.0)
+        client = OpenAI(base_url=base_url, api_key=api_key)
+        client.models.list(timeout=2.0)
         return True
     except Exception:
         return False
@@ -318,12 +321,12 @@ def generate_semantic_label(
     fallback_display_name = system_name.replace("_", " ").title()
     heuristic_desc = f"{action} layer for {fallback_display_name}. Configured with {len(endpoints)} underlying endpoints."  # noqa: E501
 
-    if use_llm and check_ollama_status():
+    if use_llm and check_llm_status():
         try:
             # Phase 7 Fix: Context restriction and Map-Reduce
-            from drake.ai_clustering.ollama_service import OllamaService
+            from drake.ai_clustering.llm_service import LLMService
 
-            service = OllamaService()
+            service = LLMService()
 
             endpoint_summaries_list = [f"- {ep['method']} {ep['url']} ({ep['operation_id']})" for ep in endpoints]  # noqa: E501
 
@@ -401,7 +404,7 @@ def generate_semantic_label(
 
                 return system_name, display_name, desc, 0.95
         except Exception as err:
-            logger.warning(f"Ollama labeling failed: {err}. Falling back to heuristics.")
+            logger.warning(f"LLM labeling failed: {err}. Falling back to heuristics.")
             if is_explain_mode():
                 explain_print("LLM VALIDATION - FALLBACK", f"Reason: {err}")
 

@@ -8,15 +8,15 @@ logger = logging.getLogger(__name__)
 
 async def refine_workflow_names():
     """
-    Background worker that queries unapproved workflows, generates LLM names via Ollama,
+    Background worker that queries unapproved workflows, generates LLM names,
     and updates the database without blocking the main clustering pipeline.
     """
-    from drake.ai_clustering.ollama_service import OllamaService
+    from drake.ai_clustering.llm_service import LLMService
     
     try:
-        service = OllamaService()
+        service = LLMService()
     except Exception as e:
-        logger.error(f"Cannot initialize OllamaService: {e}")
+        logger.error(f"Cannot initialize LLMService: {e}")
         return
 
     # Using async engine for non-blocking fetch
@@ -73,7 +73,7 @@ async def refine_workflow_names():
         try:
             # Note: generate_workflow_mapping is synchronous
             logger.info(f"Refining {sys_name} ({wid})...")
-            # Offload synchronous Ollama call to thread pool
+            # Offload synchronous LLM call to thread pool
             data = await asyncio.to_thread(service.generate_workflow_mapping, prompt)
 
             workflows = data.get("workflows", [])
