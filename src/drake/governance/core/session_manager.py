@@ -1,6 +1,7 @@
 """
 Session Manager for tracking user sessions and their security metrics.
 """
+import threading
 from datetime import datetime
 from typing import Dict, Any
 
@@ -40,9 +41,35 @@ class SessionManager:
     Tracks security metrics per session without external dependencies.
     """
     
-    def __init__(self):
+    def __init__(self, ttl_seconds: int = 1800, cleanup_interval_seconds: int = 300):
         self._sessions: Dict[str, SessionData] = {}
-    
+        self._lock = threading.Lock()
+        self.ttl_seconds = ttl_seconds
+        self.cleanup_interval_seconds = cleanup_interval_seconds
+        
+        self._stop_event = threading.Event()
+        self._cleanup_thread = threading.Thread(target=self._cleanup_loop, daemon=True)
+        self._cleanup_thread.start()
+        
+    def __del__(self):
+        self._stop_event.set()
+
+    def _cleanup_loop(self) -> None:
+        """Background loop to clear expired sessions."""
+        while not self._stop_event.wait(self.cleanup_interval_seconds):
+            self._evict_expired()
+
+    def _evict_expired(self) -> None:
+        """Evict sessions that have been idle past the TTL."""
+        now = datetime.utcnow()
+        expired_keys = []
+        with self._lock:
+            for session_id, data in self._sessions.items():
+                if (now - data.last_seen).total_seconds() > self.ttl_seconds:
+                    expired_keys.append(session_id)
+            for session_id in expired_keys:
+                del self._sessions[session_id]
+                
     def get_or_create(self, session_id: str) -> SessionData:
         """
         Retrieve existing session or create new one.
@@ -53,12 +80,12 @@ class SessionManager:
         Returns:
             SessionData instance
         """
-        if session_id not in self._sessions:
-            self._sessions[session_id] = SessionData(session_id)
-        else:
-            self._sessions[session_id].last_seen = datetime.utcnow()
-        
-        return self._sessions[session_id]
+        with self._lock:
+            if session_id not in self._sessions:
+                self._sessions[session_id] = SessionData(session_id)
+            else:
+                self._sessions[session_id].last_seen = datetime.utcnow()
+            return self._sessions[session_id]
     
     def update_session(self, session_id: str, **kwargs) -> None:
         """
@@ -68,11 +95,15 @@ class SessionManager:
             session_id: Session identifier
             **kwargs: Attributes to update
         """
-        session = self.get_or_create(session_id)
-        for key, value in kwargs.items():
-            if hasattr(session, key):
-                setattr(session, key, value)
-        session.last_seen = datetime.utcnow()
+        with self._lock:
+            if session_id not in self._sessions:
+                self._sessions[session_id] = SessionData(session_id)
+                
+            session = self._sessions[session_id]
+            for key, value in kwargs.items():
+                if hasattr(session, key):
+                    setattr(session, key, value)
+            session.last_seen = datetime.utcnow()
     
     def get_session(self, session_id: str) -> SessionData:
         """
@@ -84,7 +115,8 @@ class SessionManager:
         Returns:
             SessionData or None if not exists
         """
-        return self._sessions.get(session_id)
+        with self._lock:
+            return self._sessions.get(session_id)
     
     def clear_session(self, session_id: str) -> bool:
         """
@@ -96,15 +128,18 @@ class SessionManager:
         Returns:
             True if session was removed, False if not found
         """
-        if session_id in self._sessions:
-            del self._sessions[session_id]
-            return True
-        return False
+        with self._lock:
+            if session_id in self._sessions:
+                del self._sessions[session_id]
+                return True
+            return False
     
     def get_all_sessions(self) -> Dict[str, SessionData]:
         """Return all active sessions."""
-        return self._sessions.copy()
+        with self._lock:
+            return self._sessions.copy()
     
     def session_count(self) -> int:
         """Return total number of active sessions."""
-        return len(self._sessions)
+        with self._lock:
+            return len(self._sessions)
