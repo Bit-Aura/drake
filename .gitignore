@@ -74,3 +74,6 @@ yarn-error.log*
 # Data files
 data/output/snapshots/
 data/governance.db
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
