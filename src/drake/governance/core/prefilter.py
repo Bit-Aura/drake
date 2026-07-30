@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import re
 import time
+import unicodedata
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple
 
@@ -174,12 +175,14 @@ class FastPreFilter:
         """
         t0 = time.perf_counter()
 
+        normalized_prompt = unicodedata.normalize("NFKC", prompt)
+
         violations: List[str] = []
         first_label: Optional[str] = None
         first_pattern_desc: Optional[str] = None
 
         for compiled, label in _COMPILED:
-            m = compiled.search(prompt)
+            m = compiled.search(normalized_prompt)
             if m:
                 if label not in violations:
                     violations.append(label)
